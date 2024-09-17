@@ -16,7 +16,7 @@
 }
 
 .inp {
-    margin:5px;
+    margin: 5px;
 }
 
 .btn-entrar {
@@ -25,3 +25,13 @@
     margin-top: 20px;
 }
 
+.div-icon-box {
+    position: absolute;
+    top: 36%;
+    left: 50%;
+    z-index: 1;
+}
+
+.icon-box {
+    font-size: 2rem;
+}
