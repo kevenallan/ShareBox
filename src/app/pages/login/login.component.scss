@@ -1,0 +1,27 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.card {
+    width: 300px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.inp {
+    margin:5px;
+}
+
+.btn-entrar {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+

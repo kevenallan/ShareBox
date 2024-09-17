@@ -1,1 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.swal2-custom-confirm {
+    background-color: #28a745; /* Cor de fundo */
+    color: #fff; /* Cor do texto */
+    border: none; /* Remover borda */
+}
+
+.swal2-custom-cancel {
+    background-color: #fc2c2c; /* Cor de fundo */
+    color: #fff; /* Cor do texto */
+    border: none; /* Remover borda */
+}

@@ -1,0 +1,27 @@
+<div class="container">
+    <p-card header="ShareBox" class="card">
+        <div style="position: absolute;top:36%;left: 50%;z-index: 1;">
+            <i class="pi pi-spin pi-box" style="font-size: 2rem"></i>
+        </div>
+        <div class="form">
+            <div class="inp">
+                <input
+                    type="text"
+                    pInputText
+                    [(ngModel)]="usuario.login"
+                    placeholder="Usuario"
+                />
+            </div>
+            <div class="inp">
+                <p-password
+                    [(ngModel)]="usuario.senha"
+                    [feedback]="false"
+                    placeholder="Senha"
+                />
+            </div>
+            <div class="btn-entrar">
+                <p-button label="Entrar" [raised]="true" (click)="login()"/>
+            </div>
+        </div>
+    </p-card>
+</div>

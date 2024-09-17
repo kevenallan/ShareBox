@@ -1,0 +1,65 @@
+<div class="add-arquivo">
+    <input
+        id="fileInput"
+        class="none"
+        placeholder="none"
+        type="file"
+        (change)="onFileSelected($event)"
+        multiple
+    />
+    <p-button
+        icon="pi pi-plus"
+        [rounded]="true"
+        [text]="true"
+        [raised]="true"
+        (click)="clickUploadFile()"
+    />
+</div>
+
+<div style="width: 50%">
+    <p-card>
+        <p-table
+            [value]="arquivoList"
+            [tableStyle]="{ 'min-width': '50rem' }"
+            styleClass="p-datatable-sm"
+        >
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Arquivo</th>
+                    <th>Nome</th>
+                    <th>Tipo</th>
+                    <th>Data Upload</th>
+                    <th>Ações</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-arquivo>
+                <tr>
+                    <td>
+                        <img
+                            [src]="preview(arquivo)"
+                            width="50"
+                            [alt]="arquivo.nome"
+                            class="shadow-4"
+                            title="arquivo"
+                        />
+                    </td>
+                    <td>{{ arquivo.nome }}</td>
+                    <td>{{ arquivo.extensao }}</td>
+                    <td>{{ arquivo.dataCriacao }}</td>
+                    <td>
+                        <div class="card flex justify-content-center">
+                            <p-menu #menu [model]="items" [popup]="true" />
+                            <p-button
+                                (onClick)="menu.toggle($event)"
+                                icon="pi pi-cog"
+                                [rounded]="true"
+                                [text]="true"
+                                [raised]="true"
+                            />
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-card>
+</div>
