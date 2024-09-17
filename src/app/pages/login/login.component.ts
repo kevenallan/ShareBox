@@ -49,6 +49,17 @@ export class LoginComponent {
             (response) => {
                 console.log(response);
                 if (response) {
+                    const usuarioLogado: Usuario = response;
+                    console.log(usuarioLogado);
+                    if (
+                        usuarioLogado.token?.isValid &&
+                        usuarioLogado.token.value != undefined
+                    ) {
+                        sessionStorage.setItem(
+                            'token',
+                            usuarioLogado.token.value
+                        );
+                    }
                     this.router.navigate(['/inicio']);
                 } else {
                     this.alertService.showErrorAlert(

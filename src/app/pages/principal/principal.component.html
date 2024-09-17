@@ -16,12 +16,22 @@
     />
 </div>
 
-<div style="width: 50%">
+<p-button
+    (onClick)="sair()"
+    icon="pi pi-sign-out"
+    [rounded]="true"
+    [text]="true"
+    [raised]="true"
+/>
+
+<div>
     <p-card>
         <p-table
             [value]="arquivoList"
+            [(selection)]="selectedRow"
             [tableStyle]="{ 'min-width': '50rem' }"
             styleClass="p-datatable-sm"
+            responsiveLayout="stack"
         >
             <ng-template pTemplate="header">
                 <tr>
@@ -47,8 +57,12 @@
                     <td>{{ arquivo.extensao }}</td>
                     <td>{{ arquivo.dataCriacao }}</td>
                     <td>
-                        <div class="card flex justify-content-center">
-                            <p-menu #menu [model]="items" [popup]="true" />
+                        <div>
+                            <p-menu
+                                #menu
+                                [model]="getMenuItems(arquivo)"
+                                [popup]="true"
+                            />
                             <p-button
                                 (onClick)="menu.toggle($event)"
                                 icon="pi pi-cog"

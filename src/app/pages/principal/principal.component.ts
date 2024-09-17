@@ -20,6 +20,8 @@ import { CardModule } from 'primeng/card';
 //
 import { previewVideo } from '../../../environments/environment';
 import { AlertService } from '../../core/services/alert.service';
+import { Router } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
     selector: 'app-principal',
@@ -45,32 +47,52 @@ import { AlertService } from '../../core/services/alert.service';
 })
 export class PrincipalComponent implements OnInit {
     arquivoList: Arquivo[] = [];
-    items: MenuItem[];
+    // items: MenuItem[];
+    selectedRow: any;
     constructor(
         private arquivoService: ArquivoService,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private router: Router,
+        private authService: AuthService
     ) {
-        this.items = [
-            {
-                label: 'Update',
-                command: () => {
-                    // this.update();
-                }
-            },
-            {
-                label: 'Delete',
-                command: () => {
-                    // this.delete();
-                }
-            },
-            { label: 'Angular Website', url: 'http://angular.io' },
-            { separator: true },
-            { label: 'Upload', routerLink: ['/fileupload'] }
-        ];
+        // this.items = [
+        //     {
+        //         label: 'Download',
+        //         command: () => {
+        //             console.log(this.selectedRow)
+        //             // this.downloadFile("","")
+        //         }
+        //     },
+        //     {
+        //         label: 'Update',
+        //         command: () => {
+        //             // this.update();
+        //         }
+        //     },
+        //     {
+        //         label: 'Delete',
+        //         command: () => {
+        //             // this.delete();
+        //         }
+        //     },
+        //     { label: 'Angular Website', url: 'http://angular.io' },
+        //     { separator: true },
+        //     { label: 'Upload', routerLink: ['/fileupload'] }
+        // ];
     }
 
     ngOnInit() {
         this.listar();
+    }
+
+    getMenuItems(arquivo: any): MenuItem[] {
+        return [
+            {
+                label: 'Download',
+                icon: 'pi pi-download',
+                command: () => this.downloadFile(arquivo.id, arquivo.nome)
+            }
+        ];
     }
 
     clickUploadFile() {
@@ -164,5 +186,10 @@ export class PrincipalComponent implements OnInit {
             default:
                 return previewVideo;
         }
+    }
+
+    sair() {
+        this.authService.removeAuthorizationToken();
+        this.router.navigate(['/login']);
     }
 }
