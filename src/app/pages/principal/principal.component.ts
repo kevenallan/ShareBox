@@ -97,25 +97,35 @@ export class PrincipalComponent implements OnInit {
                 const prefixoBase64 = base64String.split(',')[0];
                 base64String = base64String.split(',')[1]; // Removendo o prefixo da string base64
 
-                arquivo = new Arquivo(
-                    base64String,
-                    fileName,
-                    fileExtension,
-                    prefixoBase64
-                );
+                // arquivo = new Arquivo(
+                //     base64String,
+                //     fileName,
+                //     fileExtension,
+                //     prefixoBase64
+                // );
+                // arquivo.file = file;
 
-                this.uploadFile(arquivo);
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('nome', fileName);
+                formData.append('extensao', fileExtension);
+                //TODO: PEGAR O USUARIO DO USUARIO LOGADO
+                formData.append('usuario', 'dev');
+
+                this.uploadFile(formData);
             };
             reader.readAsDataURL(file); // Isso converte o arquivo para Base64
         }
     }
 
-    uploadFile(arquivo: Arquivo): void {
+    uploadFile(arquivo: any): void {
         this.arquivoService.upload(arquivo).subscribe(
             (response) => {
+                console.log('response', response);
                 this.listar();
             },
             (error) => {
+                console.log('error', error);
                 this.alertService.showErrorAlert(
                     'Erro ao tentar fazer o upload'
                 );
@@ -136,14 +146,14 @@ export class PrincipalComponent implements OnInit {
         );
     }
 
-    downloadFile(fileId: string, fileName: string): void {
-        this.arquivoService.download(fileId).subscribe(
+    downloadFile(nomeArquivo: string): void {
+        this.arquivoService.download(nomeArquivo).subscribe(
             (response: Blob) => {
                 const blob = new Blob([response], { type: response.type });
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = fileName; // Nome do arquivo a ser baixado
+                a.download = nomeArquivo; // Nome do arquivo a ser baixado
                 document.body.appendChild(a);
                 a.click(); // Inicia o download
                 document.body.removeChild(a); // Remove o link após o clique
@@ -164,7 +174,8 @@ export class PrincipalComponent implements OnInit {
             case 'jpg':
             case 'jpeg':
             case 'gif':
-                return arquivo.prefixoBase64 + ',' + arquivo.arquivo;
+            //TODO:AJUSTAR PREVIEW
+            // return arquivo.prefixoBase64 + ',' + arquivo.arquivo;
             default:
                 return previewVideo;
         }

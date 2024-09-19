@@ -37,7 +37,7 @@ export class LoginComponent {
 
     login() {
         if (
-            this.usuario.login == undefined ||
+            this.usuario.usuario == undefined ||
             this.usuario.senha == undefined
         ) {
             this.alertService.showWarningAlert(
@@ -69,6 +69,7 @@ export class LoginComponent {
             },
             (error) => {
                 this.alertService.showErrorAlert('ERROR LOGIN');
+                console.error(error)
             }
         );
     }

@@ -35,3 +35,5 @@ npm install --save-dev eslint-config-prettier eslint-plugin-prettier
 npm run format
 
 npm install sweetalert2
+
+npm install firebase @angular/fire

@@ -1,9 +1,8 @@
 import { Token } from './token.model';
 
 export class Usuario {
-    id?: number;
     nome?: string;
-    login?: string;
+    usuario?: string;
     senha?: string;
     token?: Token;
 
