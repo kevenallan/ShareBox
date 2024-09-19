@@ -11,6 +11,7 @@ import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { Router } from '@angular/router';
+import { LoginDTO } from '../../core/dto/login.dto';
 @Component({
     selector: 'app-login',
     standalone: true,
@@ -46,30 +47,26 @@ export class LoginComponent {
             return;
         }
         this.usuarioService.login(this.usuario).subscribe(
-            (response) => {
-                console.log(response);
+            (response: LoginDTO) => {
                 if (response) {
-                    const usuarioLogado: Usuario = response;
-                    console.log(usuarioLogado);
-                    if (
-                        usuarioLogado.token?.isValid &&
-                        usuarioLogado.token.value != undefined
-                    ) {
-                        sessionStorage.setItem(
-                            'token',
-                            usuarioLogado.token.value
+                    const usuarioLogado: Usuario | undefined = response.usuarioModel;
+                    console.log(usuarioLogado)
+                    if (usuarioLogado) {
+                        const token: string | undefined = response.token;
+                        if (token) {
+                            sessionStorage.setItem('token', token);
+                        }
+                        this.router.navigate(['/inicio']);
+                    } else {
+                        this.alertService.showErrorAlert(
+                            'Usuário ou Senha inválido.'
                         );
                     }
-                    this.router.navigate(['/inicio']);
-                } else {
-                    this.alertService.showErrorAlert(
-                        'Usuário ou Senha inválido.'
-                    );
                 }
             },
             (error) => {
                 this.alertService.showErrorAlert('ERROR LOGIN');
-                console.error(error)
+                console.error(error);
             }
         );
     }
