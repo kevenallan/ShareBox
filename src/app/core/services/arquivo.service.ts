@@ -39,10 +39,19 @@ export class ArquivoService {
             .set('nomeArquivo', nomeArquivo)
             .set('usuario', 'dev');
         return await lastValueFrom(
-            this.http.get(`${urlBackEnd}/arquivo/buscar-arquivo`, {
+            this.http.get(`${urlBackEnd}/arquivo/buscar`, {
                 params,
                 responseType: 'blob'
             })
         );
+    }
+
+    async deletar(nomeArquivo: string) {
+        let params = new HttpParams()
+            .set('nomeArquivo', nomeArquivo)
+            .set('usuario', 'dev');
+            await lastValueFrom(this.http.delete<void>(`${urlBackEnd}/arquivo/deletar`, {
+            params
+        }));
     }
 }

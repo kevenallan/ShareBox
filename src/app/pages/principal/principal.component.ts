@@ -195,4 +195,13 @@ export class PrincipalComponent implements OnInit {
         this.authService.removeAuthorizationToken();
         this.router.navigate(['/login']);
     }
+
+    async deletar(nomeArquivo: string) {
+        try {
+            await this.arquivoService.deletar(nomeArquivo);
+            this.listar();
+        } catch (error) {
+            this.alertService.showErrorAlert('Erro ao deletar o arquivo.');
+        }
+    }
 }
