@@ -1,0 +1,22 @@
+<p-dialog
+    [(visible)]="displayHTML"
+    [modal]="true"
+    [header]="header"
+    [closable]="true"
+    (onHide)="hideDialogHTML()"
+>
+    <div [innerHTML]="content"></div>
+</p-dialog>
+
+<p-dialog
+    [(visible)]="displayVideo"
+    [modal]="true"
+    [header]="header"
+    [closable]="true"
+    (onHide)="hideDialogVideo()"
+>
+    <video controls>
+        <source [src]="video" [type]="extensao" />
+        Seu navegador não suporta a tag de vídeo.
+    </video>
+</p-dialog>

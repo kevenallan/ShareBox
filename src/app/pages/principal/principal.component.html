@@ -35,7 +35,7 @@
 
                 <p-overlayPanel #op>
                     <p-button
-                        (onClick)="sair()"
+                        (click)="openDialogVideo()"
                         icon="pi pi-download"
                         [rounded]="true"
                         [text]="true"
@@ -75,14 +75,14 @@
                     <tr>
                         <th>Arquivo</th>
                         <th>Nome</th>
-                        <th>Tipo</th>
+                        <th>Extensão</th>
                         <th>Data Upload</th>
                         <th>Ações</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-arquivo>
                     <tr>
-                        <td>
+                        <!-- <td>
                             <img
                                 [src]="preview(arquivo)"
                                 width="50"
@@ -90,9 +90,50 @@
                                 class="shadow-4"
                                 title="arquivo"
                             />
+                        </td> -->
+                        <td>
+                            <ng-container *ngIf="arquivo.previewSrc">
+                                <img
+                                    *ngIf="
+                                        ['png', 'jpg', 'jpeg', 'gif'].includes(
+                                            arquivo.extensao
+                                        )
+                                    "
+                                    [src]="arquivo.previewSrc"
+                                    width="50"
+                                    alt="{{ arquivo.nome }}"
+                                />
+                                <img
+                                    *ngIf="
+                                        ['mp4', 'webm', 'ogg'].includes(
+                                            arquivo.extensao
+                                        )
+                                    "
+                                    [src]="previewVideo"
+                                    (click)="abrirVideo(arquivo.previewSrc)"
+                                    width="50"
+                                    alt="{{ arquivo.nome }}"
+                                    class="cursor-pointer"
+                                />
+                                <a
+                                    *ngIf="arquivo.extensao === 'pdf'"
+                                    [href]="arquivo.url"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <img
+                                        [src]="arquivo.previewSrc"
+                                        width="50"
+                                        [alt]="arquivo.nome"
+                                        class="shadow-4"
+                                        title="arquivo"
+                                    />
+                                </a>
+                            </ng-container>
                         </td>
-                        <td>{{ arquivo.nome }}</td>
-                        <td>{{ arquivo.extensao }}</td>
+
+                        <td class="text-truncate">{{ arquivo.nome }}</td>
+                        <td class="text-truncate">{{ arquivo.extensao }}</td>
                         <td>
                             {{
                                 arquivo.dataCriacao
@@ -101,13 +142,6 @@
                         </td>
                         <td>
                             <div class="flex align-items-center gap-2">
-                                <!-- <p-avatar
-                                (click)="op.toggle($event)"
-                                styleClass="cursor-pointer"
-                                label="U"
-                                shape="circle"
-                            >
-                            </p-avatar> -->
                                 <p-button
                                     (click)="op.toggle($event)"
                                     icon="pi pi-cog"
@@ -118,7 +152,12 @@
 
                                 <p-overlayPanel #op>
                                     <p-button
-                                        (onClick)="downloadFile(arquivo.nome)"
+                                        (onClick)="
+                                            downloadFile(
+                                                arquivo.nome,
+                                                arquivo.extensao
+                                            )
+                                        "
                                         icon="pi pi-download"
                                         [rounded]="true"
                                         [text]="true"
@@ -137,7 +176,12 @@
                                         tooltipPosition="bottom"
                                     />
                                     <p-button
-                                        (onClick)="deletar(arquivo.nome)"
+                                        (onClick)="
+                                            deletar(
+                                                arquivo.nome,
+                                                arquivo.extensao
+                                            )
+                                        "
                                         icon="pi pi-trash"
                                         [rounded]="true"
                                         [text]="true"
@@ -166,3 +210,11 @@
         </p-card>
     </div>
 </div>
+
+<app-dialog
+    #dialog
+    header="Título do Diálogo"
+    [video]="videoDialog"
+    [extensao]="videoExtensao"
+>
+</app-dialog>

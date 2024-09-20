@@ -20,3 +20,10 @@
 .width-card {
     width: 80%;
 }
+
+.text-truncate {
+    white-space: nowrap; /* Evita que o texto quebre em várias linhas */
+    overflow: hidden; /* Oculta o texto que excede o tamanho da caixa */
+    text-overflow: ellipsis; /* Adiciona "..." ao final do texto cortado */
+    max-width: 100px; /* Define um tamanho máximo para a coluna */
+}

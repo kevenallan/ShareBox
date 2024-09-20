@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { previewVideo } from './../../../environments/environment';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
+import { Router } from '@angular/router';
 
 import { ArquivoService } from '../../core/services/arquivo.service';
 import { Arquivo } from '../../core/models/arquivo.model';
@@ -19,15 +21,18 @@ import { CardModule } from 'primeng/card';
 import { SpeedDialModule } from 'primeng/speeddial';
 import { MenubarModule } from 'primeng/menubar';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
-
-//
-import { previewVideo } from '../../../environments/environment';
-import { AlertService } from '../../core/services/alert.service';
-import { Router } from '@angular/router';
-import { AuthService } from '../../core/services/auth.service';
 import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
-import { LocalDateTimeFormatPipe } from '../../core/pipe/local-date-time-format.pipe';
+import { DialogModule } from 'primeng/dialog';
+
+//
+import { previewArquivo } from '../../../environments/environment';
+import { AlertService } from '../../core/services/alert.service';
+
+import { AuthService } from '../../core/services/auth.service';
+
+import { LocalDateTimeFormatPipe } from '../../shared/pipe/local-date-time-format.pipe';
+import { DialogComponent } from '../../shared/components/dialog/dialog.component';
 
 @Component({
     selector: 'app-principal',
@@ -50,8 +55,10 @@ import { LocalDateTimeFormatPipe } from '../../core/pipe/local-date-time-format.
         InputTextModule,
         OverlayPanelModule,
         TooltipModule,
-        LocalDateTimeFormatPipe
+        DialogModule,
         //
+        LocalDateTimeFormatPipe,
+        DialogComponent
     ],
 
     templateUrl: './principal.component.html',
@@ -61,6 +68,14 @@ import { LocalDateTimeFormatPipe } from '../../core/pipe/local-date-time-format.
 export class PrincipalComponent implements OnInit {
     arquivoList: Arquivo[] = [];
     items: MenuItem[] | undefined;
+    previewArquivo: string = previewArquivo;
+    previewVideo: string = previewVideo;
+
+    //
+    @ViewChild('dialog') dialog!: DialogComponent;
+    videoDialog: string = '';
+    videoExtensao: string = '';
+    //
     constructor(
         private arquivoService: ArquivoService,
         private alertService: AlertService,
@@ -146,6 +161,8 @@ export class PrincipalComponent implements OnInit {
         this.arquivoService.listar().subscribe(
             (response) => {
                 this.arquivoList = response;
+                this.adicionarImgPreview();
+                console.log(this.arquivoList);
             },
             (error) => {
                 this.alertService.showErrorAlert(
@@ -155,26 +172,34 @@ export class PrincipalComponent implements OnInit {
         );
     }
 
-    downloadFile(nomeArquivo: string): void {
-        this.arquivoService.download(nomeArquivo).subscribe(
-            (response: Blob) => {
-                const blob = new Blob([response], { type: response.type });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = nomeArquivo; // Nome do arquivo a ser baixado
-                document.body.appendChild(a);
-                a.click(); // Inicia o download
-                document.body.removeChild(a); // Remove o link após o clique
-                window.URL.revokeObjectURL(url); // Limpa a URL temporária
-            },
-            (error) => {
-                this.alertService.showErrorAlert(
-                    'Erro ao tentar fazer o download'
-                );
-                console.error('Erro no download', error);
-            }
-        );
+    adicionarImgPreview(){
+        this.arquivoList.forEach((arquivo) => {
+            arquivo.previewSrc = this.preview(arquivo);
+        });
+    }
+
+    downloadFile(nomeArquivo: string, extensao: string): void {
+        this.arquivoService
+            .download(this.concatenarNomeExtensaoArquivo(nomeArquivo, extensao))
+            .subscribe(
+                (response: Blob) => {
+                    const blob = new Blob([response], { type: response.type });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = nomeArquivo + '.' + extensao; // Nome do arquivo a ser baixado
+                    document.body.appendChild(a);
+                    a.click(); // Inicia o download
+                    document.body.removeChild(a); // Remove o link após o clique
+                    window.URL.revokeObjectURL(url); // Limpa a URL temporária
+                },
+                (error) => {
+                    this.alertService.showErrorAlert(
+                        'Erro ao tentar fazer o download'
+                    );
+                    console.error('Erro no download', error);
+                }
+            );
     }
 
     preview(arquivo: Arquivo) {
@@ -183,8 +208,34 @@ export class PrincipalComponent implements OnInit {
             case 'jpg':
             case 'jpeg':
             case 'gif':
-            //TODO:AJUSTAR PREVIEW
-            // return arquivo.prefixoBase64 + ',' + arquivo.arquivo;
+                return (
+                    'data:image/' +
+                    arquivo.extensao +
+                    ';base64,' +
+                    arquivo.base64
+                );
+            case 'mp4':
+            case 'webm':
+            case 'ogg':
+                this.videoDialog =
+                    'data:video/' +
+                    arquivo.extensao +
+                    ';base64,' +
+                    arquivo.base64;
+                this.videoExtensao = arquivo.extensao;
+                return (
+                    'data:video/' +
+                    arquivo.extensao +
+                    ';base64,' +
+                    arquivo.base64
+                );
+            case 'pdf':
+            const blob = this.base64ToBlob(
+                arquivo.base64 || '',
+                'application/pdf'
+            );
+            arquivo.url = URL.createObjectURL(blob);
+            return  previewArquivo;// Cria um URL do Blob
             default:
                 return previewVideo;
         }
@@ -195,12 +246,40 @@ export class PrincipalComponent implements OnInit {
         this.router.navigate(['/login']);
     }
 
-    async deletar(nomeArquivo: string) {
+    async deletar(nomeArquivo: string, extensao: string) {
         try {
-            await this.arquivoService.deletar(nomeArquivo);
+            await this.arquivoService.deletar(
+                this.concatenarNomeExtensaoArquivo(nomeArquivo, extensao)
+            );
             this.listar();
         } catch (error) {
             this.alertService.showErrorAlert('Erro ao deletar o arquivo.');
         }
+    }
+
+    base64ToBlob(base64: string, type: string): Blob {
+        const byteCharacters = atob(base64);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        return new Blob([byteArray], { type });
+    }
+
+    concatenarNomeExtensaoArquivo(nomeArquivo: string, extensao: string) {
+        return nomeArquivo + '.' + extensao;
+    }
+
+    openDialogVideo() {
+        const dialog = this.dialog; // Referência ao componente de diálogo
+        dialog.showDialogVideo();
+    }
+
+    abrirVideo(video: string) {
+        console.log(video);
+        this.videoDialog = video;
+        this.videoExtensao = 'video/mp4'
+        this.openDialogVideo();
     }
 }

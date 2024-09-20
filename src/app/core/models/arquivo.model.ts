@@ -1,19 +1,15 @@
 export class Arquivo {
     nome: string;
-    arquivo: string;
     extensao: string;
     dataCriacao?: Date;
     dataUltimaModificacao?: Date;
     file?: File;
+    base64?: string;
+    previewSrc?: string;
+    url?: string;
 
-    constructor(
-        arquivo: string,
-        nome: string,
-        extensao: string,
-        prefixoBase64: string
-    ) {
+    constructor(nome: string, extensao: string) {
         this.nome = nome;
-        this.arquivo = arquivo;
         this.extensao = extensao;
     }
 }
