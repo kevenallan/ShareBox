@@ -1,4 +1,3 @@
-import { previewVideo } from './../../../environments/environment';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
@@ -26,7 +25,6 @@ import { TooltipModule } from 'primeng/tooltip';
 import { DialogModule } from 'primeng/dialog';
 
 //
-import { previewArquivo } from '../../../environments/environment';
 import { AlertService } from '../../core/services/alert.service';
 
 import { AuthService } from '../../core/services/auth.service';
@@ -68,13 +66,9 @@ import { DialogComponent } from '../../shared/components/dialog/dialog.component
 export class PrincipalComponent implements OnInit {
     arquivoList: Arquivo[] = [];
     items: MenuItem[] | undefined;
-    previewArquivo: string = previewArquivo;
-    previewVideo: string = previewVideo;
 
     //
     @ViewChild('dialog') dialog!: DialogComponent;
-    videoDialog: string = '';
-    videoExtensao: string = '';
     //
     constructor(
         private arquivoService: ArquivoService,
@@ -162,7 +156,6 @@ export class PrincipalComponent implements OnInit {
             (response) => {
                 this.arquivoList = response;
                 this.adicionarImgPreview();
-                console.log(this.arquivoList);
             },
             (error) => {
                 this.alertService.showErrorAlert(
@@ -172,7 +165,7 @@ export class PrincipalComponent implements OnInit {
         );
     }
 
-    adicionarImgPreview(){
+    adicionarImgPreview() {
         this.arquivoList.forEach((arquivo) => {
             arquivo.previewSrc = this.preview(arquivo);
         });
@@ -187,7 +180,10 @@ export class PrincipalComponent implements OnInit {
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = nomeArquivo + '.' + extensao; // Nome do arquivo a ser baixado
+                    a.download = this.concatenarNomeExtensaoArquivo(
+                        nomeArquivo,
+                        extensao
+                    ); // Nome do arquivo a ser baixado
                     document.body.appendChild(a);
                     a.click(); // Inicia o download
                     document.body.removeChild(a); // Remove o link após o clique
@@ -197,11 +193,10 @@ export class PrincipalComponent implements OnInit {
                     this.alertService.showErrorAlert(
                         'Erro ao tentar fazer o download'
                     );
-                    console.error('Erro no download', error);
                 }
             );
     }
-
+    //TODO:VERICIAR ONDE PODEMOS PEGAR ESSAS VARIAVEIS: 'data:image/' 'data:video/' 'data:audio/'
     preview(arquivo: Arquivo) {
         switch (arquivo.extensao) {
             case 'png':
@@ -217,27 +212,21 @@ export class PrincipalComponent implements OnInit {
             case 'mp4':
             case 'webm':
             case 'ogg':
-                this.videoDialog =
-                    'data:video/' +
-                    arquivo.extensao +
-                    ';base64,' +
-                    arquivo.base64;
-                this.videoExtensao = arquivo.extensao;
-                return (
-                    'data:video/' +
-                    arquivo.extensao +
-                    ';base64,' +
-                    arquivo.base64
-                );
+                return '/assets/video.png';
+
+            case 'mp3':
+            case 'wav':
+                //case 'ogg'   //Ogg também pode ser áudio
+                return '/assets/musica.png';
             case 'pdf':
-            const blob = this.base64ToBlob(
-                arquivo.base64 || '',
-                'application/pdf'
-            );
-            arquivo.url = URL.createObjectURL(blob);
-            return  previewArquivo;// Cria um URL do Blob
+                const blob = this.base64ToBlob(
+                    arquivo.base64 || '',
+                    'application/pdf'
+                );
+                arquivo.url = URL.createObjectURL(blob);
+                return '/assets/pdf.png';
             default:
-                return previewVideo;
+                return '/assets/arquivo.png';
         }
     }
 
@@ -271,15 +260,25 @@ export class PrincipalComponent implements OnInit {
         return nomeArquivo + '.' + extensao;
     }
 
-    openDialogVideo() {
+    openDialogMidia(arquivo: Arquivo) {
         const dialog = this.dialog; // Referência ao componente de diálogo
-        dialog.showDialogVideo();
+        dialog.showDialogMidia(arquivo);
     }
 
-    abrirVideo(video: string) {
-        console.log(video);
-        this.videoDialog = video;
-        this.videoExtensao = 'video/mp4'
-        this.openDialogVideo();
+    abrirMidia(arquivo: Arquivo) {
+        this.openDialogMidia(arquivo);
+    }
+
+    isImagemExtensao(extensao: string) {
+        return this.arquivoService.isImagemExtensao(extensao);
+    }
+    isVideoExtensao(extensao: string) {
+        return this.arquivoService.isVideoExtensao(extensao);
+    }
+    isAudioExtensao(extensao: string) {
+        return this.arquivoService.isAudioExtensao(extensao);
+    }
+    isArquivoGenerico(extensao: string) {
+        return this.arquivoService.isArquivoGenerico(extensao);
     }
 }

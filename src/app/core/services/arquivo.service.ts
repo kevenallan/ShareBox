@@ -9,6 +9,45 @@ import { urlBackEnd } from '../../../environments/environment';
     providedIn: 'root'
 })
 export class ArquivoService {
+    //EXTENSAO
+    imagemExtensoes = ['png', 'jpg', 'jpeg', 'gif'];
+    videoExtensoes = ['mp4', 'webm', 'ogg'];
+    audioExtensoes = ['mp3', 'wav', 'ogg'];
+    pdfExtensao = ['pdf'];
+
+    //PREFIXO BASE64
+    imagemBase64Prefixos = [
+        'data:image/png;base64,',
+        'data:image/jpeg;base64,',
+        'data:image/gif;base64,',
+        'data:image/bmp;base64,',
+        'data:image/svg+xml;base64,',
+        'data:image/webp;base64,'
+    ];
+    audioBase64Prefixos = [
+        'data:audio/mpeg;base64,',
+        'data:audio/wav;base64,',
+        'data:audio/ogg;base64,',
+        'data:audio/aac;base64,'
+    ];
+    videoBase64Prefixos = [
+        'data:video/mp4;base64,',
+        'data:video/webm;base64,',
+        'data:video/x-msvideo;base64,',
+        'data:video/quicktime;base64,'
+    ];
+    documentoBase64Prefixos = [
+        'data:application/pdf;base64,',
+        'data:text/plain;base64,',
+        'data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,',
+        'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'
+    ];
+    outrosBase64Prefixos = [
+        'data:application/zip;base64,',
+        'data:application/json;base64,',
+        'data:application/xml;base64,'
+    ];
+
     constructor(
         private http: HttpClient,
         private authService: AuthService
@@ -58,6 +97,28 @@ export class ArquivoService {
             this.http.delete<void>(`${urlBackEnd}/arquivo/deletar`, {
                 params
             })
+        );
+    }
+
+    //---
+    isImagemExtensao(extensao: string) {
+        return this.imagemExtensoes.includes(extensao);
+    }
+    isVideoExtensao(extensao: string) {
+        return this.videoExtensoes.includes(extensao);
+    }
+    isAudioExtensao(extensao: string) {
+        return this.audioExtensoes.includes(extensao);
+    }
+    isPdfExtensao(extensao: string) {
+        return this.pdfExtensao.includes(extensao);
+    }
+    isArquivoGenerico(extensao: string) {
+        return (
+            !this.isImagemExtensao(extensao) &&
+            !this.isVideoExtensao(extensao) &&
+            !this.isAudioExtensao(extensao) &&
+            !this.isPdfExtensao(extensao)
         );
     }
 }

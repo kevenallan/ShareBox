@@ -8,15 +8,30 @@
     <div [innerHTML]="content"></div>
 </p-dialog>
 
+<!-- VIDEO -->
 <p-dialog
     [(visible)]="displayVideo"
     [modal]="true"
     [header]="header"
     [closable]="true"
-    (onHide)="hideDialogVideo()"
+    (onHide)="hideDialogMidia()"
 >
     <video controls>
-        <source [src]="video" [type]="extensao" />
+        <source [src]="midia" [type]="mimeType" />
         Seu navegador não suporta a tag de vídeo.
     </video>
+</p-dialog>
+
+<!-- AUDIO -->
+<p-dialog
+    [(visible)]="displayAudio"
+    [modal]="true"
+    [header]="header"
+    [closable]="true"
+    (onHide)="hideDialogMidia()"
+>
+    <audio controls>
+        <source [src]="midia" [type]="mimeType" />
+        Seu navegador não suporta a tag de áudio.
+    </audio>
 </p-dialog>

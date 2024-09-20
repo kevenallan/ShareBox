@@ -35,7 +35,7 @@
 
                 <p-overlayPanel #op>
                     <p-button
-                        (click)="openDialogVideo()"
+                        (click)="sair()"
                         icon="pi pi-download"
                         [rounded]="true"
                         [text]="true"
@@ -94,27 +94,28 @@
                         <td>
                             <ng-container *ngIf="arquivo.previewSrc">
                                 <img
-                                    *ngIf="
-                                        ['png', 'jpg', 'jpeg', 'gif'].includes(
-                                            arquivo.extensao
-                                        )
-                                    "
+                                    *ngIf="isImagemExtensao(arquivo.extensao)"
                                     [src]="arquivo.previewSrc"
                                     width="50"
                                     alt="{{ arquivo.nome }}"
                                 />
                                 <img
-                                    *ngIf="
-                                        ['mp4', 'webm', 'ogg'].includes(
-                                            arquivo.extensao
-                                        )
-                                    "
-                                    [src]="previewVideo"
-                                    (click)="abrirVideo(arquivo.previewSrc)"
+                                    *ngIf="isVideoExtensao(arquivo.extensao)"
+                                    [src]="arquivo.previewSrc"
+                                    (click)="abrirMidia(arquivo)"
                                     width="50"
                                     alt="{{ arquivo.nome }}"
                                     class="cursor-pointer"
                                 />
+                                <img
+                                    *ngIf="isAudioExtensao(arquivo.extensao)"
+                                    [src]="arquivo.previewSrc"
+                                    (click)="abrirMidia(arquivo)"
+                                    width="50"
+                                    alt="{{ arquivo.nome }}"
+                                    class="cursor-pointer"
+                                />
+
                                 <a
                                     *ngIf="arquivo.extensao === 'pdf'"
                                     [href]="arquivo.url"
@@ -129,6 +130,13 @@
                                         title="arquivo"
                                     />
                                 </a>
+                                <!-- ESLSE '-' -->
+                                <img
+                                    *ngIf="isArquivoGenerico(arquivo.extensao)"
+                                    [src]="arquivo.previewSrc"
+                                    width="50"
+                                    alt="{{ arquivo.nome }}"
+                                />
                             </ng-container>
                         </td>
 
@@ -211,10 +219,4 @@
     </div>
 </div>
 
-<app-dialog
-    #dialog
-    header="Título do Diálogo"
-    [video]="videoDialog"
-    [extensao]="videoExtensao"
->
-</app-dialog>
+<app-dialog #dialog> </app-dialog>
