@@ -37,3 +37,6 @@ npm run format
 npm install sweetalert2
 
 npm install firebase @angular/fire
+
+npm install jwt-decode
+

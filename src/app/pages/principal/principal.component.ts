@@ -99,8 +99,7 @@ export class PrincipalComponent implements OnInit {
             formData.append('file', file);
             formData.append('nome', fileName);
             formData.append('extensao', fileExtension);
-            //TODO: PEGAR O USUARIO DO USUARIO LOGADO
-            formData.append('usuario', 'dev');
+            formData.append('usuario', this.authService.getUsuarioFromToken());
 
             const arquivoExistente =
                 await this.verificarExistenciaArquivo(formData);

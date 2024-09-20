@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Token } from '../models/token.model';
-import { urlBackEnd } from '../../../environments/environment';
+import jwt_decode, { jwtDecode } from 'jwt-decode';
 
 @Injectable({
     providedIn: 'root'
@@ -28,5 +27,14 @@ export class AuthService {
 
     removeAuthorizationToken() {
         sessionStorage.removeItem('token');
+    }
+
+    getUsuarioFromToken(): any {
+        const token = sessionStorage.getItem('token');
+        if (token) {
+            const decodedToken: any = jwtDecode(token);
+            return decodedToken.sub;
+        }
+        return null;
     }
 }
