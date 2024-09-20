@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 
 import { ArquivoService } from '../../core/services/arquivo.service';
 import { Arquivo } from '../../core/models/arquivo.model';
@@ -26,6 +26,8 @@ import { AlertService } from '../../core/services/alert.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { InputTextModule } from 'primeng/inputtext';
+import { TooltipModule } from 'primeng/tooltip';
+import { LocalDateTimeFormatPipe } from '../../core/pipe/local-date-time-format.pipe';
 
 @Component({
     selector: 'app-principal',
@@ -46,13 +48,15 @@ import { InputTextModule } from 'primeng/inputtext';
         SpeedDialModule,
         MenubarModule,
         InputTextModule,
-        OverlayPanelModule
+        OverlayPanelModule,
+        TooltipModule,
+        LocalDateTimeFormatPipe
         //
     ],
 
     templateUrl: './principal.component.html',
     styleUrl: './principal.component.scss',
-    providers: [MessageService]
+    providers: [MessageService, DatePipe]
 })
 export class PrincipalComponent implements OnInit {
     arquivoList: Arquivo[] = [];
@@ -85,47 +89,53 @@ export class PrincipalComponent implements OnInit {
         fileInput.click();
     }
 
-    onFileSelected(event: any): void {
+    async onFileSelected(event: any): Promise<void> {
         const file = event.target.files[0];
         if (file) {
-            let arquivo = null;
             const fileName = file.name;
             const fileExtension = fileName.split('.').pop(); // Pega a extensão do arquivo
-            const reader = new FileReader();
-            reader.onload = () => {
-                let base64String = reader.result as string;
-                const prefixoBase64 = base64String.split(',')[0];
-                base64String = base64String.split(',')[1]; // Removendo o prefixo da string base64
 
-                // arquivo = new Arquivo(
-                //     base64String,
-                //     fileName,
-                //     fileExtension,
-                //     prefixoBase64
-                // );
-                // arquivo.file = file;
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('nome', fileName);
+            formData.append('extensao', fileExtension);
+            //TODO: PEGAR O USUARIO DO USUARIO LOGADO
+            formData.append('usuario', 'dev');
 
-                const formData = new FormData();
-                formData.append('file', file);
-                formData.append('nome', fileName);
-                formData.append('extensao', fileExtension);
-                //TODO: PEGAR O USUARIO DO USUARIO LOGADO
-                formData.append('usuario', 'dev');
+            const arquivoExistente =
+                await this.verificarExistenciaArquivo(formData);
 
-                this.uploadFile(formData);
-            };
-            reader.readAsDataURL(file); // Isso converte o arquivo para Base64
+            if (!arquivoExistente) this.uploadFile(formData);
         }
     }
 
-    uploadFile(arquivo: any): void {
+    async verificarExistenciaArquivo(arquivo: FormData): Promise<boolean> {
+        const nomeArquivo = arquivo.get('nome')?.toString();
+        const arquivoVerificado = await this.arquivoService.buscarArquivo(
+            nomeArquivo || ''
+        );
+
+        const lista: string[] = [];
+        this.arquivoList.map((arquivo) => {
+            lista.push(arquivo.nome);
+        });
+
+        if (arquivoVerificado.size > 0) {
+            const arquivoRenomeado: FormData | null =
+                await this.alertService.showInputAlertFileName(lista, arquivo);
+            if (arquivoRenomeado) this.uploadFile(arquivoRenomeado);
+            return true;
+        }
+
+        return false;
+    }
+
+    uploadFile(arquivo: FormData): void {
         this.arquivoService.upload(arquivo).subscribe(
-            (response) => {
-                console.log('response', response);
+            () => {
                 this.listar();
             },
             (error) => {
-                console.log('error', error);
                 this.alertService.showErrorAlert(
                     'Erro ao tentar fazer o upload'
                 );

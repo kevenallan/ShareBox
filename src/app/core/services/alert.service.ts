@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import Swal from 'sweetalert2';
+import { ArquivoService } from './arquivo.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AlertService {
-    constructor() {}
+    constructor(private arquivoService: ArquivoService) {}
 
     showSuccessAlert() {
         Swal.fire({
@@ -46,10 +47,10 @@ export class AlertService {
         });
     }
 
-    showConfirmationAlert(action: () => void) {
+    showConfirmationAlert(texto: string, action: () => void) {
         Swal.fire({
-            title: 'Are you sure?',
-            text: 'Do you want to proceed with this action?',
+            title: 'Tem certeza?',
+            text: texto,
             icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Yes',
@@ -71,5 +72,43 @@ export class AlertService {
                 Swal.fire('Cancelled', 'Your action was cancelled.', 'error');
             }
         });
+    }
+
+    async showInputAlertFileName(
+        arquivosExistentes: string[],
+        arquivoAtual: FormData
+    ): Promise<FormData | null> {
+        const result = await Swal.fire({
+            title: 'Nome do arquivo duplicado',
+            text: 'Por favor, escolha outro nome:',
+            input: 'text',
+            inputValue: arquivoAtual.get('nome') as string, // Garantindo que o valor seja string
+            icon: 'info',
+            inputPlaceholder: 'Escolha um novo nome',
+            showCancelButton: true,
+            cancelButtonText: 'Cancelar',
+            confirmButtonText: 'Confirmar',
+            preConfirm: (inputValue) => {
+                if (!inputValue) {
+                    Swal.showValidationMessage(
+                        'O nome do arquivo não pode ser vazio'
+                    );
+                    return false;
+                } else if (arquivosExistentes.includes(inputValue)) {
+                    Swal.showValidationMessage(
+                        `Um arquivo com o nome "${inputValue}" já existe. Por favor, escolha outro.`
+                    );
+                    return false;
+                }
+                return inputValue;
+            }
+        });
+
+        if (result.isConfirmed) {
+            arquivoAtual.set('nome', result.value);
+            return arquivoAtual;
+        }
+
+        return null;
     }
 }

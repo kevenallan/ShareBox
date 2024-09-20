@@ -49,8 +49,8 @@ export class LoginComponent {
         this.usuarioService.login(this.usuario).subscribe(
             (response: LoginDTO) => {
                 if (response) {
-                    const usuarioLogado: Usuario | undefined = response.usuarioModel;
-                    console.log(usuarioLogado)
+                    const usuarioLogado: Usuario | undefined =
+                        response.usuarioModel;
                     if (usuarioLogado) {
                         const token: string | undefined = response.token;
                         if (token) {

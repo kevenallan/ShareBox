@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Arquivo } from '../models/arquivo.model';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { lastValueFrom, Observable } from 'rxjs';
 import { urlBackEnd } from '../../../environments/environment';
 
 @Injectable({
@@ -31,5 +31,18 @@ export class ArquivoService {
             params,
             responseType: 'blob'
         });
+    }
+
+    async buscarArquivo(nomeArquivo: string): Promise<Blob> {
+        //TODO:PEGAR O NOME DO USUARIO LOGADO
+        let params = new HttpParams()
+            .set('nomeArquivo', nomeArquivo)
+            .set('usuario', 'dev');
+        return await lastValueFrom(
+            this.http.get(`${urlBackEnd}/arquivo/buscar-arquivo`, {
+                params,
+                responseType: 'blob'
+            })
+        );
     }
 }

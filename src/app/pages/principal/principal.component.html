@@ -62,8 +62,8 @@
     </p-menubar>
 </div>
 
-<div style="display: flex; justify-content: center;">
-    <div class="card"  style=" width: 80%;">
+<div style="display: flex; justify-content: center">
+    <div class="card" style="width: 80%">
         <p-card>
             <p-table
                 [value]="arquivoList"
@@ -93,7 +93,12 @@
                         </td>
                         <td>{{ arquivo.nome }}</td>
                         <td>{{ arquivo.extensao }}</td>
-                        <td>{{ arquivo.dataCriacao }}</td>
+                        <td>
+                            {{
+                                arquivo.dataCriacao
+                                    | localDateTimeFormat: 'dd/MM/yyyy HH:mm'
+                            }}
+                        </td>
                         <td>
                             <div class="flex align-items-center gap-2">
                                 <!-- <p-avatar
@@ -118,13 +123,28 @@
                                         [rounded]="true"
                                         [text]="true"
                                         [raised]="true"
+                                        pTooltip="Download"
+                                        tooltipPosition="bottom"
                                     />
                                     <p-button
-                                        (onClick)="sair()"
+                                        (onClick)="clickUploadFile()"
                                         icon="pi pi-upload"
                                         [rounded]="true"
                                         [text]="true"
                                         [raised]="true"
+                                        class="btn-acoes"
+                                        pTooltip="Upload"
+                                        tooltipPosition="bottom"
+                                    />
+                                    <p-button
+                                        (onClick)="sair()"
+                                        icon="pi pi-trash"
+                                        [rounded]="true"
+                                        [text]="true"
+                                        [raised]="true"
+                                        class="btn-acoes"
+                                        pTooltip="Deletar"
+                                        tooltipPosition="bottom"
                                     />
                                     <p-button
                                         (onClick)="sair()"
@@ -133,6 +153,9 @@
                                         [text]="true"
                                         [raised]="true"
                                         [disabled]="true"
+                                        class="btn-acoes"
+                                        pTooltip="Editar"
+                                        tooltipPosition="bottom"
                                     />
                                 </p-overlayPanel>
                             </div>
