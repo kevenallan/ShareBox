@@ -8,12 +8,12 @@ import { ArquivoService } from './arquivo.service';
 export class AlertService {
     constructor(private arquivoService: ArquivoService) {}
 
-    showSuccessAlert() {
+    showSuccessAlert(titulo: string) {
         Swal.fire({
-            title: 'Success!',
-            text: 'Successful.',
+            title: titulo,
+            // text: 'Successful.',
             icon: 'success',
-            confirmButtonText: 'Great!'
+            confirmButtonText: 'OK'
         });
     }
 
@@ -47,9 +47,9 @@ export class AlertService {
         });
     }
 
-    showConfirmationAlert(texto: string, action: () => void) {
-        Swal.fire({
-            title: 'Tem certeza?',
+    async showConfirmationAlertDeleteFile(titulo: string, texto: string) {
+        const result = await Swal.fire({
+            title: titulo,
             text: texto,
             icon: 'question',
             showCancelButton: true,
@@ -59,19 +59,24 @@ export class AlertService {
                 confirmButton: 'swal2-custom-confirm',
                 cancelButton: 'swal2-custom-cancel'
             }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                action();
-                Swal.fire(
-                    'Confirmed!',
-                    'You have chosen to proceed.',
-                    'success'
-                );
-            } else {
-                // Action cancelled
-                Swal.fire('Cancelled', 'Your action was cancelled.', 'error');
+        });
+        return result.isConfirmed;
+    }
+
+    async showConfirmationAlertUploadFile(texto: string): Promise<boolean> {
+        const result = await Swal.fire({
+            title: 'Sobrescrever Arquivo',
+            text: texto,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sim',
+            cancelButtonText: 'Não',
+            customClass: {
+                confirmButton: 'swal2-custom-confirm',
+                cancelButton: 'swal2-custom-cancel'
             }
         });
+        return result.isConfirmed;
     }
 
     async showInputAlertFileName(

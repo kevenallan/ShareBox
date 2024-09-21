@@ -1,10 +1,18 @@
 <div class="add-arquivo">
     <input
-        id="fileInput"
+        id="fileUploadInput"
         class="none"
         placeholder="none"
         type="file"
-        (change)="onFileSelected($event)"
+        (change)="fileUpload($event)"
+        multiple
+    />
+    <input
+        id="fileUpdateInput"
+        class="none"
+        placeholder="none"
+        type="file"
+        (change)="fileUpdate($event)"
         multiple
     />
     <p-button
@@ -39,7 +47,7 @@
                 <p-avatar
                     (click)="op.toggle($event)"
                     styleClass="cursor-pointer"
-                    label="U"
+                    icon="pi pi-user"
                     shape="circle"
                 >
                 </p-avatar>
@@ -85,21 +93,13 @@
                         <th>Arquivo</th>
                         <th>Nome</th>
                         <th>Extensão</th>
-                        <th>Data Upload</th>
+                        <th>Tamanho</th>
+                        <th>Data Envio</th>
                         <th>Ações</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-arquivo>
                     <tr>
-                        <!-- <td>
-                            <img
-                                [src]="preview(arquivo)"
-                                width="50"
-                                [alt]="arquivo.nome"
-                                class="shadow-4"
-                                title="arquivo"
-                            />
-                        </td> -->
                         <td>
                             <ng-container *ngIf="arquivo.previewSrc">
                                 <img
@@ -151,10 +151,11 @@
 
                         <td class="text-truncate">{{ arquivo.nome }}</td>
                         <td class="text-truncate">{{ arquivo.extensao }}</td>
+                        <td class="text-truncate">{{ arquivo.tamanho }}</td>
                         <td>
                             {{
                                 arquivo.dataCriacao
-                                    | localDateTimeFormat: 'dd/MM/yyyy HH:mm'
+                                    | localDateTimeFormat: 'dd/MM/yyyy HH:mm:ss'
                             }}
                         </td>
                         <td>
@@ -183,7 +184,7 @@
                                         tooltipPosition="bottom"
                                     />
                                     <p-button
-                                        (onClick)="clickUploadFile()"
+                                        (onClick)="clickUpdateFile(arquivo)"
                                         icon="pi pi-upload"
                                         [rounded]="true"
                                         [text]="true"

@@ -4,6 +4,11 @@ import { Router } from '@angular/router';
 
 import { ArquivoService } from '../../core/services/arquivo.service';
 import { Arquivo } from '../../core/models/arquivo.model';
+import { AlertService } from '../../core/services/alert.service';
+import { AuthService } from '../../core/services/auth.service';
+import { LocalDateTimeFormatPipe } from '../../shared/pipe/local-date-time-format.pipe';
+import { DialogComponent } from '../../shared/components/dialog/dialog.component';
+
 //PRIMENG
 import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
@@ -24,19 +29,13 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
 import { DialogModule } from 'primeng/dialog';
 
-//
-import { AlertService } from '../../core/services/alert.service';
-
-import { AuthService } from '../../core/services/auth.service';
-
-import { LocalDateTimeFormatPipe } from '../../shared/pipe/local-date-time-format.pipe';
-import { DialogComponent } from '../../shared/components/dialog/dialog.component';
-
 @Component({
     selector: 'app-principal',
     standalone: true,
     imports: [
         CommonModule,
+        LocalDateTimeFormatPipe,
+        DialogComponent,
         //PRIMENG
         ButtonModule,
         SplitButtonModule,
@@ -53,10 +52,7 @@ import { DialogComponent } from '../../shared/components/dialog/dialog.component
         InputTextModule,
         OverlayPanelModule,
         TooltipModule,
-        DialogModule,
-        //
-        LocalDateTimeFormatPipe,
-        DialogComponent
+        DialogModule
     ],
 
     templateUrl: './principal.component.html',
@@ -66,10 +62,9 @@ import { DialogComponent } from '../../shared/components/dialog/dialog.component
 export class PrincipalComponent implements OnInit {
     arquivoList: Arquivo[] = [];
     items: MenuItem[] | undefined;
+    arquivoUpdate!: Arquivo;
 
-    //
     @ViewChild('dialog') dialog!: DialogComponent;
-    //
     constructor(
         private arquivoService: ArquivoService,
         private alertService: AlertService,
@@ -93,12 +88,12 @@ export class PrincipalComponent implements OnInit {
 
     clickUploadFile() {
         const fileInput = document.getElementById(
-            'fileInput'
+            'fileUploadInput'
         ) as HTMLInputElement;
         fileInput.click();
     }
 
-    async onFileSelected(event: any): Promise<void> {
+    async fileUpload(event: any): Promise<void> {
         const file = event.target.files[0];
         if (file) {
             const fileName = file.name;
@@ -113,7 +108,54 @@ export class PrincipalComponent implements OnInit {
             const arquivoExistente =
                 await this.verificarExistenciaArquivo(formData);
 
-            if (!arquivoExistente) this.uploadFile(formData);
+            if (!arquivoExistente) {
+                this.uploadFile(formData);
+            }
+        }
+    }
+
+    clickUpdateFile(arquivoAtual: Arquivo) {
+        const fileInput = document.getElementById(
+            'fileUpdateInput'
+        ) as HTMLInputElement;
+        this.arquivoUpdate = arquivoAtual;
+        fileInput.click();
+    }
+
+    async fileUpdate(event: any): Promise<void> {
+        const file = event.target.files[0];
+        if (file) {
+            const fileName = file.name;
+            const fileExtension = fileName.split('.').pop(); // Pega a extensão do arquivo
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('nome', fileName);
+            formData.append('extensao', fileExtension);
+            formData.append('usuario', this.authService.getUsuarioFromToken());
+
+            const desejaSobrescrever =
+                await this.alertService.showConfirmationAlertUploadFile(
+                    'Tem certeza que deseja sobrescrever o arquivo?'
+                );
+
+            if (desejaSobrescrever) {
+                this.arquivoService.deletar(
+                    this.concatenarNomeExtensaoArquivo(
+                        this.arquivoUpdate.nome,
+                        this.arquivoUpdate.extensao
+                    )
+                );
+                const arquivoExistente =
+                    await this.verificarExistenciaArquivo(formData);
+
+                if (!arquivoExistente) {
+                    this.uploadFile(formData);
+                }
+                this.alertService.showSuccessAlert(
+                    'Arquivo atualizado com sucesso!'
+                );
+            }
         }
     }
 
@@ -237,10 +279,20 @@ export class PrincipalComponent implements OnInit {
 
     async deletar(nomeArquivo: string, extensao: string) {
         try {
-            await this.arquivoService.deletar(
-                this.concatenarNomeExtensaoArquivo(nomeArquivo, extensao)
-            );
-            this.listar();
+            const isDelete =
+                await this.alertService.showConfirmationAlertDeleteFile(
+                    'Deletar Arquivo',
+                    'Tem certeza que deseja deletar o arquivo?'
+                );
+            if (isDelete) {
+                await this.arquivoService.deletar(
+                    this.concatenarNomeExtensaoArquivo(nomeArquivo, extensao)
+                );
+                this.alertService.showSuccessAlert(
+                    'Arquivo deletado com sucesso!'
+                );
+                this.listar();
+            }
         } catch (error) {
             this.alertService.showErrorAlert('Erro ao deletar o arquivo.');
         }
