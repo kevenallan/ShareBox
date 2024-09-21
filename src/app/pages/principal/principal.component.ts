@@ -79,14 +79,14 @@ export class PrincipalComponent implements OnInit {
 
     ngOnInit() {
         this.items = [
-            {
-                label: 'Home',
-                icon: 'pi pi-home'
-            },
-            {
-                label: 'Features',
-                icon: 'pi pi-star'
-            }
+            // {
+            //     label: 'Home',
+            //     icon: 'pi pi-home'
+            // },
+            // {
+            //     label: 'Features',
+            //     icon: 'pi pi-star'
+            // }
         ];
         this.listar();
     }

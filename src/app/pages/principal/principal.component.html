@@ -19,12 +19,23 @@
 <div class="card">
     <p-menubar [model]="items">
         <ng-template pTemplate="start">
-            <div class="div-icon-box">
-                <i class="pi pi-spin pi-box icon-box"></i> ShareBox
+            <div
+                class="div-icon-box"
+                style="display: flex; align-items: center"
+            >
+                <img
+                    src="/assets/favicon.ico"
+                    class="girar"
+                    style="margin-bottom: 10px"
+                />
+                ShareBox
             </div>
         </ng-template>
         <ng-template pTemplate="end">
-            <div class="flex align-items-center gap-2">
+            <div
+                class="flex align-items-center gap-2"
+                style="margin-right: 30px"
+            >
                 <p-avatar
                     (click)="op.toggle($event)"
                     styleClass="cursor-pointer"
@@ -33,29 +44,27 @@
                 >
                 </p-avatar>
 
-                <p-overlayPanel #op>
-                    <p-button
-                        (click)="sair()"
-                        icon="pi pi-download"
-                        [rounded]="true"
-                        [text]="true"
-                        [raised]="true"
-                    />
-                    <p-button
-                        (onClick)="sair()"
-                        icon="pi pi-upload"
-                        [rounded]="true"
-                        [text]="true"
-                        [raised]="true"
-                    />
-                    <p-button
-                        (onClick)="sair()"
-                        icon="pi pi-pen-to-square"
-                        [rounded]="true"
-                        [text]="true"
-                        [raised]="true"
-                        [disabled]="true"
-                    />
+                <p-overlayPanel #op [style]="{ width: '200px' }">
+                    <div class="menu-avatar">
+                        <p-button
+                            (click)="sair()"
+                            icon="pi pi-user-edit"
+                            [rounded]="true"
+                            [text]="true"
+                            [raised]="true"
+                        />
+                        <p class="btn-acoes">Editar Perfil</p>
+                    </div>
+                    <div class="menu-avatar">
+                        <p-button
+                            (click)="sair()"
+                            icon="pi pi-sign-out"
+                            [rounded]="true"
+                            [text]="true"
+                            [raised]="true"
+                        />
+                        <p class="btn-acoes">Sair</p>
+                    </div>
                 </p-overlayPanel>
             </div>
         </ng-template>

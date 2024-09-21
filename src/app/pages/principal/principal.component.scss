@@ -15,6 +15,7 @@
 .container-table {
     display: flex;
     justify-content: center;
+    margin-top: 4%;
 }
 
 .width-card {
@@ -26,4 +27,19 @@
     overflow: hidden; /* Oculta o texto que excede o tamanho da caixa */
     text-overflow: ellipsis; /* Adiciona "..." ao final do texto cortado */
     max-width: 100px; /* Define um tamanho máximo para a coluna */
+}
+
+.girar {
+    width: 25px;
+}
+
+.menu-avatar {
+    display: flex;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.menu-avatar:hover {
+    background-color: rgb(245, 241, 241);
+    border-radius: 10px;
 }
