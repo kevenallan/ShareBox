@@ -7,7 +7,7 @@ import { Arquivo } from '../../core/models/arquivo.model';
 import { AlertService } from '../../core/services/alert.service';
 import { AuthService } from '../../core/services/auth.service';
 import { LocalDateTimeFormatPipe } from '../../shared/pipe/local-date-time-format.pipe';
-import { DialogComponent } from '../../shared/components/dialog/dialog.component';
+import { MidiaDialogComponent } from '../../shared/components/midia-dialog/midia-dialog.component';
 
 //PRIMENG
 import { ToastModule } from 'primeng/toast';
@@ -27,7 +27,6 @@ import { MenubarModule } from 'primeng/menubar';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
-import { DialogModule } from 'primeng/dialog';
 
 @Component({
     selector: 'app-principal',
@@ -35,7 +34,7 @@ import { DialogModule } from 'primeng/dialog';
     imports: [
         CommonModule,
         LocalDateTimeFormatPipe,
-        DialogComponent,
+        MidiaDialogComponent,
         //PRIMENG
         ButtonModule,
         SplitButtonModule,
@@ -51,8 +50,7 @@ import { DialogModule } from 'primeng/dialog';
         MenubarModule,
         InputTextModule,
         OverlayPanelModule,
-        TooltipModule,
-        DialogModule
+        TooltipModule
     ],
 
     templateUrl: './principal.component.html',
@@ -64,7 +62,7 @@ export class PrincipalComponent implements OnInit {
     items: MenuItem[] | undefined;
     arquivoUpdate!: Arquivo;
 
-    @ViewChild('dialog') dialog!: DialogComponent;
+    @ViewChild('dialog') dialog!: MidiaDialogComponent;
     constructor(
         private arquivoService: ArquivoService,
         private alertService: AlertService,
@@ -240,6 +238,7 @@ export class PrincipalComponent implements OnInit {
     }
     //TODO:VERICIAR ONDE PODEMOS PEGAR ESSAS VARIAVEIS: 'data:image/' 'data:video/' 'data:audio/'
     preview(arquivo: Arquivo) {
+        console.log(arquivo.nome + ": " + arquivo.mimeType)
         switch (arquivo.extensao) {
             case 'png':
             case 'jpg':

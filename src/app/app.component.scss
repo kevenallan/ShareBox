@@ -1,0 +1,31 @@
+//TODO:POR QUE NAO FUNCIONOU NO SYTLES.SCSS?
+//styleClass="custom-gradient-button"
+:host ::ng-deep .custom-gradient-button {
+    //  background: linear-gradient(135deg, pink, rgb(197, 32, 197), rgb(145, 226, 253)) !important;
+    background: linear-gradient(
+        135deg,
+        pink 10%,
+        rgb(197, 32, 197) 40%,
+        rgb(145, 226, 253) 85%
+    ) !important;
+    border: none !important;
+    color: white !important;
+    padding: 10px 20px !important;
+    font-size: 16px !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+    transition: background 0.3s ease !important;
+    box-shadow: none !important; /* Remove qualquer sombra padrão */
+    display: inline-flex; /* Para ajustar o alinhamento */
+    align-items: center; /* Para centralizar o texto */
+    justify-content: center; /* Para centralizar o texto */
+}
+
+:host ::ng-deep .custom-gradient-button:hover {
+    background: linear-gradient(
+        135deg,
+        rgb(145, 226, 253),
+        rgb(197, 32, 197),
+        pink
+    ) !important;
+}

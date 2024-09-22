@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DialogComponent } from './dialog.component';
+import { MidiaDialogComponent } from './midia-dialog.component';
 
-describe('DialogComponent', () => {
-  let component: DialogComponent;
-  let fixture: ComponentFixture<DialogComponent>;
+describe('MidiaDialogComponent', () => {
+  let component: MidiaDialogComponent;
+  let fixture: ComponentFixture<MidiaDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DialogComponent]
+      imports: [MidiaDialogComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(DialogComponent);
+    fixture = TestBed.createComponent(MidiaDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

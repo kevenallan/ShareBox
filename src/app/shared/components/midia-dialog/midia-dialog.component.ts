@@ -1,36 +1,26 @@
 import { Component, Input } from '@angular/core';
-import { DialogModule } from 'primeng/dialog';
-import { Arquivo } from '../../../core/models/arquivo.model';
+
 import { ArquivoService } from '../../../core/services/arquivo.service';
+import { Arquivo } from '../../../core/models/arquivo.model';
+
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
-    selector: 'app-dialog',
+    selector: 'app-midia-dialog',
     standalone: true,
     imports: [DialogModule],
-    templateUrl: './dialog.component.html',
-    styleUrl: './dialog.component.scss'
+    templateUrl: './midia-dialog.component.html',
+    styleUrl: './midia-dialog.component.scss'
 })
-export class DialogComponent {
-    //
-    displayHTML: boolean = false;
+export class MidiaDialogComponent {
     @Input() header?: string;
-    @Input() content?: string; // HTML string
-    //VIDEO / AUDIO
     displayVideo: boolean = false;
     displayAudio: boolean = false;
+    displayImagem: boolean = false;
     midia?: string;
     mimeType?: string;
-    //
 
     constructor(private arquivoService: ArquivoService) {}
-
-    showDialogHTML() {
-        this.displayHTML = true;
-    }
-
-    hideDialogHTML() {
-        this.displayHTML = false;
-    }
 
     showDialogMidia(arquivo: Arquivo) {
         this.header = arquivo.nome;
@@ -46,33 +36,47 @@ export class DialogComponent {
     hideDialogMidia() {
         this.displayVideo = false;
         this.displayAudio = false;
+        this.displayImagem = false;
     }
 
     createBase64Arquivo(mimeType: string, base64: string) {
         let resultado = '';
         let prefixoBase64;
+
+        //VIDEO
         prefixoBase64 = this.arquivoService.videoBase64Prefixos.filter(
             (item) => {
                 return item.includes(mimeType);
             }
         );
 
-        //VIDEO
         if (prefixoBase64.length != 0) {
             return resultado + prefixoBase64[0] + base64;
         }
 
+        //AUDIO
         prefixoBase64 = this.arquivoService.audioBase64Prefixos.filter(
             (item) => {
                 return item.includes(mimeType);
             }
         );
 
-        //AUDIO
         if (prefixoBase64.length != 0) {
             return resultado + prefixoBase64[0] + base64;
         }
-        return base64;
+
+        //IMAGEM
+        prefixoBase64 = this.arquivoService.imagemBase64Prefixos.filter(
+            (item) => {
+                return item.includes(mimeType);
+            }
+        );
+
+        if (prefixoBase64.length != 0) {
+            return resultado + prefixoBase64[0] + base64;
+        }
+
+        return resultado;
     }
 
     openDisplayVideoOrAudio(mimeType: string) {
@@ -84,6 +88,11 @@ export class DialogComponent {
         this.arquivoService.audioBase64Prefixos.map((item) => {
             if (item.includes(mimeType)) {
                 this.displayAudio = true;
+            }
+        });
+        this.arquivoService.imagemBase64Prefixos.map((item) => {
+            if (item.includes(mimeType)) {
+                this.displayImagem = true;
             }
         });
     }

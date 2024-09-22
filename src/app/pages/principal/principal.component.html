@@ -105,14 +105,18 @@
                                 <img
                                     *ngIf="isImagemExtensao(arquivo.extensao)"
                                     [src]="arquivo.previewSrc"
+                                    (click)="abrirMidia(arquivo)"
                                     width="50"
+                                    height="50"
                                     alt="{{ arquivo.nome }}"
+                                    class="cursor-pointer"
                                 />
                                 <img
                                     *ngIf="isVideoExtensao(arquivo.extensao)"
                                     [src]="arquivo.previewSrc"
                                     (click)="abrirMidia(arquivo)"
                                     width="50"
+                                    height="50"
                                     alt="{{ arquivo.nome }}"
                                     class="cursor-pointer"
                                 />
@@ -121,6 +125,7 @@
                                     [src]="arquivo.previewSrc"
                                     (click)="abrirMidia(arquivo)"
                                     width="50"
+                                    height="50"
                                     alt="{{ arquivo.nome }}"
                                     class="cursor-pointer"
                                 />
@@ -143,6 +148,7 @@
                                 <img
                                     *ngIf="isArquivoGenerico(arquivo.extensao)"
                                     [src]="arquivo.previewSrc"
+                                    (click)="abrirMidia(arquivo)"
                                     width="50"
                                     alt="{{ arquivo.nome }}"
                                 />
@@ -229,4 +235,4 @@
     </div>
 </div>
 
-<app-dialog #dialog> </app-dialog>
+<app-midia-dialog #dialog> </app-midia-dialog>

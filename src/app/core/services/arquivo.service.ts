@@ -121,4 +121,10 @@ export class ArquivoService {
             !this.isPdfExtensao(extensao)
         );
     }
+
+    convertendoTxtBase64ParaHtml(base64: string): string {
+        const decodedText = atob(base64); // Decodifica o conteúdo base64
+        return decodedText.replace(/\n/g, '<br>'); // Substitui as quebras de linha por <br>
+    }
+    
 }
