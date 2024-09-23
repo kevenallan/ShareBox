@@ -63,9 +63,8 @@
                         />
                         <p class="btn-acoes">Editar Perfil</p>
                     </div>
-                    <div class="menu-avatar">
+                    <div class="menu-avatar" (click)="sair()">
                         <p-button
-                            (click)="sair()"
                             icon="pi pi-sign-out"
                             [rounded]="true"
                             [text]="true"
@@ -156,7 +155,6 @@
                                 <img
                                     *ngIf="isArquivoGenerico(arquivo.extensao)"
                                     [src]="arquivo.previewSrc"
-                                    (click)="abrirEditorTexto(arquivo)"
                                     width="50"
                                     alt="{{ arquivo.nome }}"
                                 />

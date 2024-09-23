@@ -104,7 +104,6 @@ export class PrincipalComponent implements OnInit {
             const formData = new FormData();
             formData.append('file', file);
             formData.append('nome', fileName);
-            console.log('nome: ', fileName);
             formData.append('extensao', fileExtension);
 
             const arquivoExistente =
