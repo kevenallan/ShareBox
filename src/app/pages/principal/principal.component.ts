@@ -67,7 +67,6 @@ export class PrincipalComponent implements OnInit {
     arquivoList: Arquivo[] = [];
     items: MenuItem[] | undefined;
     arquivoUpdate!: Arquivo;
-    loading: boolean = true;
 
     @ViewChild('midiaDialog') midiaDialog!: MidiaDialogComponent;
     @ViewChild('editorTextoDialog')
@@ -204,7 +203,6 @@ export class PrincipalComponent implements OnInit {
             (response) => {
                 this.arquivoList = response;
                 this.adicionarImgPreview();
-                this.loading = false;
             },
             (error) => {
                 this.alertService.showErrorAlert(
