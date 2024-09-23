@@ -40,8 +40,6 @@ npm install firebase @angular/fire
 
 npm install jwt-decode
 
-npm install quill
-
 ## EXECUTA O PROJETO NA REDE
 ng serve --host 0.0.0.0
 

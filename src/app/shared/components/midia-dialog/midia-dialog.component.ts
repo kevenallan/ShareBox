@@ -30,7 +30,7 @@ export class MidiaDialogComponent {
             arquivo.base64 || ''
         );
 
-        this.openDisplayVideoOrAudio(this.mimeType || '');
+        this.openDisplay(this.mimeType || '');
     }
 
     hideDialogMidia() {
@@ -79,7 +79,7 @@ export class MidiaDialogComponent {
         return resultado;
     }
 
-    openDisplayVideoOrAudio(mimeType: string) {
+    openDisplay(mimeType: string) {
         this.arquivoService.videoBase64Prefixos.map((item) => {
             if (item.includes(mimeType)) {
                 this.displayVideo = true;

@@ -27,6 +27,7 @@ import { MenubarModule } from 'primeng/menubar';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
+import { EditorTextoDialogComponent } from '../../shared/components/editor-texto-dialog/editor-texto-dialog.component';
 
 @Component({
     selector: 'app-principal',
@@ -50,7 +51,8 @@ import { TooltipModule } from 'primeng/tooltip';
         MenubarModule,
         InputTextModule,
         OverlayPanelModule,
-        TooltipModule
+        TooltipModule,
+        EditorTextoDialogComponent
     ],
 
     templateUrl: './principal.component.html',
@@ -62,7 +64,9 @@ export class PrincipalComponent implements OnInit {
     items: MenuItem[] | undefined;
     arquivoUpdate!: Arquivo;
 
-    @ViewChild('dialog') dialog!: MidiaDialogComponent;
+    @ViewChild('midiaDialog') midiaDialog!: MidiaDialogComponent;
+    @ViewChild('editorTextoDialog')
+    editorTextoDialog!: EditorTextoDialogComponent;
     constructor(
         private arquivoService: ArquivoService,
         private alertService: AlertService,
@@ -100,8 +104,8 @@ export class PrincipalComponent implements OnInit {
             const formData = new FormData();
             formData.append('file', file);
             formData.append('nome', fileName);
+            console.log('nome: ', fileName);
             formData.append('extensao', fileExtension);
-            formData.append('usuario', this.authService.getUsuarioFromToken());
 
             const arquivoExistente =
                 await this.verificarExistenciaArquivo(formData);
@@ -139,7 +143,7 @@ export class PrincipalComponent implements OnInit {
 
             if (desejaSobrescrever) {
                 this.arquivoService.deletar(
-                    this.concatenarNomeExtensaoArquivo(
+                    this.arquivoService.concatenarNomeExtensaoArquivo(
                         this.arquivoUpdate.nome,
                         this.arquivoUpdate.extensao
                     )
@@ -213,17 +217,23 @@ export class PrincipalComponent implements OnInit {
 
     downloadFile(nomeArquivo: string, extensao: string): void {
         this.arquivoService
-            .download(this.concatenarNomeExtensaoArquivo(nomeArquivo, extensao))
+            .download(
+                this.arquivoService.concatenarNomeExtensaoArquivo(
+                    nomeArquivo,
+                    extensao
+                )
+            )
             .subscribe(
                 (response: Blob) => {
                     const blob = new Blob([response], { type: response.type });
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = this.concatenarNomeExtensaoArquivo(
-                        nomeArquivo,
-                        extensao
-                    ); // Nome do arquivo a ser baixado
+                    a.download =
+                        this.arquivoService.concatenarNomeExtensaoArquivo(
+                            nomeArquivo,
+                            extensao
+                        ); // Nome do arquivo a ser baixado
                     document.body.appendChild(a);
                     a.click(); // Inicia o download
                     document.body.removeChild(a); // Remove o link após o clique
@@ -238,7 +248,6 @@ export class PrincipalComponent implements OnInit {
     }
     //TODO:VERICIAR ONDE PODEMOS PEGAR ESSAS VARIAVEIS: 'data:image/' 'data:video/' 'data:audio/'
     preview(arquivo: Arquivo) {
-        console.log(arquivo.nome + ": " + arquivo.mimeType)
         switch (arquivo.extensao) {
             case 'png':
             case 'jpg':
@@ -266,6 +275,8 @@ export class PrincipalComponent implements OnInit {
                 );
                 arquivo.url = URL.createObjectURL(blob);
                 return '/assets/pdf.png';
+            case 'txt':
+                return '/assets/txt.png';
             default:
                 return '/assets/arquivo.png';
         }
@@ -285,7 +296,10 @@ export class PrincipalComponent implements OnInit {
                 );
             if (isDelete) {
                 await this.arquivoService.deletar(
-                    this.concatenarNomeExtensaoArquivo(nomeArquivo, extensao)
+                    this.arquivoService.concatenarNomeExtensaoArquivo(
+                        nomeArquivo,
+                        extensao
+                    )
                 );
                 this.alertService.showSuccessAlert(
                     'Arquivo deletado com sucesso!'
@@ -307,17 +321,22 @@ export class PrincipalComponent implements OnInit {
         return new Blob([byteArray], { type });
     }
 
-    concatenarNomeExtensaoArquivo(nomeArquivo: string, extensao: string) {
-        return nomeArquivo + '.' + extensao;
-    }
-
     openDialogMidia(arquivo: Arquivo) {
-        const dialog = this.dialog; // Referência ao componente de diálogo
+        const dialog = this.midiaDialog; // Referência ao componente de diálogo
         dialog.showDialogMidia(arquivo);
     }
 
     abrirMidia(arquivo: Arquivo) {
         this.openDialogMidia(arquivo);
+    }
+
+    openDialogEditorTexto(arquivo: Arquivo) {
+        const dialog = this.editorTextoDialog; // Referência ao componente de diálogo
+        dialog.showDialogEditorTexto(arquivo);
+    }
+
+    abrirEditorTexto(arquivo: Arquivo) {
+        this.openDialogEditorTexto(arquivo);
     }
 
     isImagemExtensao(extensao: string) {
@@ -331,5 +350,11 @@ export class PrincipalComponent implements OnInit {
     }
     isArquivoGenerico(extensao: string) {
         return this.arquivoService.isArquivoGenerico(extensao);
+    }
+    isPdfExtensao(extensao: string) {
+        return this.arquivoService.isPdfExtensao(extensao);
+    }
+    isTxtExtensao(extensao: string) {
+        return this.arquivoService.isTxtExtensao(extensao);
     }
 }

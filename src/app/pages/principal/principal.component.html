@@ -131,7 +131,7 @@
                                 />
 
                                 <a
-                                    *ngIf="arquivo.extensao === 'pdf'"
+                                    *ngIf="isPdfExtensao(arquivo.extensao)"
                                     [href]="arquivo.url"
                                     target="_blank"
                                     rel="noopener noreferrer"
@@ -144,11 +144,19 @@
                                         title="arquivo"
                                     />
                                 </a>
-                                <!-- ESLSE '-' -->
+                                <img
+                                    *ngIf="isTxtExtensao(arquivo.extensao)"
+                                    [src]="arquivo.previewSrc"
+                                    (click)="abrirEditorTexto(arquivo)"
+                                    width="50"
+                                    alt="{{ arquivo.nome }}"
+                                    class="cursor-pointer"
+                                />
+                                <!-- ESLSE ALTERAR PARA ARQUIVO DE TEXTO TXT/DOCX '-' -->
                                 <img
                                     *ngIf="isArquivoGenerico(arquivo.extensao)"
                                     [src]="arquivo.previewSrc"
-                                    (click)="abrirMidia(arquivo)"
+                                    (click)="abrirEditorTexto(arquivo)"
                                     width="50"
                                     alt="{{ arquivo.nome }}"
                                 />
@@ -235,4 +243,5 @@
     </div>
 </div>
 
-<app-midia-dialog #dialog> </app-midia-dialog>
+<app-midia-dialog #midiaDialog> </app-midia-dialog>
+<app-editor-texto-dialog #editorTextoDialog> </app-editor-texto-dialog>

@@ -5,6 +5,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { lastValueFrom, Observable } from 'rxjs';
 import { urlBackEnd } from '../../../environments/environment';
 
+
 @Injectable({
     providedIn: 'root'
 })
@@ -13,7 +14,8 @@ export class ArquivoService {
     imagemExtensoes = ['png', 'jpg', 'jpeg', 'gif'];
     videoExtensoes = ['mp4', 'webm', 'ogg'];
     audioExtensoes = ['mp3', 'wav', 'ogg'];
-    pdfExtensao = ['pdf'];
+    pdfExtensao = 'pdf';
+    txtExtensao = 'txt';
 
     //PREFIXO BASE64
     imagemBase64Prefixos = [
@@ -63,8 +65,9 @@ export class ArquivoService {
         });
     }
 
-    upload(arquivo: any) {
-        return this.http.post(`${urlBackEnd}/arquivo/upload`, arquivo);
+    upload(formData: FormData) {
+        formData.append('usuario', this.authService.getUsuarioFromToken());
+        return this.http.post(`${urlBackEnd}/arquivo/upload`, formData);
     }
 
     download(nomeArquivo: string): Observable<Blob> {
@@ -111,20 +114,38 @@ export class ArquivoService {
         return this.audioExtensoes.includes(extensao);
     }
     isPdfExtensao(extensao: string) {
-        return this.pdfExtensao.includes(extensao);
+        return this.pdfExtensao === extensao;
+    }
+    isTxtExtensao(extensao: string) {
+        return this.txtExtensao === extensao;
     }
     isArquivoGenerico(extensao: string) {
         return (
             !this.isImagemExtensao(extensao) &&
             !this.isVideoExtensao(extensao) &&
             !this.isAudioExtensao(extensao) &&
-            !this.isPdfExtensao(extensao)
+            !this.isPdfExtensao(extensao) &&
+            !this.isTxtExtensao(extensao)
         );
     }
-
-    convertendoTxtBase64ParaHtml(base64: string): string {
-        const decodedText = atob(base64); // Decodifica o conteúdo base64
-        return decodedText.replace(/\n/g, '<br>'); // Substitui as quebras de linha por <br>
+    //TXT
+    async convertTxtBase64ToText(base64: string): Promise<string> {
+        const decodedText = atob(base64); // Decodifica o conteúdo Base64
+        return decodedText; // Retorna o texto sem modificar as quebras de linha
     }
-    
+
+    convertTxtToFile(texto: string, nomeArquivo: string): File {
+        // Garantindo que a codificação seja UTF-8
+        const utf8Texto = new TextEncoder().encode(texto);
+        const blob = new Blob([utf8Texto], {
+            type: 'text/plain;charset=utf-8'
+        });
+        const file = new File([blob], nomeArquivo, {
+            type: 'text/plain;charset=utf-8'
+        });
+        return file;
+    }
+    concatenarNomeExtensaoArquivo(nomeArquivo: string, extensao: string) {
+        return nomeArquivo + '.' + extensao;
+    }
 }
