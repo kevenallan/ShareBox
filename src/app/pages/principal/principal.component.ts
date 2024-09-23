@@ -28,6 +28,8 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
 import { EditorTextoDialogComponent } from '../../shared/components/editor-texto-dialog/editor-texto-dialog.component';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 
 @Component({
     selector: 'app-principal',
@@ -52,7 +54,9 @@ import { EditorTextoDialogComponent } from '../../shared/components/editor-texto
         InputTextModule,
         OverlayPanelModule,
         TooltipModule,
-        EditorTextoDialogComponent
+        EditorTextoDialogComponent,
+        IconFieldModule,
+        InputIconModule
     ],
 
     templateUrl: './principal.component.html',
@@ -63,6 +67,7 @@ export class PrincipalComponent implements OnInit {
     arquivoList: Arquivo[] = [];
     items: MenuItem[] | undefined;
     arquivoUpdate!: Arquivo;
+    loading: boolean = true;
 
     @ViewChild('midiaDialog') midiaDialog!: MidiaDialogComponent;
     @ViewChild('editorTextoDialog')
@@ -199,6 +204,7 @@ export class PrincipalComponent implements OnInit {
             (response) => {
                 this.arquivoList = response;
                 this.adicionarImgPreview();
+                this.loading = false;
             },
             (error) => {
                 this.alertService.showErrorAlert(
@@ -355,5 +361,9 @@ export class PrincipalComponent implements OnInit {
     }
     isTxtExtensao(extensao: string) {
         return this.arquivoService.isTxtExtensao(extensao);
+    }
+    filterArquivos(event: Event, tbArquivos: any) {
+        const input = event.target as HTMLInputElement;
+        tbArquivos.filterGlobal(input.value, 'contains');
     }
 }

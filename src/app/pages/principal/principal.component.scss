@@ -37,10 +37,15 @@
 .menu-avatar {
     display: flex;
     cursor: pointer;
-    margin-top: 5px;
+    padding: 5px;
 }
 
 .menu-avatar:hover {
     background-color: rgb(245, 241, 241);
     border-radius: 10px;
 }
+
+// :host ::ng-deep .p-inputtext:enabled:focus {
+//     border-color: rgb(0, 21, 212) !important;
+//     box-shadow: 0 0 0 0.2rem #c00303 !important;
+// }

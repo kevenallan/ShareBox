@@ -82,18 +82,47 @@
     <div class="width-card">
         <p-card>
             <p-table
+                #tbArquivos
                 [value]="arquivoList"
                 [tableStyle]="{ 'min-width': '50rem' }"
                 styleClass="p-datatable-sm"
                 responsiveLayout="stack"
+                [paginator]="true"
+                [rows]="5"
+                [rowsPerPageOptions]="[5, 10, 20]"
+                [globalFilterFields]="['nome', 'extensao']"
+                [loading]="loading"
             >
+                <ng-template pTemplate="caption">
+                    <div class="flex">
+                        <p-iconField iconPosition="left" class="ml-auto">
+                            <p-inputIcon>
+                                <i class="pi pi-search"></i>
+                            </p-inputIcon>
+                            <input
+                                pInputText
+                                type="text"
+                                (input)="filterArquivos($event, tbArquivos)"
+                                placeholder="Pesquisar arquivo..."
+                            />
+                        </p-iconField>
+                    </div>
+                </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
                         <th>Arquivo</th>
-                        <th>Nome</th>
-                        <th>Extensão</th>
-                        <th>Tamanho</th>
-                        <th>Data Envio</th>
+                        <th pSortableColumn="nome">
+                            Nome <p-sortIcon field="nome" />
+                        </th>
+                        <th pSortableColumn="extensao">
+                            Extensão <p-sortIcon field="extensao" />
+                        </th>
+                        <th pSortableColumn="tamanho">
+                            Tamanho <p-sortIcon field="tamanho" />
+                        </th>
+                        <th pSortableColumn="dataCriacao">
+                            Data Envio <p-sortIcon field="dataCriacao" />
+                        </th>
                         <th>Ações</th>
                     </tr>
                 </ng-template>
