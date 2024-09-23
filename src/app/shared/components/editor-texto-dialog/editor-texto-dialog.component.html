@@ -5,12 +5,15 @@
     [closable]="true"
     (onHide)="hideDialogEditor()"
 >
-    <p-button
-        label="Primary"
-        [text]="true"
-        [raised]="true"
-        (click)="updateArquivo()"
-    />
-
-    <textarea [(ngModel)]="texto"></textarea>
+    <div>
+        <textarea [(ngModel)]="texto"></textarea>
+    </div>
+    <div class="btn-editar">
+        <p-button
+            label="Editar"
+            [text]="true"
+            [raised]="true"
+            (click)="updateArquivo()"
+        />
+    </div>
 </p-dialog>

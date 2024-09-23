@@ -26,7 +26,7 @@ export class EditorTextoDialogComponent {
 
     async showDialogEditorTexto(arquivo: Arquivo) {
         this.arquivo = arquivo;
-        this.header = arquivo.nome;
+        this.header = 'Editar ' + arquivo.nome;
         this.mimeType = arquivo.mimeType;
         this.displayEditor = true;
 
