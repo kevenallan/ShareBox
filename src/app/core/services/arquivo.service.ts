@@ -5,7 +5,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { lastValueFrom, Observable } from 'rxjs';
 import { urlBackEnd } from '../../../environments/environment';
 
-
 @Injectable({
     providedIn: 'root'
 })

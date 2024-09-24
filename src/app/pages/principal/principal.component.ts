@@ -135,7 +135,6 @@ export class PrincipalComponent implements OnInit {
             formData.append('file', file);
             formData.append('nome', fileName);
             formData.append('extensao', fileExtension);
-            formData.append('usuario', this.authService.getUsuarioFromToken());
 
             const desejaSobrescrever =
                 await this.alertService.showConfirmationAlertUploadFile(
