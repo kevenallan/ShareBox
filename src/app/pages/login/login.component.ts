@@ -70,4 +70,8 @@ export class LoginComponent {
             }
         );
     }
+
+    telaCadastro() {
+        this.router.navigate(['/cadastro']);
+    }
 }

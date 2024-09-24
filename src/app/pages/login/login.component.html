@@ -1,5 +1,5 @@
 <div class="container">
-    <p-card header="ShareBox" class="card">
+    <!-- <p-card header="ShareBox" class="card">
         <div class="div-icon-box">
             <img src="/assets/favicon.ico" class="girar" />
         </div>
@@ -20,8 +20,61 @@
                 />
             </div>
             <div class="btn-entrar">
-                <p-button label="Entrar" styleClass="custom-gradient-button" [raised]="true" (click)="login()" />
+                <p-button
+                    label="Entrar"
+                    styleClass="custom-gradient-button"
+                    [raised]="true"
+                    (click)="login()"
+                />
             </div>
+
+            <p class="cadastro cursor-pointer" (click)="telaCadastro()">
+                Cadastre-se aqui
+            </p>
         </div>
-    </p-card>
+    </p-card> -->
+
+    <div class="container">
+        <div class="form-container">
+            <div class="logo">
+                <div class="div-icon-box">
+                    <img src="/assets/favicon.ico" class="girar" />
+                </div>
+                <p>ShareBox</p>
+            </div>
+            <form class="form">
+                <div class="form-group">
+                    <label for="usuario">Usuario</label>
+                    <input
+                        [(ngModel)]="usuario.usuario"
+                        type="text"
+                        id="usuario"
+                        name="usuario"
+                        required=""
+                    />
+
+                    <label for="senha">Senha</label>
+                    <input
+                        type="password"
+                        id="senha"
+                        name="senha"
+                        [(ngModel)]="usuario.senha"
+                        required=""
+                    />
+                </div>
+
+                <button
+                    class="form-submit-btn custom-gradient-button"
+                    type="submit"
+                    (click)="login()"
+                >
+                    Entrar
+                </button>
+
+                <p class="cadastro cursor-pointer" (click)="telaCadastro()">
+                    Cadastre-se aqui
+                </p>
+            </form>
+        </div>
+    </div>
 </div>

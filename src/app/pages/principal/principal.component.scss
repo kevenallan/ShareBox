@@ -5,6 +5,27 @@
     z-index: 1;
 }
 
+:host ::ng-deep .p-menubar {
+    background:
+        linear-gradient(#212121, #212121) padding-box,
+        linear-gradient(
+                135deg,
+                pink 10%,
+                rgb(197, 32, 197) 40%,
+                rgb(145, 226, 253) 85%
+            )
+            border-box;
+    border: 2px solid transparent;
+    color: white;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th,
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr,
+:host ::ng-deep .p-paginator {
+    background: #212121;
+    color: white;
+}
+
 .none {
     display: none;
 }
@@ -21,6 +42,30 @@
 
 .width-card {
     width: 80%;
+}
+
+.style-card {
+    background:
+        linear-gradient(#212121, #212121) padding-box,
+        linear-gradient(
+                135deg,
+                pink 10%,
+                rgb(197, 32, 197) 40%,
+                rgb(145, 226, 253) 85%
+            )
+            border-box;
+    border: 4px solid transparent;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-header {
+    background-color: #212121;
+}
+
+:host ::ng-deep .p-datatable .p-sortable-column .p-sortable-column-icon {
+    color: white;
+}
+
+.style-btn {
 }
 
 .text-truncate {

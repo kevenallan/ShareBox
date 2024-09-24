@@ -1,6 +1,7 @@
 /* From Uiverse.io by gharsh11032000 */
 .container {
     display: flex;
+    // flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
@@ -29,16 +30,6 @@
     border-radius: 16px;
 }
 
-.logo {
-    display: flex;
-    font-size: 20px;
-    align-items: center;
-}
-
-.logo p {
-    padding-top: 4%;
-}
-
 .form-container button:active {
     scale: 0.95;
 }
@@ -60,7 +51,7 @@
     margin-bottom: 5px;
     color: white;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 12px;
     margin-top: 3%;
 }
 
@@ -122,9 +113,4 @@
 .form-container .form-submit-btn:hover {
     background-color: #fff;
     border-color: #fff;
-}
-
-p {
-    text-align: center;
-    margin: 0;
 }

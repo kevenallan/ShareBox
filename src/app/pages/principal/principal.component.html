@@ -80,7 +80,8 @@
 
 <div class="container-table">
     <div class="width-card">
-        <p-card>
+        <!-- <p-card> -->
+        <div class="style-card">
             <p-table
                 #tbArquivos
                 [value]="arquivoList"
@@ -206,6 +207,7 @@
                                     [rounded]="true"
                                     [text]="true"
                                     [raised]="true"
+                                    severity="help"
                                 />
 
                                 <p-overlayPanel #op>
@@ -265,7 +267,8 @@
                     </tr>
                 </ng-template>
             </p-table>
-        </p-card>
+        </div>
+        <!-- </p-card> -->
     </div>
 </div>
 
