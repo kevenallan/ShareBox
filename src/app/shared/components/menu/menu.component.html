@@ -1,0 +1,52 @@
+<div class="card">
+    <p-menubar [model]="items">
+        <ng-template pTemplate="start">
+            <div
+                class="div-icon-box"
+                style="display: flex; align-items: center"
+            >
+                <img
+                    src="/assets/favicon.ico"
+                    class="girar"
+                    style="margin-bottom: 10px"
+                />
+                ShareBox
+            </div>
+        </ng-template>
+        <ng-template pTemplate="end">
+            <div
+                class="flex align-items-center gap-2"
+                style="margin-right: 30px"
+            >
+                <p-avatar
+                    (click)="op.toggle($event)"
+                    styleClass="cursor-pointer"
+                    icon="pi pi-user"
+                    shape="circle"
+                >
+                </p-avatar>
+
+                <p-overlayPanel #op id="over" [style]="{ width: '200px' }">
+                    <div class="menu-avatar">
+                        <p-button
+                            icon="pi pi-user-edit"
+                            [rounded]="true"
+                            [text]="true"
+                            [raised]="true"
+                        />
+                        <p class="btn-acoes">Editar Perfil</p>
+                    </div>
+                    <div class="menu-avatar" (click)="sair()">
+                        <p-button
+                            icon="pi pi-sign-out"
+                            [rounded]="true"
+                            [text]="true"
+                            [raised]="true"
+                        />
+                        <p class="">Sair</p>
+                    </div>
+                </p-overlayPanel>
+            </div>
+        </ng-template>
+    </p-menubar>
+</div>

@@ -29,3 +29,10 @@
         pink
     ) !important;
 }
+
+
+//BTN PRIMENG
+:host ::ng-deep .p-button.p-button-text{
+    color:#e81cff;
+    background-color: white;
+}

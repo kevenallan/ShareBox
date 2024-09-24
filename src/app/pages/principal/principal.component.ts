@@ -15,7 +15,6 @@ import { ButtonModule } from 'primeng/button';
 import { MessageService } from 'primeng/api';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { MenuItem } from 'primeng/api';
-import { MenuModule } from 'primeng/menu';
 import { BadgeModule } from 'primeng/badge';
 import { RippleModule } from 'primeng/ripple';
 import { AvatarModule } from 'primeng/avatar';
@@ -23,13 +22,13 @@ import { TableModule } from 'primeng/table';
 import { MessagesModule } from 'primeng/messages';
 import { CardModule } from 'primeng/card';
 import { SpeedDialModule } from 'primeng/speeddial';
-import { MenubarModule } from 'primeng/menubar';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
 import { EditorTextoDialogComponent } from '../../shared/components/editor-texto-dialog/editor-texto-dialog.component';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { MenuComponent } from '../../shared/components/menu/menu.component';
 
 @Component({
     selector: 'app-principal',
@@ -38,11 +37,11 @@ import { InputIconModule } from 'primeng/inputicon';
         CommonModule,
         LocalDateTimeFormatPipe,
         MidiaDialogComponent,
+        MenuComponent,
         //PRIMENG
         ButtonModule,
         SplitButtonModule,
         ToastModule,
-        MenuModule,
         BadgeModule,
         RippleModule,
         AvatarModule,
@@ -50,7 +49,6 @@ import { InputIconModule } from 'primeng/inputicon';
         MessagesModule,
         CardModule,
         SpeedDialModule,
-        MenubarModule,
         InputTextModule,
         OverlayPanelModule,
         TooltipModule,
@@ -283,11 +281,6 @@ export class PrincipalComponent implements OnInit {
             default:
                 return '/assets/arquivo.png';
         }
-    }
-
-    sair() {
-        this.authService.removeAuthorizationToken();
-        this.router.navigate(['/login']);
     }
 
     async deletar(nomeArquivo: string, extensao: string) {

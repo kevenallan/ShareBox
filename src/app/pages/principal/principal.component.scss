@@ -1,3 +1,6 @@
+@import './../../../styles/variaveis.scss';
+
+//BTN UPLOAD/UPDATE
 .add-arquivo {
     position: fixed;
     bottom: 30px;
@@ -5,45 +8,13 @@
     z-index: 1;
 }
 
-:host ::ng-deep .p-menubar {
-    background:
-        linear-gradient(#212121, #212121) padding-box,
-        linear-gradient(
-                135deg,
-                pink 10%,
-                rgb(197, 32, 197) 40%,
-                rgb(145, 226, 253) 85%
-            )
-            border-box;
-    border: 2px solid transparent;
-    color: white;
-}
-
-:host ::ng-deep .p-datatable .p-datatable-thead > tr > th,
-:host ::ng-deep .p-datatable .p-datatable-tbody > tr,
-:host ::ng-deep .p-paginator {
-    background: #212121;
-    color: white;
-}
-
+//DESABILITAR INPUT UPLOAD
 .none {
     display: none;
 }
 
-.btn-acoes {
-    margin-left: 10px;
-}
-
-.container-table {
-    display: flex;
-    justify-content: center;
-    margin-top: 4%;
-}
-
-.width-card {
-    width: 80%;
-}
-
+// TABELA DE ARQUIVOS
+//BORDA DA TABELA
 .style-card {
     background:
         linear-gradient(#212121, #212121) padding-box,
@@ -57,6 +28,13 @@
     border: 4px solid transparent;
 }
 
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th,
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr,
+:host ::ng-deep .p-paginator {
+    background: #212121;
+    color: white;
+}
+
 :host ::ng-deep .p-datatable .p-datatable-header {
     background-color: #212121;
 }
@@ -65,7 +43,20 @@
     color: white;
 }
 
-.style-btn {
+//AÇÕES DENTRO DO BTN DE ACÕES (DOWNLOAD/UPLOAD ..)
+.btn-acoes {
+    margin-left: 10px;
+}
+
+//ALINHAR TABELA
+.container-table {
+    display: flex;
+    justify-content: center;
+    margin-top: 4%;
+}
+
+.width-card {
+    width: 80%;
 }
 
 .text-truncate {
@@ -75,22 +66,12 @@
     max-width: 100px; /* Define um tamanho máximo para a coluna */
 }
 
-.girar {
-    width: 25px;
+:host ::ng-deep .p-inputtext:enabled:focus {
+    border-color: $cor-azul-claro !important;
+    box-shadow: 0 0 0 0.2rem $cor-rosa-claro !important;
 }
 
-.menu-avatar {
-    display: flex;
-    cursor: pointer;
-    padding: 5px;
+//
+.p-inputtext {
+    width: 30%;
 }
-
-.menu-avatar:hover {
-    background-color: rgb(245, 241, 241);
-    border-radius: 10px;
-}
-
-// :host ::ng-deep .p-inputtext:enabled:focus {
-//     border-color: rgb(0, 21, 212) !important;
-//     box-shadow: 0 0 0 0.2rem #c00303 !important;
-// }
