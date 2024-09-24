@@ -30,8 +30,7 @@
 
 <div class="container-table">
     <div class="width-card">
-        <!-- <p-card> -->
-        <div class="style-card">
+        <div class="style-card box-3d">
             <p-table
                 #tbArquivos
                 [value]="arquivoList"
@@ -42,6 +41,8 @@
                 [rows]="5"
                 [rowsPerPageOptions]="[5, 10, 20]"
                 [globalFilterFields]="['nome', 'extensao']"
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} registros"
             >
                 <ng-template pTemplate="caption">
                     <div class="flex">
@@ -174,6 +175,7 @@
                                         [raised]="true"
                                         pTooltip="Download"
                                         tooltipPosition="bottom"
+                                        [style]="{ color: '#e81cff' }"
                                     />
                                     <p-button
                                         (onClick)="clickUpdateFile(arquivo)"
@@ -184,6 +186,7 @@
                                         class="btn-acoes"
                                         pTooltip="Upload"
                                         tooltipPosition="bottom"
+                                        [style]="{ color: '#e81cff' }"
                                     />
                                     <p-button
                                         (onClick)="
@@ -199,6 +202,7 @@
                                         class="btn-acoes"
                                         pTooltip="Deletar"
                                         tooltipPosition="bottom"
+                                        [style]="{ color: '#e81cff' }"
                                     />
                                     <p-button
                                         icon="pi pi-pen-to-square"
@@ -209,6 +213,7 @@
                                         class="btn-acoes"
                                         pTooltip="Editar"
                                         tooltipPosition="bottom"
+                                        [style]="{ color: '#e81cff' }"
                                     />
                                 </p-overlayPanel>
                             </div>
@@ -217,7 +222,6 @@
                 </ng-template>
             </p-table>
         </div>
-        <!-- </p-card> -->
     </div>
 </div>
 
