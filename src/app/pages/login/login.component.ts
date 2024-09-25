@@ -12,6 +12,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { Router } from '@angular/router';
 import { LoginDTO } from '../../core/dto/login.dto';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
     selector: 'app-login',
@@ -33,6 +34,7 @@ export class LoginComponent {
 
     constructor(
         private usuarioService: UsuarioService,
+        private authService: AuthService,
         private alertService: AlertService,
         private router: Router
     ) {}
@@ -54,9 +56,9 @@ export class LoginComponent {
                     if (usuarioLogado) {
                         const token = usuarioLogado.token;
                         if (token) {
-                            sessionStorage.setItem('token', token);
+                            this.authService.setTokenStorage(token);
+                            this.router.navigate(['/inicio']);
                         }
-                        this.router.navigate(['/inicio']);
                     } else {
                         this.alertService.showErrorAlert(
                             'Usuário ou Senha inválido.'

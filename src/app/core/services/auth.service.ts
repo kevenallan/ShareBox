@@ -37,4 +37,8 @@ export class AuthService {
         }
         return null;
     }
+
+    setTokenStorage(token: string) {
+        sessionStorage.setItem('token', token);
+    }
 }

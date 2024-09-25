@@ -1,11 +1,14 @@
 <div class="container">
     <div class="form-container">
-        <i
-            class="pi pi-arrow-left cursor-pointer"
-            pTooltip="Voltar para a tela de login"
-            tooltipPosition="left"
-            (click)="voltar()"
-        ></i>
+        <div class="cadastro">
+            <i
+                class="pi pi-arrow-left cursor-pointer"
+                pTooltip="Voltar para a tela de login"
+                tooltipPosition="left"
+                (click)="voltar()"
+            ></i>
+            <div class="titulo-cadastro">Cadastro</div>
+        </div>
         <form [formGroup]="cadastroForm" (ngSubmit)="onSubmit()" class="form">
             <div class="form-group">
                 <label for="nome">Nome</label>

@@ -18,4 +18,8 @@ export class UsuarioService {
     //     const params = new HttpParams().set('token', token);
     //     return this.http.get(`${urlBackEnd}/usuario/validar-token`, { params });
     // }
+
+    cadastro(usuario: Usuario) {
+        return this.http.post(`${urlBackEnd}/usuario/cadastrar`, usuario);
+    }
 }
