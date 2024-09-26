@@ -71,19 +71,8 @@
     box-shadow: 0 0 0 0.2rem $cor-rosa-claro !important;
 }
 
-//
 .p-inputtext {
     width: 30%;
-}
-
-.box-3d {
-    background-color: #f0f0f0;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow:
-        10px 10px 8px rgba(0, 0, 0, 0.2),
-        -5px -5px 15px rgba(255, 255, 255, 0.8);
-    transition: transform 0.3s;
 }
 
 :host ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
