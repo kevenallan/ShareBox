@@ -1,19 +1,28 @@
-import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+import {
+    HttpErrorResponse,
+    HttpInterceptorFn,
+    HttpResponse
+} from '@angular/common/http';
 import { inject } from '@angular/core';
-import { catchError, throwError } from 'rxjs';
+import { catchError, tap, throwError } from 'rxjs';
 import { AlertService } from '../services/alert.service';
 
 export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
     const alertService = inject(AlertService); // Injeta o service
     return next(req).pipe(
+        tap((event) => {
+            if (event instanceof HttpResponse) {
+                // Resposta de sucesso
+                console.log('Requisição bem-sucedida:', event);
+            }
+        }),
         catchError((response) => {
             // console.error('Status: ' + response.status);
             // console.error('Erro: ', response.error);
-
             if (response.status === 0) {
-                // console.log(
-                //     'Não foi possível conectar-se ao serviço no momento, Tente novamente mais tarde. '
-                // );
+                alertService.showErrorAlert(
+                    'Não foi possível conectar-se ao serviço no momento, Tente novamente mais tarde. '
+                );
                 return throwError(() => response);
             }
 

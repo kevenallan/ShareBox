@@ -55,8 +55,9 @@ export class ArquivoService {
     ) {}
 
     listar() {
-        let headers = new HttpHeaders();
-        headers = headers.set('h1', 'v1').set('h2', 'v2');
+        const headers = new HttpHeaders()
+            .append('Authorization', 'Bearer your-token')
+            .set('Custom-Header', 'custom-value');
         return this.http.get<Arquivo[]>(`${urlBackEnd}/arquivo/listar`, {
             headers
         });

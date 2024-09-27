@@ -17,12 +17,11 @@ export const appConfig: ApplicationConfig = {
         provideRouter(routes),
         provideAnimations(), // <-- Add this to enable animations
         provideHttpClient(
-            withInterceptors([LoadingInterceptor, ErrorInterceptor])
+            withInterceptors([
+                LoadingInterceptor,
+                ErrorInterceptor,
+                AuthRequestTokenInterceptor
+            ])
         ),
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: AuthRequestTokenInterceptor,
-            multi: true
-        }
     ]
 };
