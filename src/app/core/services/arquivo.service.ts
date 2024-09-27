@@ -1,7 +1,7 @@
 import { AuthService } from './auth.service';
 import { Injectable } from '@angular/core';
 import { Arquivo } from '../models/arquivo.model';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { lastValueFrom, Observable } from 'rxjs';
 import { urlBackEnd } from '../../../environments/environment';
 
@@ -55,12 +55,10 @@ export class ArquivoService {
     ) {}
 
     listar() {
-        let params = new HttpParams().set(
-            'usuario',
-            this.authService.getUsuarioFromToken()
-        );
+        let headers = new HttpHeaders();
+        headers = headers.set('h1', 'v1').set('h2', 'v2');
         return this.http.get<Arquivo[]>(`${urlBackEnd}/arquivo/listar`, {
-            params
+            headers
         });
     }
 
