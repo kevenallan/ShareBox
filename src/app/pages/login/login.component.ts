@@ -49,8 +49,9 @@ export class LoginComponent {
             );
             return;
         }
-        this.usuarioService.login(this.usuario).subscribe(
-            (response: LoginDTO) => {
+        this.usuarioService
+            .login(this.usuario)
+            .subscribe((response: LoginDTO) => {
                 if (response) {
                     const usuarioLogado: LoginDTO = response;
                     if (usuarioLogado) {
@@ -65,12 +66,7 @@ export class LoginComponent {
                         );
                     }
                 }
-            },
-            (error) => {
-                this.alertService.showErrorAlert('ERROR LOGIN');
-                console.error(error);
-            }
-        );
+            });
     }
 
     telaCadastro() {

@@ -41,4 +41,28 @@ export class AuthService {
     setTokenStorage(token: string) {
         sessionStorage.setItem('token', token);
     }
+
+    getTokenExpirationDate(token: string) {
+        const decode: any = jwtDecode(token);
+        if (decode.exp === undefined) {
+            return null;
+        }
+
+        const date = new Date(0);
+        date.setUTCSeconds(decode.exp);
+        return date;
+    }
+
+    isTokenExpired(token?: string) {
+        if (!token) {
+            return true;
+        }
+
+        const dateExpToken = this.getTokenExpirationDate(token);
+
+        if (dateExpToken === undefined) {
+            return false;
+        }
+        return !(dateExpToken!.valueOf() > new Date().valueOf());
+    }
 }

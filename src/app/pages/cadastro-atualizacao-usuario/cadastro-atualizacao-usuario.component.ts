@@ -51,7 +51,7 @@ export class CadastroAtualizacaoUsuarioComponent {
                     ]
                 ],
                 usuario: ['', [Validators.required, Validators.minLength(3)]],
-                senha: ['', [Validators.required, Validators.minLength(6)]],
+                senha: ['', [Validators.required, Validators.minLength(3)]],
                 confirmarSenha: ['', Validators.required]
             },
             { validators: this.senhasIguais }
@@ -88,17 +88,13 @@ export class CadastroAtualizacaoUsuarioComponent {
             senha: form.get('senha')?.value
         };
 
-        this.usuarioService.cadastro(usuario).subscribe(
-            (loginDTO: LoginDTO) => {
+        this.usuarioService
+            .cadastro(usuario)
+            .subscribe((loginDTO: LoginDTO) => {
                 if (loginDTO.token) {
                     this.authService.setTokenStorage(loginDTO.token);
                     this.router.navigate(['/inicio']);
                 }
-            },
-            (error) => {
-                this.alertService.showErrorAlert('ERRO NO CADASTRO');
-                console.error(error);
-            }
-        );
+            });
     }
 }

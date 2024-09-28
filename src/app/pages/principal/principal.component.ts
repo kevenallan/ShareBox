@@ -196,17 +196,10 @@ export class PrincipalComponent implements OnInit {
     }
 
     listar() {
-        this.arquivoService.listar().subscribe(
-            (response) => {
-                this.arquivoList = response;
-                this.adicionarImgPreview();
-            },
-            (error) => {
-                this.alertService.showErrorAlert(
-                    'Erro ao tentar listar arquivos'
-                );
-            }
-        );
+        this.arquivoService.listar().subscribe((response) => {
+            this.arquivoList = response;
+            this.adicionarImgPreview();
+        });
     }
 
     adicionarImgPreview() {
