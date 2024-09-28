@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { urlBackEnd } from '../../../environments/environment';
 import { Usuario } from '../models/usuario.model';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -21,5 +22,15 @@ export class UsuarioService {
 
     cadastro(usuario: Usuario) {
         return this.http.post(`${urlBackEnd}/usuario/cadastrar`, usuario);
+    }
+
+    async esqueceuASenha(email: string) {
+        let params = new HttpParams().set('email', email);
+        return await lastValueFrom(
+            this.http.get(`${urlBackEnd}/usuario/esqueceu-sua-senha`, {
+                params,
+                responseType: 'text'
+            })
+        );
     }
 }

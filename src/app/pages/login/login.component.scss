@@ -128,3 +128,26 @@ p {
     text-align: center;
     margin: 0;
 }
+
+@import '../../../styles/variaveis.scss';
+
+.roxo {
+    color: $cor-rosa-claro;
+}
+
+.modal-email {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3%;
+    margin-top: 3%;
+}
+
+.modal-botoes {
+    display: flex;
+    justify-content: end;
+}
+
+.modal-botoes p-button {
+    margin-top: 3%;
+    margin-left: 3%;
+}

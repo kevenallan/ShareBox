@@ -13,6 +13,7 @@ import { PasswordModule } from 'primeng/password';
 import { Router } from '@angular/router';
 import { LoginDTO } from '../../core/dto/login.dto';
 import { AuthService } from '../../core/services/auth.service';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
     selector: 'app-login',
@@ -24,13 +25,16 @@ import { AuthService } from '../../core/services/auth.service';
         ButtonModule,
         CardModule,
         InputTextModule,
-        PasswordModule
+        PasswordModule,
+        DialogModule
     ],
     templateUrl: './login.component.html',
     styleUrl: './login.component.scss'
 })
 export class LoginComponent {
     usuario: Usuario = new Usuario();
+    visible = false;
+    emailRecuperarSenha = '';
 
     constructor(
         private usuarioService: UsuarioService,
@@ -67,6 +71,18 @@ export class LoginComponent {
                     }
                 }
             });
+    }
+
+    abrirDialogEsquecerSenha() {
+        this.visible = true;
+    }
+
+    async esqueceuASenha() {
+        console.log(this.emailRecuperarSenha);
+        if (this.emailRecuperarSenha !== '') {
+            await this.usuarioService.esqueceuASenha(this.emailRecuperarSenha);
+        }
+        this.visible = false;
     }
 
     telaCadastro() {
