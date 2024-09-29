@@ -135,6 +135,13 @@ export class PrincipalComponent implements OnInit {
             formData.append('file', file);
             formData.append('nome', fileName);
             formData.append('extensao', fileExtension);
+            formData.append(
+                'nomeArquivoAntigo',
+                this.arquivoService.concatenarNomeExtensaoArquivo(
+                    this.arquivoUpdate.nome,
+                    this.arquivoUpdate.extensao
+                )
+            );
 
             const desejaSobrescrever =
                 await this.alertService.showConfirmationAlertUploadFile(
@@ -142,21 +149,16 @@ export class PrincipalComponent implements OnInit {
                 );
 
             if (desejaSobrescrever) {
-                this.arquivoService.deletar(
-                    this.arquivoService.concatenarNomeExtensaoArquivo(
-                        this.arquivoUpdate.nome,
-                        this.arquivoUpdate.extensao
-                    )
-                );
-                const arquivoExistente =
-                    await this.verificarExistenciaArquivo(formData);
+                // this.arquivoService.deletar(
+                //     this.arquivoService.concatenarNomeExtensaoArquivo(
+                //         this.arquivoUpdate.nome,
+                //         this.arquivoUpdate.extensao
+                //     )
+                // );
+                // const arquivoExistente =
+                //     await this.verificarExistenciaArquivo(formData);
 
-                if (!arquivoExistente) {
-                    this.uploadFile(formData);
-                }
-                this.alertService.showSuccessAlert(
-                    'Arquivo atualizado com sucesso!'
-                );
+                this.updateFile(formData);
             }
         }
     }
@@ -183,16 +185,15 @@ export class PrincipalComponent implements OnInit {
     }
 
     uploadFile(arquivo: FormData): void {
-        this.arquivoService.upload(arquivo).subscribe(
-            () => {
-                this.listar();
-            },
-            (error) => {
-                this.alertService.showErrorAlert(
-                    'Erro ao tentar fazer o upload'
-                );
-            }
-        );
+        this.arquivoService.upload(arquivo).subscribe(() => {
+            this.listar();
+        });
+    }
+
+    updateFile(arquivo: FormData): void {
+        this.arquivoService.update(arquivo).subscribe(() => {
+            this.listar();
+        });
     }
 
     listar() {

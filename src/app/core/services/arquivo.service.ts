@@ -67,6 +67,10 @@ export class ArquivoService {
         return this.http.post(`${urlBackEnd}/arquivo/upload`, formData);
     }
 
+    update(formData: FormData) {
+        return this.http.put(`${urlBackEnd}/arquivo/update`, formData);
+    }
+
     download(nomeArquivo: string): Observable<Blob> {
         let params = new HttpParams().set('nomeArquivo', nomeArquivo);
         return this.http.get(`${urlBackEnd}/arquivo/download`, {
