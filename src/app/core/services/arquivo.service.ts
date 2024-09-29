@@ -2,8 +2,9 @@ import { AuthService } from './auth.service';
 import { Injectable } from '@angular/core';
 import { Arquivo } from '../models/arquivo.model';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { lastValueFrom, Observable } from 'rxjs';
+import { lastValueFrom, map, Observable } from 'rxjs';
 import { urlBackEnd } from '../../../environments/environment';
+import { ResponseModel } from '../models/response.model';
 
 @Injectable({
     providedIn: 'root'
@@ -55,23 +56,19 @@ export class ArquivoService {
     ) {}
 
     listar() {
-        const headers = new HttpHeaders()
-            .append('Authorization', 'Bearer your-token')
-            .set('Custom-Header', 'custom-value');
-        return this.http.get<Arquivo[]>(`${urlBackEnd}/arquivo/listar`, {
-            headers
-        });
+        return this.http
+            .get<ResponseModel>(`${urlBackEnd}/arquivo/listar`)
+            .pipe(
+                map((response: ResponseModel) => response.model as Arquivo[]) // retorna apenas o model
+            );
     }
 
     upload(formData: FormData) {
-        formData.append('usuario', this.authService.getUsuarioFromToken());
         return this.http.post(`${urlBackEnd}/arquivo/upload`, formData);
     }
 
     download(nomeArquivo: string): Observable<Blob> {
-        let params = new HttpParams()
-            .set('nomeArquivo', nomeArquivo)
-            .set('usuario', this.authService.getUsuarioFromToken());
+        let params = new HttpParams().set('nomeArquivo', nomeArquivo);
         return this.http.get(`${urlBackEnd}/arquivo/download`, {
             params,
             responseType: 'blob'
@@ -79,9 +76,7 @@ export class ArquivoService {
     }
 
     async buscarArquivo(nomeArquivo: string): Promise<Blob> {
-        let params = new HttpParams()
-            .set('nomeArquivo', nomeArquivo)
-            .set('usuario', this.authService.getUsuarioFromToken());
+        let params = new HttpParams().set('nomeArquivo', nomeArquivo);
         return await lastValueFrom(
             this.http.get(`${urlBackEnd}/arquivo/buscar`, {
                 params,
@@ -91,9 +86,7 @@ export class ArquivoService {
     }
 
     async deletar(nomeArquivo: string) {
-        let params = new HttpParams()
-            .set('nomeArquivo', nomeArquivo)
-            .set('usuario', this.authService.getUsuarioFromToken());
+        let params = new HttpParams().set('nomeArquivo', nomeArquivo);
         await lastValueFrom(
             this.http.delete<void>(`${urlBackEnd}/arquivo/deletar`, {
                 params

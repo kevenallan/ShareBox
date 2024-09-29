@@ -99,7 +99,9 @@ export class AlertService {
                         'O nome do arquivo não pode ser vazio'
                     );
                     return false;
-                } else if (arquivosExistentes.includes(inputValue)) {
+                } else if (
+                    arquivosExistentes.includes(inputValue?.split('.')[0])
+                ) {
                     Swal.showValidationMessage(
                         `Um arquivo com o nome "${inputValue}" já existe. Por favor, escolha outro.`
                     );
