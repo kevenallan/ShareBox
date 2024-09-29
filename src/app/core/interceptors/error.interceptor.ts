@@ -48,7 +48,8 @@ export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
             if (response instanceof HttpErrorResponse) {
                 //EXCEPTION DO BACK
                 if (response.status === 500) {
-                    alertService.showErrorAlert(response.error.mensagem);
+                    //REMOVENDO .MENSAGEM 29/09 09:07
+                    alertService.showErrorAlert(response.error);
                 } else if (response.status === 403) {
                     alertService.showErrorAlert(
                         'Sua sessão expirou, faça o login novamente'
