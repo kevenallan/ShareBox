@@ -42,50 +42,42 @@
                 >
                     Esqueceu a senha?
                 </p>
-                <p-dialog
-                    header="Redefinir Senha"
-                    [modal]="true"
-                    [(visible)]="visible"
-                    [style]="{ width: '25rem' }"
-                >
-                    <span
-                        class="p-text-secondary block"
-                        style="margin-bottom: 5%"
-                        >Insira seu email para redefinir sua senha.</span
-                    >
-
-                    <div class="modal-email">
-                        <label for="email" class="font-semibold w-6rem"
-                            >Email</label
-                        >
-                        <input
-                            pInputText
-                            [(ngModel)]="emailRecuperarSenha"
-                            [ngModelOptions]="{ standalone: true }"
-                            id="email"
-                            class="flex-auto"
-                            autocomplete="off"
-                            style="margin-left: 3%"
-                        />
-                    </div>
-                    <div class="modal-botoes">
-                        <p-button
-                            label="Cancelar"
-                            severity="contrast"
-                            (onClick)="visible = false"
-                        />
-                        <p-button
-                            label="Enviar"
-                            severity="help"
-                            (click)="esqueceuASenha()"
-                        />
-                    </div>
-                </p-dialog>
-
-                <p class="cadastro cursor-pointer gap10" (click)="telaCadastro()">
+                <p class="cadastro cursor-pointer" (click)="telaCadastro()">
                     Cadastre-se aqui
                 </p>
             </form>
         </div>
     </div>
 </div>
+
+<p-dialog
+    header="Redefinir Senha"
+    [modal]="true"
+    [(visible)]="visible"
+    [style]="{ width: '25rem' }"
+>
+    <span class="p-text-secondary block" style="margin-bottom: 5%"
+        >Insira seu email para redefinir sua senha.</span
+    >
+
+    <div class="modal-email">
+        <label for="email" class="font-semibold w-6rem">Email</label>
+        <input
+            pInputText
+            [(ngModel)]="emailRecuperarSenha"
+            [ngModelOptions]="{ standalone: true }"
+            id="email"
+            class="flex-auto"
+            autocomplete="off"
+            style="margin-left: 3%"
+        />
+    </div>
+    <div class="modal-botoes">
+        <p-button
+            label="Cancelar"
+            severity="contrast"
+            (onClick)="visible = false"
+        />
+        <p-button label="Enviar" severity="help" (click)="esqueceuASenha()" />
+    </div>
+</p-dialog>

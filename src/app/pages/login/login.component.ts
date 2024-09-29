@@ -75,6 +75,7 @@ export class LoginComponent {
     }
 
     abrirDialogEsquecerSenha() {
+        this.emailRecuperarSenha = '';
         this.visible = true;
     }
 
