@@ -240,39 +240,24 @@ export class PrincipalComponent implements OnInit {
                 }
             );
     }
-    //TODO:VERICIAR ONDE PODEMOS PEGAR ESSAS VARIAVEIS: 'data:image/' 'data:video/' 'data:audio/'
-    preview(arquivo: Arquivo) {
-        switch (arquivo.extensao) {
-            case 'png':
-            case 'jpg':
-            case 'jpeg':
-            case 'gif':
-                return (
-                    'data:image/' +
-                    arquivo.extensao +
-                    ';base64,' +
-                    arquivo.base64
-                );
-            case 'mp4':
-            case 'webm':
-            case 'ogg':
-                return '/assets/video.png';
 
-            case 'mp3':
-            case 'wav':
-                //case 'ogg'   //Ogg também pode ser áudio
-                return '/assets/musica.png';
-            case 'pdf':
-                const blob = this.base64ToBlob(
-                    arquivo.base64 || '',
-                    'application/pdf'
-                );
-                arquivo.url = URL.createObjectURL(blob);
-                return '/assets/pdf.png';
-            case 'txt':
-                return '/assets/txt.png';
-            default:
-                return '/assets/arquivo.png';
+    preview(arquivo: Arquivo) {
+        if (this.arquivoService.isImagemExtensao(arquivo.extensao)) {
+            return (
+                'data:image/' + arquivo.extensao + ';base64,' + arquivo.base64
+            );
+        } else if (this.arquivoService.isVideoExtensao(arquivo.extensao)) {
+            return '/assets/video.png';
+        } else if (this.arquivoService.isAudioExtensao(arquivo.extensao)) {
+            return '/assets/musica.png';
+        } else if (this.arquivoService.isPdfExtensao(arquivo.extensao)) {
+            return '/assets/pdf.png';
+        } else if (this.arquivoService.isTxtExtensao(arquivo.extensao)) {
+            return '/assets/txt.png';
+        } else if (this.arquivoService.isDocxExtensao(arquivo.extensao)) {
+            return '/assets/docx.png';
+        } else {
+            return '/assets/arquivo.png';
         }
     }
 
@@ -328,24 +313,29 @@ export class PrincipalComponent implements OnInit {
         this.openDialogEditorTexto(arquivo);
     }
 
-    isImagemExtensao(extensao: string) {
-        return this.arquivoService.isImagemExtensao(extensao);
+    abrirArquivo(arquivo: Arquivo) {
+        if (
+            this.arquivoService.isImagemExtensao(arquivo.extensao) ||
+            this.arquivoService.isVideoExtensao(arquivo.extensao) ||
+            this.arquivoService.isAudioExtensao(arquivo.extensao)
+        ) {
+            this.abrirMidia(arquivo);
+        } else if (this.arquivoService.isTxtExtensao(arquivo.extensao)) {
+            this.abrirEditorTexto(arquivo);
+        } else if (this.arquivoService.isPdfExtensao(arquivo.extensao)) {
+            const blob = this.base64ToBlob(
+                arquivo.base64 || '',
+                'application/pdf'
+            );
+            const url = URL.createObjectURL(blob);
+            window.open(url, '_blank', 'noopener,noreferrer');
+        }
     }
-    isVideoExtensao(extensao: string) {
-        return this.arquivoService.isVideoExtensao(extensao);
-    }
-    isAudioExtensao(extensao: string) {
-        return this.arquivoService.isAudioExtensao(extensao);
-    }
+
     isArquivoGenerico(extensao: string) {
         return this.arquivoService.isArquivoGenerico(extensao);
     }
-    isPdfExtensao(extensao: string) {
-        return this.arquivoService.isPdfExtensao(extensao);
-    }
-    isTxtExtensao(extensao: string) {
-        return this.arquivoService.isTxtExtensao(extensao);
-    }
+
     filterArquivos(event: Event, tbArquivos: any) {
         const input = event.target as HTMLInputElement;
         tbArquivos.filterGlobal(input.value, 'contains');

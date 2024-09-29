@@ -8,7 +8,6 @@ export class Arquivo {
     dataCriacao?: Date;
     //FRONT
     previewSrc?: string; //USADO PARA EXIBIR A IMAGEM DE PREVIEW NA TABELA
-    url?: string; //USADA PARA ABRIR O PDF EM UMA NOVA ABA
 
     constructor(nome: string, extensao: string) {
         this.nome = nome;

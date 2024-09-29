@@ -16,6 +16,7 @@ export class ArquivoService {
     audioExtensoes = ['mp3', 'wav', 'ogg'];
     pdfExtensao = 'pdf';
     txtExtensao = 'txt';
+    docxExtensao = 'docx';
 
     //PREFIXO BASE64
     imagemBase64Prefixos = [
@@ -113,6 +114,9 @@ export class ArquivoService {
     }
     isTxtExtensao(extensao: string) {
         return this.txtExtensao === extensao;
+    }
+    isDocxExtensao(extensao: string) {
+        return this.docxExtensao === extensao;
     }
     isArquivoGenerico(extensao: string) {
         return (

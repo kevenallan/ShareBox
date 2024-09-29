@@ -82,61 +82,17 @@
                         <td>
                             <ng-container *ngIf="arquivo.previewSrc">
                                 <img
-                                    *ngIf="isImagemExtensao(arquivo.extensao)"
+                                    id="previews"
                                     [src]="arquivo.previewSrc"
-                                    (click)="abrirMidia(arquivo)"
+                                    (click)="abrirArquivo(arquivo)"
                                     width="50"
                                     height="50"
                                     alt="{{ arquivo.nome }}"
-                                    class="cursor-pointer"
-                                />
-                                <img
-                                    *ngIf="isVideoExtensao(arquivo.extensao)"
-                                    [src]="arquivo.previewSrc"
-                                    (click)="abrirMidia(arquivo)"
-                                    width="50"
-                                    height="50"
-                                    alt="{{ arquivo.nome }}"
-                                    class="cursor-pointer"
-                                />
-                                <img
-                                    *ngIf="isAudioExtensao(arquivo.extensao)"
-                                    [src]="arquivo.previewSrc"
-                                    (click)="abrirMidia(arquivo)"
-                                    width="50"
-                                    height="50"
-                                    alt="{{ arquivo.nome }}"
-                                    class="cursor-pointer"
-                                />
-
-                                <a
-                                    *ngIf="isPdfExtensao(arquivo.extensao)"
-                                    [href]="arquivo.url"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    <img
-                                        [src]="arquivo.previewSrc"
-                                        width="50"
-                                        [alt]="arquivo.nome"
-                                        class="shadow-4"
-                                        title="arquivo"
-                                    />
-                                </a>
-                                <img
-                                    *ngIf="isTxtExtensao(arquivo.extensao)"
-                                    [src]="arquivo.previewSrc"
-                                    (click)="abrirEditorTexto(arquivo)"
-                                    width="50"
-                                    alt="{{ arquivo.nome }}"
-                                    class="cursor-pointer"
-                                />
-                                <!-- ESLSE ALTERAR PARA ARQUIVO DE TEXTO TXT/DOCX '-' -->
-                                <img
-                                    *ngIf="isArquivoGenerico(arquivo.extensao)"
-                                    [src]="arquivo.previewSrc"
-                                    width="50"
-                                    alt="{{ arquivo.nome }}"
+                                    [ngClass]="{
+                                        'cursor-pointer': !isArquivoGenerico(
+                                            arquivo.extensao
+                                        )
+                                    }"
                                 />
                             </ng-container>
                         </td>
