@@ -6,19 +6,38 @@ import {
 import { inject } from '@angular/core';
 import { catchError, tap, throwError } from 'rxjs';
 import { AlertService } from '../services/alert.service';
+import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
+import { ResponseModel } from '../models/response.model';
 
 export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
     const alertService = inject(AlertService); // Injeta o service
+    const authService = inject(AuthService);
+    const router = inject(Router);
+
     return next(req).pipe(
         tap((event) => {
             if (event instanceof HttpResponse) {
-                // Resposta de sucesso
-                console.log('Requisição bem-sucedida:', event);
+                let response: ResponseModel;
+                if (typeof event.body === 'string') {
+                    try {
+                        response = JSON.parse(event.body) as ResponseModel;
+                    } catch (error) {
+                        console.error(
+                            'Erro ao fazer parse da resposta JSON',
+                            error
+                        );
+                        return;
+                    }
+                } else {
+                    response = event.body as ResponseModel;
+                }
+                if (response != null && response.mensagem != null) {
+                    alertService.showSuccessAlert(response.mensagem);
+                }
             }
         }),
         catchError((response) => {
-            // console.error('Status: ' + response.status);
-            // console.error('Erro: ', response.error);
             if (response.status === 0) {
                 alertService.showErrorAlert(
                     'Não foi possível conectar-se ao serviço no momento, Tente novamente mais tarde. '
@@ -27,16 +46,19 @@ export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
             }
 
             if (response instanceof HttpErrorResponse) {
+                //EXCEPTION DO BACK
                 if (response.status === 500) {
-                    alertService.showErrorAlert(response.error.message);
+                    alertService.showErrorAlert(response.error.mensagem);
                 } else if (response.status === 403) {
                     alertService.showErrorAlert(
-                        'Erro 403, Sua sessão expirou, faça o login novamente'
+                        'Sua sessão expirou, faça o login novamente'
                     );
-                    //   this.authService.removeAuthorizationToken()
-                    //   this.router.navigate(["/login"])
+                    authService.removeAuthorizationToken();
+                    router.navigate(['/login']);
                 } else {
-                    console.log('Erro no sistema');
+                    alertService.showErrorAlert(
+                        'Erro no sistema, por favor processar Bruna Luiza.'
+                    );
                 }
             }
 

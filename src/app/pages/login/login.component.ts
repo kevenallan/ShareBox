@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 import { LoginDTO } from '../../core/dto/login.dto';
 import { AuthService } from '../../core/services/auth.service';
 import { DialogModule } from 'primeng/dialog';
+import { ResponseModel } from '../../core/models/response.model';
 
 @Component({
     selector: 'app-login',
@@ -55,9 +56,9 @@ export class LoginComponent {
         }
         this.usuarioService
             .login(this.usuario)
-            .subscribe((response: LoginDTO) => {
+            .subscribe((response: ResponseModel) => {
                 if (response) {
-                    const usuarioLogado: LoginDTO = response;
+                    const usuarioLogado: LoginDTO = response.model;
                     if (usuarioLogado) {
                         const token = usuarioLogado.token;
                         if (token) {
@@ -78,7 +79,6 @@ export class LoginComponent {
     }
 
     async esqueceuASenha() {
-        console.log(this.emailRecuperarSenha);
         if (this.emailRecuperarSenha !== '') {
             await this.usuarioService.esqueceuASenha(this.emailRecuperarSenha);
         }
