@@ -57,7 +57,7 @@ export class AlterarSenhaComponent {
         const novaSenha = this.alterarSenhaForm.get('senha')?.value;
         const token =
             this.activedRouter.snapshot.queryParamMap.get('token') || '';
-        console.log(token);
         await this.usuarioService.alterarSenha(novaSenha, token);
+        this.router.navigate(['/login']);
     }
 }

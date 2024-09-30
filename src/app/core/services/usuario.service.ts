@@ -33,12 +33,16 @@ export class UsuarioService {
 
     async alterarSenha(novaSenha: string, token: string) {
         let params = new HttpParams()
-            .set('novaSenha', novaSenha)
-            .set('token', token);
+            .append('novaSenha', novaSenha)
+            .append('token', token);
+        console.log(params);
         return await lastValueFrom(
-            this.http.put(`${urlBackEnd}/usuario/alterar-senha`, {
-                params
-            })
+            //prettier-ignore
+            this.http.put(
+                `${urlBackEnd}/usuario/alterar-senha`,
+                {},
+                { params }
+            )
         );
     }
 }
