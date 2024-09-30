@@ -26,8 +26,18 @@ export class UsuarioService {
         let params = new HttpParams().set('email', email);
         return await lastValueFrom(
             this.http.get(`${urlBackEnd}/usuario/esqueceu-sua-senha`, {
-                params,
-                responseType: 'text'
+                params
+            })
+        );
+    }
+
+    async alterarSenha(novaSenha: string, token: string) {
+        let params = new HttpParams()
+            .set('novaSenha', novaSenha)
+            .set('token', token);
+        return await lastValueFrom(
+            this.http.put(`${urlBackEnd}/usuario/alterar-senha`, {
+                params
             })
         );
     }

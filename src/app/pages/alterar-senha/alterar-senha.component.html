@@ -1,0 +1,61 @@
+<div class="container">
+    <div class="container">
+        <div class="form-container box-3d">
+            <div class="logo">
+                <div class="div-icon-box">
+                    <img src="/assets/favicon.ico" class="girar" />
+                </div>
+                <p>ShareBox</p>
+            </div>
+            <form
+                [formGroup]="alterarSenhaForm"
+                (ngSubmit)="onSubmit()"
+                class="form"
+            >
+                <div class="form-group">
+                    <label for="senha">Senha</label>
+                    <input
+                        type="password"
+                        id="senha"
+                        formControlName="senha"
+                        required
+                    />
+                    <div
+                        *ngIf="
+                            alterarSenhaForm.get('senha')?.touched &&
+                            alterarSenhaForm.get('senha')?.invalid
+                        "
+                        class="error"
+                    >
+                        A senha deve ter pelo menos 3 caracteres.
+                    </div>
+
+                    <label for="confirmarSenha">Confirmar Senha</label>
+                    <input
+                        type="password"
+                        id="confirmarSenha"
+                        formControlName="confirmarSenha"
+                        required
+                    />
+                    <div
+                        *ngIf="
+                            alterarSenhaForm.errors?.['senhasDiferentes'] &&
+                            (alterarSenhaForm.get('confirmarSenha')?.touched ||
+                                alterarSenhaForm.get('senha')?.touched)
+                        "
+                        class="error"
+                    >
+                        As senhas não coincidem.
+                    </div>
+                </div>
+
+                <button
+                    class="form-submit-btn custom-gradient-button"
+                    type="submit"
+                >
+                    Alterar
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
