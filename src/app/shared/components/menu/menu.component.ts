@@ -15,9 +15,15 @@ import { AuthService } from '../../../core/services/auth.service';
 })
 export class MenuComponent {
     items: MenuItem[] = [];
-    constructor(private router: Router, private authService: AuthService) {}
+    constructor(
+        private router: Router,
+        private authService: AuthService
+    ) {}
     sair() {
         this.authService.removeAuthorizationToken();
         this.router.navigate(['/login']);
+    }
+    editarPerfil() {
+        this.router.navigate(['/editar-perfil']);
     }
 }

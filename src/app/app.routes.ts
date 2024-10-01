@@ -16,6 +16,7 @@ export const routes: Routes = [
         path: 'cadastro',
         component: CadastroAtualizacaoUsuarioComponent
     },
+    { path: 'editar-perfil', component: CadastroAtualizacaoUsuarioComponent },
     {
         path: 'inicio',
         component: PrincipalComponent,

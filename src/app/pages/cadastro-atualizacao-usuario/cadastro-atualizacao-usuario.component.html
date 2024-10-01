@@ -1,3 +1,8 @@
+<!-- MENU -->
+<div *ngIf="isEditarPerfil">
+    <app-menu></app-menu>
+</div>
+
 <div class="container">
     <div class="form-container box-3d">
         <div class="cadastro">
@@ -7,16 +12,22 @@
                 tooltipPosition="left"
                 (click)="voltar()"
             ></i>
-            <div class="titulo-cadastro">Cadastro</div>
+            <div class="titulo-cadastro">
+                {{ !isEditarPerfil ? 'Cadastro' : 'Atualizar Perfil' }}
+            </div>
         </div>
-        <form [formGroup]="cadastroForm" (ngSubmit)="onSubmit()" class="form">
+        <form
+            [formGroup]="cadastroAtualizacaoForm"
+            (ngSubmit)="onSubmit()"
+            class="form"
+        >
             <div class="form-group">
                 <label for="nome">Nome</label>
                 <input type="text" id="nome" formControlName="nome" required />
                 <div
                     *ngIf="
-                        cadastroForm.get('nome')?.touched &&
-                        cadastroForm.get('nome')?.invalid
+                        cadastroAtualizacaoForm.get('nome')?.touched &&
+                        cadastroAtualizacaoForm.get('nome')?.invalid
                     "
                     class="error"
                 >
@@ -32,8 +43,8 @@
                 />
                 <div
                     *ngIf="
-                        cadastroForm.get('email')?.touched &&
-                        cadastroForm.get('email')?.invalid
+                        cadastroAtualizacaoForm.get('email')?.touched &&
+                        cadastroAtualizacaoForm.get('email')?.invalid
                     "
                     class="error"
                 >
@@ -47,17 +58,24 @@
                     formControlName="usuario"
                     required
                 />
-                <div *ngIf="cadastroForm.get('usuario')?.touched" class="error">
+                <div
+                    *ngIf="cadastroAtualizacaoForm.get('usuario')?.touched"
+                    class="error"
+                >
                     <div
                         *ngIf="
-                            cadastroForm.get('usuario')?.errors?.['required']
+                            cadastroAtualizacaoForm.get('usuario')?.errors?.[
+                                'required'
+                            ]
                         "
                     >
                         Usuário é obrigatório.
                     </div>
                     <div
                         *ngIf="
-                            cadastroForm.get('usuario')?.errors?.['minlength']
+                            cadastroAtualizacaoForm.get('usuario')?.errors?.[
+                                'minlength'
+                            ]
                         "
                     >
                         O usuário deve ter pelo menos 3 caracteres.
@@ -73,8 +91,8 @@
                 />
                 <div
                     *ngIf="
-                        cadastroForm.get('senha')?.touched &&
-                        cadastroForm.get('senha')?.invalid
+                        cadastroAtualizacaoForm.get('senha')?.touched &&
+                        cadastroAtualizacaoForm.get('senha')?.invalid
                     "
                     class="error"
                 >
@@ -90,9 +108,10 @@
                 />
                 <div
                     *ngIf="
-                        cadastroForm.errors?.['senhasDiferentes'] &&
-                        (cadastroForm.get('confirmarSenha')?.touched ||
-                            cadastroForm.get('senha')?.touched)
+                        cadastroAtualizacaoForm.errors?.['senhasDiferentes'] &&
+                        (cadastroAtualizacaoForm.get('confirmarSenha')
+                            ?.touched ||
+                            cadastroAtualizacaoForm.get('senha')?.touched)
                     "
                     class="error"
                 >
@@ -104,7 +123,7 @@
                 class="form-submit-btn custom-gradient-button"
                 type="submit"
             >
-                Cadastrar
+            {{ !isEditarPerfil ? 'Cadastrar' : 'Atualizar' }}
             </button>
         </form>
     </div>

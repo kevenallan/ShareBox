@@ -27,7 +27,7 @@
                 </p-avatar>
 
                 <p-overlayPanel #op id="over" [style]="{ width: '200px' }">
-                    <div class="menu-avatar">
+                    <div class="menu-avatar" (click)="editarPerfil()">
                         <p-button
                             [style]="{ color: '#e81cff' }"
                             icon="pi pi-user-edit"

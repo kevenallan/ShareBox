@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
     FormBuilder,
     FormGroup,
     ReactiveFormsModule,
     Validators
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { UsuarioService } from '../../core/services/usuario.service';
@@ -14,6 +14,7 @@ import { Usuario } from '../../core/models/usuario.model';
 import { AuthService } from '../../core/services/auth.service';
 import { LoginDTO } from '../../core/dto/login.dto';
 import { AlertService } from '../../core/services/alert.service';
+import { MenuComponent } from '../../shared/components/menu/menu.component';
 
 @Component({
     selector: 'app-cadastro-atualizacao-usuario',
@@ -23,21 +24,24 @@ import { AlertService } from '../../core/services/alert.service';
         ReactiveFormsModule,
         //PRIMENG
         ButtonModule,
-        TooltipModule
+        TooltipModule,
+        MenuComponent
     ],
     templateUrl: './cadastro-atualizacao-usuario.component.html',
     styleUrl: './cadastro-atualizacao-usuario.component.scss'
 })
-export class CadastroAtualizacaoUsuarioComponent {
-    cadastroForm: FormGroup;
+export class CadastroAtualizacaoUsuarioComponent implements OnInit {
+    cadastroAtualizacaoForm!: FormGroup;
+    isEditarPerfil: boolean = false;
     constructor(
         private router: Router,
         private formBuilder: FormBuilder,
         private usuarioService: UsuarioService,
-        private authService: AuthService,
-        private alertService: AlertService
-    ) {
-        this.cadastroForm = this.formBuilder.group(
+        private authService: AuthService
+    ) {}
+
+    async ngOnInit(): Promise<void> {
+        this.cadastroAtualizacaoForm = this.formBuilder.group(
             {
                 nome: ['', Validators.required],
                 email: [
@@ -56,6 +60,18 @@ export class CadastroAtualizacaoUsuarioComponent {
             },
             { validators: this.senhasIguais }
         );
+
+        if (this.router.url === '/editar-perfil') {
+            this.isEditarPerfil = true;
+            const usuarioLogado = await this.usuarioService.dadosUsuario();
+            this.cadastroAtualizacaoForm.setValue({
+                nome: usuarioLogado.nome,
+                email: usuarioLogado.email,
+                usuario: usuarioLogado.usuario,
+                senha: usuarioLogado.senha,
+                confirmarSenha: usuarioLogado.senha
+            });
+        }
     }
 
     senhasIguais(formGroup: FormGroup) {
@@ -66,11 +82,15 @@ export class CadastroAtualizacaoUsuarioComponent {
     }
 
     onSubmit() {
-        if (this.cadastroForm.valid) {
-            this.cadastrar();
+        if (this.cadastroAtualizacaoForm.valid) {
+            if (this.isEditarPerfil) {
+                this.atualizarUsuario();
+            } else {
+                this.cadastrar();
+            }
         } else {
             // Marcar todos os campos como "tocados" para mostrar mensagens de erro
-            this.cadastroForm.markAllAsTouched();
+            this.cadastroAtualizacaoForm.markAllAsTouched();
         }
     }
 
@@ -79,14 +99,7 @@ export class CadastroAtualizacaoUsuarioComponent {
     }
 
     cadastrar() {
-        const form = this.cadastroForm;
-
-        const usuario: Usuario = {
-            nome: form.get('nome')?.value,
-            email: form.get('email')?.value,
-            usuario: form.get('usuario')?.value,
-            senha: form.get('senha')?.value
-        };
+        const usuario: Usuario = this.getUsuario();
 
         this.usuarioService
             .cadastro(usuario)
@@ -96,5 +109,22 @@ export class CadastroAtualizacaoUsuarioComponent {
                     this.router.navigate(['/inicio']);
                 }
             });
+    }
+
+    async atualizarUsuario() {
+        const usuario: Usuario = this.getUsuario();
+
+        await this.usuarioService.atualizarUsuario(usuario);
+    }
+    getUsuario() {
+        const form = this.cadastroAtualizacaoForm;
+
+        const usuario: Usuario = {
+            nome: form.get('nome')?.value,
+            email: form.get('email')?.value,
+            usuario: form.get('usuario')?.value,
+            senha: form.get('senha')?.value
+        };
+        return usuario;
     }
 }

@@ -35,7 +35,6 @@ export class UsuarioService {
         let params = new HttpParams()
             .append('novaSenha', novaSenha)
             .append('token', token);
-        console.log(params);
         return await lastValueFrom(
             //prettier-ignore
             this.http.put(
@@ -43,6 +42,25 @@ export class UsuarioService {
                 {},
                 { params }
             )
+        );
+    }
+
+    async dadosUsuario() {
+        return await lastValueFrom(
+            this.http
+                .get(`${urlBackEnd}/usuario/dados-usuario`)
+                .pipe(map((response: ResponseModel) => response.model))
+        );
+    }
+
+    async atualizarUsuario(usuarioAtualizado: Usuario) {
+        return await lastValueFrom(
+            this.http
+                .put(
+                    `${urlBackEnd}/usuario/atualizar-usuario`,
+                    usuarioAtualizado
+                )
+                .pipe(map((response: ResponseModel) => response.model))
         );
     }
 }
