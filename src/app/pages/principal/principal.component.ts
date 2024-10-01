@@ -1,11 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { Router } from '@angular/router';
 
 import { ArquivoService } from '../../core/services/arquivo.service';
 import { Arquivo } from '../../core/models/arquivo.model';
 import { AlertService } from '../../core/services/alert.service';
-import { AuthService } from '../../core/services/auth.service';
 import { LocalDateTimeFormatPipe } from '../../shared/pipe/local-date-time-format.pipe';
 import { MidiaDialogComponent } from '../../shared/components/midia-dialog/midia-dialog.component';
 
@@ -29,6 +27,7 @@ import { EditorTextoDialogComponent } from '../../shared/components/editor-texto
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { MenuComponent } from '../../shared/components/menu/menu.component';
+import { TotalizadorModel } from '../../core/models/totalizador.model';
 
 @Component({
     selector: 'app-principal',
@@ -64,6 +63,28 @@ import { MenuComponent } from '../../shared/components/menu/menu.component';
 export class PrincipalComponent implements OnInit {
     arquivoList: Arquivo[] = [];
     items: MenuItem[] | undefined;
+    totalizadoresArquivos: TotalizadorModel[] = [
+        {
+            titulo: 'IMAGENS',
+            qtd: 0,
+            tamanho: '0'
+        },
+        {
+            titulo: 'ÁUDIOS',
+            qtd: 0,
+            tamanho: '0'
+        },
+        {
+            titulo: 'VÍDEOS',
+            qtd: 0,
+            tamanho: '0'
+        },
+        {
+            titulo: 'OUTROS',
+            qtd: 0,
+            tamanho: '0'
+        }
+    ];
     arquivoUpdate!: Arquivo;
 
     @ViewChild('midiaDialog') midiaDialog!: MidiaDialogComponent;
@@ -71,9 +92,7 @@ export class PrincipalComponent implements OnInit {
     editorTextoDialog!: EditorTextoDialogComponent;
     constructor(
         private arquivoService: ArquivoService,
-        private alertService: AlertService,
-        private router: Router,
-        private authService: AuthService
+        private alertService: AlertService
     ) {}
 
     ngOnInit() {
@@ -200,6 +219,7 @@ export class PrincipalComponent implements OnInit {
         this.arquivoService.listar().subscribe((response) => {
             this.arquivoList = response;
             this.adicionarImgPreview();
+            this.calcularTotais();
         });
     }
 
@@ -339,5 +359,109 @@ export class PrincipalComponent implements OnInit {
     filterArquivos(event: Event, tbArquivos: any) {
         const input = event.target as HTMLInputElement;
         tbArquivos.filterGlobal(input.value, 'contains');
+    }
+
+    calcularTotais() {
+        let qtdImagens = 0;
+        let tamanhoTotalImagens = 0;
+        let qtdAudio = 0;
+        let tamanhoTotalAudio = 0;
+        let qtdVideo = 0;
+        let tamanhoTotalVideo = 0;
+        let qtdOutros = 0;
+        let tamanhoTotalOutros = 0;
+
+        this.arquivoList.forEach((arquivo) => {
+            if (this.arquivoService.isImagemExtensao(arquivo.extensao)) {
+                qtdImagens++;
+                tamanhoTotalImagens += this.converterParaKB(
+                    arquivo.tamanho || ''
+                );
+                console.log(tamanhoTotalImagens);
+            } else if (this.arquivoService.isAudioExtensao(arquivo.extensao)) {
+                qtdAudio++;
+                tamanhoTotalAudio += this.converterParaKB(
+                    arquivo.tamanho || ''
+                );
+            } else if (this.arquivoService.isVideoExtensao(arquivo.extensao)) {
+                qtdVideo++;
+                tamanhoTotalVideo += this.converterParaKB(
+                    arquivo.tamanho || ''
+                );
+            } else {
+                qtdOutros++;
+                tamanhoTotalOutros += this.converterParaKB(
+                    arquivo.tamanho || ''
+                );
+            }
+        });
+
+        // Atualize ou adicione os totalizadores
+        this.atualizarTotalizador(
+            'IMAGENS',
+            qtdImagens,
+            this.formatarTamanho(tamanhoTotalImagens * 1024)
+        );
+        this.atualizarTotalizador(
+            'ÁUDIOS',
+            qtdAudio,
+            this.formatarTamanho(tamanhoTotalAudio * 1024)
+        );
+        this.atualizarTotalizador(
+            'VÍDEOS',
+            qtdVideo,
+            this.formatarTamanho(tamanhoTotalVideo * 1024)
+        );
+        this.atualizarTotalizador(
+            'OUTROS',
+            qtdOutros,
+            this.formatarTamanho(tamanhoTotalOutros * 1024)
+        );
+    }
+
+    converterParaKB(tamanho: string): number {
+        let [valor, unidade] = tamanho.split(' ');
+        valor = valor.replace(',', '.');
+        switch (unidade) {
+            case 'B':
+                return Number(valor) / 1024;
+            case 'KB':
+                return Number(valor);
+            case 'MB':
+                return Number(valor) * 1024;
+            case 'GB':
+                return Number(valor) * 1024 * 1024;
+            default:
+                return 0;
+        }
+    }
+    formatarTamanho(tamanhoEmBytes: number): string {
+        if (tamanhoEmBytes < 1024) {
+            return tamanhoEmBytes + ' B';
+        } else if (tamanhoEmBytes < 1024 * 1024) {
+            return (tamanhoEmBytes / 1024).toFixed(1) + ' KB';
+        } else if (tamanhoEmBytes < 1024 * 1024 * 1024) {
+            return (tamanhoEmBytes / (1024 * 1024)).toFixed(1) + ' MB';
+        } else {
+            return (tamanhoEmBytes / (1024 * 1024 * 1024)).toFixed(1) + ' GB';
+        }
+    }
+
+    atualizarTotalizador(titulo: string, qtd: number, tamanho: string) {
+        const index = this.totalizadoresArquivos.findIndex(
+            (totalizador) => totalizador.titulo === titulo
+        );
+        if (index !== -1) {
+            // Atualizar o existente
+            this.totalizadoresArquivos[index].qtd = qtd;
+            this.totalizadoresArquivos[index].tamanho = tamanho;
+        } else {
+            // Adicionar novo
+            this.totalizadoresArquivos.push({
+                titulo,
+                qtd,
+                tamanho
+            });
+        }
     }
 }

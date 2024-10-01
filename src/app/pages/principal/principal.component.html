@@ -1,3 +1,6 @@
+<!-- MENU -->
+<app-menu></app-menu>
+
 <!-- BTN'S UPLOAD/UPDATE ARQUIVO -->
 <div class="add-arquivo">
     <input
@@ -25,9 +28,19 @@
     />
 </div>
 
-<!-- MENU -->
-<app-menu></app-menu>
+<!-- TOTALIZADORES? -->
+<div class="totalizadores">
+    <div
+        class="card-totalizador box-3d"
+        *ngFor="let totalizador of totalizadoresArquivos"
+    >
+        <p class="titulo-totalizador">{{ totalizador.titulo }}</p>
+        <p>Qtd. de arquivos: {{ totalizador.qtd }}</p>
+        <p>Tamanho: {{ totalizador.tamanho }}</p>
+    </div>
+</div>
 
+<!-- TABELA -->
 <div class="container-table">
     <div class="width-card">
         <div class="style-card box-3d">
@@ -45,8 +58,8 @@
                 currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} registros"
             >
                 <ng-template pTemplate="caption">
-                    <div class="flex">
-                        <p-iconField iconPosition="left" class="ml-auto">
+                    <div class="flex inpFiltrarArquivos">
+                        <p-iconField iconPosition="left" class="ml-auto inpFiltrarArquivos">
                             <p-inputIcon>
                                 <i class="pi pi-search"></i>
                             </p-inputIcon>

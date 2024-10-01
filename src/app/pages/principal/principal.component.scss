@@ -13,9 +13,14 @@
     display: none;
 }
 
-// TABELA DE ARQUIVOS
-//BORDA DA TABELA
-.style-card {
+//TOTALIZADORES
+.totalizadores {
+    display: flex;
+    justify-content: center;
+    // width: 100%;
+    flex-wrap: wrap;
+}
+.card-totalizador {
     background:
         linear-gradient(#212121, #212121) padding-box,
         linear-gradient(
@@ -26,6 +31,37 @@
             )
             border-box;
     border: 4px solid transparent;
+    color: white;
+    // padding-left: 15px;
+    // padding-right: 15px;
+    padding: 5px 15px 5px;
+    font-size: smaller;
+    margin: 0px 5px;
+}
+
+.titulo-totalizador {
+    font-weight: bold;
+}
+
+.card-totalizador p {
+    margin: 5px;
+}
+
+// TABELA DE ARQUIVOS
+//BORDA DA TABELA
+.style-card,
+.card-totalizador {
+    background:
+        linear-gradient(#212121, #212121) padding-box,
+        linear-gradient(
+                135deg,
+                pink 10%,
+                rgb(197, 32, 197) 40%,
+                rgb(145, 226, 253) 85%
+            )
+            border-box;
+    border: 4px solid transparent;
+    margin-top: 20px;
 }
 
 :host ::ng-deep .p-datatable .p-datatable-thead > tr > th,
@@ -52,11 +88,10 @@
 .container-table {
     display: flex;
     justify-content: center;
-    margin-top: 4%;
 }
 
 .width-card {
-    width: 80%;
+    width: 90%;
 }
 
 .text-truncate {
@@ -72,7 +107,7 @@
 }
 
 .p-inputtext {
-    width: 30%;
+    width: 278px;
 }
 
 :host ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
