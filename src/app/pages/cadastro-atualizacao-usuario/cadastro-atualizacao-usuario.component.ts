@@ -33,6 +33,7 @@ import { MenuComponent } from '../../shared/components/menu/menu.component';
 export class CadastroAtualizacaoUsuarioComponent implements OnInit {
     cadastroAtualizacaoForm!: FormGroup;
     isEditarPerfil: boolean = false;
+    msgVoltar = 'Voltar para a tela de login';
     constructor(
         private router: Router,
         private formBuilder: FormBuilder,
@@ -63,6 +64,7 @@ export class CadastroAtualizacaoUsuarioComponent implements OnInit {
 
         if (this.router.url === '/editar-perfil') {
             this.isEditarPerfil = true;
+            this.msgVoltar = 'Voltar para a tela inicial';
             const usuarioLogado = await this.usuarioService.dadosUsuario();
             this.cadastroAtualizacaoForm.setValue({
                 nome: usuarioLogado.nome,

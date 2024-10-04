@@ -59,7 +59,10 @@
             >
                 <ng-template pTemplate="caption">
                     <div class="flex inpFiltrarArquivos">
-                        <p-iconField iconPosition="left" class="ml-auto inpFiltrarArquivos">
+                        <p-iconField
+                            iconPosition="left"
+                            class="ml-auto inpFiltrarArquivos"
+                        >
                             <p-inputIcon>
                                 <i class="pi pi-search"></i>
                             </p-inputIcon>
@@ -154,7 +157,7 @@
                                         [text]="true"
                                         [raised]="true"
                                         class="btn-acoes"
-                                        pTooltip="Upload"
+                                        pTooltip="Update"
                                         tooltipPosition="bottom"
                                         [style]="{ color: '#e81cff' }"
                                     />
@@ -171,17 +174,6 @@
                                         [raised]="true"
                                         class="btn-acoes"
                                         pTooltip="Deletar"
-                                        tooltipPosition="bottom"
-                                        [style]="{ color: '#e81cff' }"
-                                    />
-                                    <p-button
-                                        icon="pi pi-pen-to-square"
-                                        [rounded]="true"
-                                        [text]="true"
-                                        [raised]="true"
-                                        [disabled]="true"
-                                        class="btn-acoes"
-                                        pTooltip="Editar"
                                         tooltipPosition="bottom"
                                         [style]="{ color: '#e81cff' }"
                                     />

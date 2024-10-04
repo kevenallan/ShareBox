@@ -62,7 +62,6 @@ import { TotalizadorModel } from '../../core/models/totalizador.model';
 })
 export class PrincipalComponent implements OnInit {
     arquivoList: Arquivo[] = [];
-    items: MenuItem[] | undefined;
     totalizadoresArquivos: TotalizadorModel[] = [
         {
             titulo: 'IMAGENS',
@@ -96,16 +95,6 @@ export class PrincipalComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.items = [
-            // {
-            //     label: 'Home',
-            //     icon: 'pi pi-home'
-            // },
-            // {
-            //     label: 'Features',
-            //     icon: 'pi pi-star'
-            // }
-        ];
         this.listar();
     }
 
@@ -168,15 +157,6 @@ export class PrincipalComponent implements OnInit {
                 );
 
             if (desejaSobrescrever) {
-                // this.arquivoService.deletar(
-                //     this.arquivoService.concatenarNomeExtensaoArquivo(
-                //         this.arquivoUpdate.nome,
-                //         this.arquivoUpdate.extensao
-                //     )
-                // );
-                // const arquivoExistente =
-                //     await this.verificarExistenciaArquivo(formData);
-
                 this.updateFile(formData);
             }
         }
@@ -237,28 +217,20 @@ export class PrincipalComponent implements OnInit {
                     extensao
                 )
             )
-            .subscribe(
-                (response: Blob) => {
-                    const blob = new Blob([response], { type: response.type });
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download =
-                        this.arquivoService.concatenarNomeExtensaoArquivo(
-                            nomeArquivo,
-                            extensao
-                        ); // Nome do arquivo a ser baixado
-                    document.body.appendChild(a);
-                    a.click(); // Inicia o download
-                    document.body.removeChild(a); // Remove o link após o clique
-                    window.URL.revokeObjectURL(url); // Limpa a URL temporária
-                },
-                (error) => {
-                    this.alertService.showErrorAlert(
-                        'Erro ao tentar fazer o download'
-                    );
-                }
-            );
+            .subscribe((response: Blob) => {
+                const blob = new Blob([response], { type: response.type });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = this.arquivoService.concatenarNomeExtensaoArquivo(
+                    nomeArquivo,
+                    extensao
+                ); // Nome do arquivo a ser baixado
+                document.body.appendChild(a);
+                a.click(); // Inicia o download
+                document.body.removeChild(a); // Remove o link após o clique
+                window.URL.revokeObjectURL(url); // Limpa a URL temporária
+            });
     }
 
     preview(arquivo: Arquivo) {
@@ -377,7 +349,6 @@ export class PrincipalComponent implements OnInit {
                 tamanhoTotalImagens += this.converterParaKB(
                     arquivo.tamanho || ''
                 );
-                console.log(tamanhoTotalImagens);
             } else if (this.arquivoService.isAudioExtensao(arquivo.extensao)) {
                 qtdAudio++;
                 tamanhoTotalAudio += this.converterParaKB(

@@ -18,7 +18,18 @@ export class MenuComponent {
     constructor(
         private router: Router,
         private authService: AuthService
-    ) {}
+    ) {
+        this.items = [
+            // {
+            //     label: 'Home',
+            //     icon: 'pi pi-home'
+            // },
+            // {
+            //     label: 'Features',
+            //     icon: 'pi pi-star'
+            // }
+        ];
+    }
     sair() {
         this.authService.removeAuthorizationToken();
         this.router.navigate(['/login']);
