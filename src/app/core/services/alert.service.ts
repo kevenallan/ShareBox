@@ -6,14 +6,17 @@ import { ArquivoService } from './arquivo.service';
     providedIn: 'root'
 })
 export class AlertService {
-    constructor(private arquivoService: ArquivoService) {}
+    constructor() {}
 
     showSuccessAlert(titulo: string) {
         Swal.fire({
             title: titulo,
             // text: 'Successful.',
             icon: 'success',
-            confirmButtonText: 'OK'
+            confirmButtonText: 'OK',
+            customClass: {
+                confirmButton: 'swal2-custom-confirm'
+            }
         });
     }
 
@@ -34,7 +37,10 @@ export class AlertService {
             title: 'Atenção!',
             text: texto,
             icon: 'warning',
-            confirmButtonText: 'OK'
+            confirmButtonText: 'OK',
+            customClass: {
+                confirmButton: 'swal2-custom-confirm'
+            }
         });
     }
 
@@ -43,7 +49,10 @@ export class AlertService {
             title: 'Erro',
             text: texto,
             icon: 'error',
-            confirmButtonText: 'OK'
+            confirmButtonText: 'OK',
+            customClass: {
+                confirmButton: 'swal2-custom-confirm'
+            }
         });
     }
 
@@ -53,8 +62,8 @@ export class AlertService {
             text: texto,
             icon: 'question',
             showCancelButton: true,
-            confirmButtonText: 'Yes',
-            cancelButtonText: 'No',
+            confirmButtonText: 'Sim',
+            cancelButtonText: 'Não',
             customClass: {
                 confirmButton: 'swal2-custom-confirm',
                 cancelButton: 'swal2-custom-cancel'
@@ -93,6 +102,9 @@ export class AlertService {
             showCancelButton: true,
             cancelButtonText: 'Cancelar',
             confirmButtonText: 'Confirmar',
+            customClass: {
+                confirmButton: 'swal2-custom-confirm'
+            },
             preConfirm: (inputValue) => {
                 if (!inputValue) {
                     Swal.showValidationMessage(

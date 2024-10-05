@@ -16,6 +16,10 @@ body {
     border: none; /* Remover borda */
 }
 
+.swal2-custom-confirm:focus-visible {
+    box-shadow: none;
+}
+
 .swal2-custom-cancel {
     background-color: #fc2c2c; /* Cor de fundo */
     color: #fff; /* Cor do texto */
