@@ -12,7 +12,6 @@ import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
 import { MessageService } from 'primeng/api';
 import { SplitButtonModule } from 'primeng/splitbutton';
-import { MenuItem } from 'primeng/api';
 import { BadgeModule } from 'primeng/badge';
 import { RippleModule } from 'primeng/ripple';
 import { AvatarModule } from 'primeng/avatar';
@@ -91,7 +90,8 @@ export class PrincipalComponent implements OnInit {
     editorTextoDialog!: EditorTextoDialogComponent;
     constructor(
         private arquivoService: ArquivoService,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private toastService: MessageService
     ) {}
 
     ngOnInit() {
@@ -186,6 +186,7 @@ export class PrincipalComponent implements OnInit {
     uploadFile(arquivo: FormData): void {
         this.arquivoService.upload(arquivo).subscribe(() => {
             this.listar();
+            this.showToastSuccess();
         });
     }
 
@@ -434,5 +435,13 @@ export class PrincipalComponent implements OnInit {
                 tamanho
             });
         }
+    }
+
+    showToastSuccess() {
+        this.toastService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Arquivo adicionando'
+        });
     }
 }
