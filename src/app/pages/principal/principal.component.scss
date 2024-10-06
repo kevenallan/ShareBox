@@ -94,13 +94,6 @@
     width: 90%;
 }
 
-.text-truncate {
-    white-space: nowrap; /* Evita que o texto quebre em várias linhas */
-    overflow: hidden; /* Oculta o texto que excede o tamanho da caixa */
-    text-overflow: ellipsis; /* Adiciona "..." ao final do texto cortado */
-    max-width: 100px; /* Define um tamanho máximo para a coluna */
-}
-
 :host ::ng-deep .p-inputtext:enabled:focus {
     border-color: $cor-azul-claro !important;
     box-shadow: 0 0 0 0.2rem $cor-rosa-claro !important;
@@ -119,8 +112,4 @@
 :host ::ng-deep .p-paginator .p-paginator-current,
 :host ::ng-deep .p-paginator button {
     color: $cor-roxa;
-}
-
-.teste {
-    object-fit: cover;
 }

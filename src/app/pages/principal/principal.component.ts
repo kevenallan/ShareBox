@@ -441,7 +441,7 @@ export class PrincipalComponent implements OnInit {
         this.toastService.add({
             severity: 'success',
             summary: 'Sucesso',
-            detail: 'Arquivo adicionando'
+            detail: 'Arquivo adicionado'
         });
     }
 }

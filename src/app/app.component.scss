@@ -35,3 +35,27 @@
     color: #e81cff;
     background-color: white;
 }
+
+:host ::ng-deep .p-dialog {
+    max-width: 90%;
+}
+
+:host ::ng-deep .p-dialog-title {
+    white-space: nowrap; /* Evita que o texto quebre em várias linhas */
+    overflow: hidden; /* Oculta o texto que excede o tamanho da caixa */
+    text-overflow: ellipsis; /* Adiciona "..." ao final do texto cortado */
+
+    // Para telas de até 768px (dispositivos móveis)
+    @media (max-width: 768px) {
+        max-width: 140px;
+    }
+
+    // Para telas maiores que 768px (dispositivos de desktop)
+    @media (min-width: 769px) {
+        max-width: 500px;
+    }
+}
+
+.redimensionar-imagem {
+    object-fit: cover;
+}

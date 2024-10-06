@@ -51,3 +51,10 @@ body {
         -5px -5px 15px rgba(255, 255, 255, 0.8);
     transition: transform 0.3s;
 }
+
+.text-truncate {
+    white-space: nowrap; /* Evita que o texto quebre em várias linhas */
+    overflow: hidden; /* Oculta o texto que excede o tamanho da caixa */
+    text-overflow: ellipsis; /* Adiciona "..." ao final do texto cortado */
+    max-width: 100px; /* Define um tamanho máximo para a coluna */
+}

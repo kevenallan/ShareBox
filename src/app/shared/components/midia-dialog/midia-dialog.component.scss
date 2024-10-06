@@ -1,0 +1,21 @@
+.redimensionar-imagem {
+    @media (max-width: 768px) {
+        max-width: 268px;
+        max-height: 800px;
+    }
+
+    // Para telas maiores que 768px (dispositivos de desktop)
+    @media (min-width: 769px) {
+        max-width: 1280px;
+        max-height: 700px;
+    }
+}
+
+.audio-center {
+    display: flex;
+    justify-content: center;
+}
+
+audio {
+    width: 95%;
+}
