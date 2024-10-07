@@ -34,6 +34,9 @@ export class MenuComponent {
         this.authService.removeAuthorizationToken();
         this.router.navigate(['/login']);
     }
+    telaPrincipal() {
+        this.router.navigate(['/inicio']);
+    }
     editarPerfil() {
         this.router.navigate(['/editar-perfil']);
     }
