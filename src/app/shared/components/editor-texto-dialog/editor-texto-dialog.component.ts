@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { DialogModule } from 'primeng/dialog';
@@ -16,6 +16,7 @@ import { Arquivo } from '../../../core/models/arquivo.model';
 })
 export class EditorTextoDialogComponent {
     @Input() header?: string;
+    @Output() eventUpdate = new EventEmitter();
     displayEditor: boolean = false;
     texto?: string;
     mimeType?: string;
@@ -59,9 +60,10 @@ export class EditorTextoDialogComponent {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('nome', nomeArquivo);
-        formData.append('extensao', this.arquivo?.extensao || '');
-        this.arquivoService.upload(formData).subscribe(() => {
-            console.log('FIM=====');
+        formData.append('nomeArquivoAntigo', nomeArquivo);
+        this.arquivoService.update(formData).subscribe(() => {
+            this.eventUpdate.emit();
+            this.hideDialogEditor();
         });
     }
 }
