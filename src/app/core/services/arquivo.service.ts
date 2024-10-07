@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Arquivo } from '../models/arquivo.model';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { lastValueFrom, map, Observable } from 'rxjs';
-import { urlBackEnd } from '../../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { ResponseModel } from '../models/response.model';
 
 @Injectable({
@@ -57,24 +57,31 @@ export class ArquivoService {
     ) {}
 
     listar() {
+        console.log('environment', environment.urlBackEnd);
         return this.http
-            .get<ResponseModel>(`${urlBackEnd}/arquivo/listar`)
+            .get<ResponseModel>(`${environment.urlBackEnd}/arquivo/listar`)
             .pipe(
                 map((response: ResponseModel) => response.model as Arquivo[]) // retorna apenas o model
             );
     }
 
     upload(formData: FormData) {
-        return this.http.post(`${urlBackEnd}/arquivo/upload`, formData);
+        return this.http.post(
+            `${environment.urlBackEnd}/arquivo/upload`,
+            formData
+        );
     }
 
     update(formData: FormData) {
-        return this.http.put(`${urlBackEnd}/arquivo/update`, formData);
+        return this.http.put(
+            `${environment.urlBackEnd}/arquivo/update`,
+            formData
+        );
     }
 
     download(nomeArquivo: string): Observable<Blob> {
         let params = new HttpParams().set('nomeArquivo', nomeArquivo);
-        return this.http.get(`${urlBackEnd}/arquivo/download`, {
+        return this.http.get(`${environment.urlBackEnd}/arquivo/download`, {
             params,
             responseType: 'blob'
         });
@@ -83,7 +90,7 @@ export class ArquivoService {
     async buscarArquivo(nomeArquivo: string): Promise<Blob> {
         let params = new HttpParams().set('nomeArquivo', nomeArquivo);
         return await lastValueFrom(
-            this.http.get(`${urlBackEnd}/arquivo/buscar`, {
+            this.http.get(`${environment.urlBackEnd}/arquivo/buscar`, {
                 params,
                 responseType: 'blob'
             })
@@ -93,9 +100,12 @@ export class ArquivoService {
     async deletar(nomeArquivo: string) {
         let params = new HttpParams().set('nomeArquivo', nomeArquivo);
         await lastValueFrom(
-            this.http.delete<void>(`${urlBackEnd}/arquivo/deletar`, {
-                params
-            })
+            this.http.delete<void>(
+                `${environment.urlBackEnd}/arquivo/deletar`,
+                {
+                    params
+                }
+            )
         );
     }
 

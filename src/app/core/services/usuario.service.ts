@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { urlBackEnd } from '../../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { Usuario } from '../models/usuario.model';
 import { lastValueFrom, map } from 'rxjs';
 import { ResponseModel } from '../models/response.model';
@@ -13,21 +13,24 @@ export class UsuarioService {
 
     login(usuario: Usuario) {
         return this.http
-            .post(`${urlBackEnd}/usuario/login`, usuario)
+            .post(`${environment.urlBackEnd}/usuario/login`, usuario)
             .pipe(map((response: ResponseModel) => response.model));
     }
     cadastro(usuario: Usuario) {
         return this.http
-            .post(`${urlBackEnd}/usuario/cadastrar`, usuario)
+            .post(`${environment.urlBackEnd}/usuario/cadastrar`, usuario)
             .pipe(map((response: ResponseModel) => response.model));
     }
 
     async esqueceuASenha(email: string) {
         let params = new HttpParams().set('email', email);
         return await lastValueFrom(
-            this.http.get(`${urlBackEnd}/usuario/esqueceu-sua-senha`, {
-                params
-            })
+            this.http.get(
+                `${environment.urlBackEnd}/usuario/esqueceu-sua-senha`,
+                {
+                    params
+                }
+            )
         );
     }
 
@@ -38,7 +41,7 @@ export class UsuarioService {
         return await lastValueFrom(
             //prettier-ignore
             this.http.put(
-                `${urlBackEnd}/usuario/alterar-senha`,
+                `${environment.urlBackEnd}/usuario/alterar-senha`,
                 {},
                 { params }
             )
@@ -48,7 +51,7 @@ export class UsuarioService {
     async dadosUsuario() {
         return await lastValueFrom(
             this.http
-                .get(`${urlBackEnd}/usuario/dados-usuario`)
+                .get(`${environment.urlBackEnd}/usuario/dados-usuario`)
                 .pipe(map((response: ResponseModel) => response.model))
         );
     }
@@ -57,7 +60,7 @@ export class UsuarioService {
         return await lastValueFrom(
             this.http
                 .put(
-                    `${urlBackEnd}/usuario/atualizar-usuario`,
+                    `${environment.urlBackEnd}/usuario/atualizar-usuario`,
                     usuarioAtualizado
                 )
                 .pipe(map((response: ResponseModel) => response.model))
