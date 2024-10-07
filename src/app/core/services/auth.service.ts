@@ -17,16 +17,16 @@ export class AuthService {
     }
 
     getAuthorizationToken() {
-        const token = sessionStorage.getItem('token');
+        const token = localStorage.getItem('token');
         return token;
     }
 
     removeAuthorizationToken() {
-        sessionStorage.removeItem('token');
+        localStorage.removeItem('token');
     }
 
     getUsuarioFromToken(): any {
-        const token = sessionStorage.getItem('token');
+        const token = localStorage.getItem('token');
         if (token) {
             const decodedToken: any = jwtDecode(token);
             return decodedToken.sub;
@@ -35,7 +35,7 @@ export class AuthService {
     }
 
     setTokenStorage(token: string) {
-        sessionStorage.setItem('token', token);
+        localStorage.setItem('token', token);
     }
 
     getTokenExpirationDate(token: string) {
