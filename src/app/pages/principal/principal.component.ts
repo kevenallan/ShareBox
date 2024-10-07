@@ -199,6 +199,9 @@ export class PrincipalComponent implements OnInit {
     listar() {
         this.arquivoService.listar().subscribe((response) => {
             this.arquivoList = response;
+            this.arquivoList.map((arquivo) => {
+                arquivo.base64 = arquivo.bytes;
+            });
             this.adicionarImgPreview();
             this.calcularTotais();
         });

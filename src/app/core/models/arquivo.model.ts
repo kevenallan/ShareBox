@@ -4,6 +4,7 @@ export class Arquivo {
     extensao: string;
     mimeType?: string; //USADO NA REPRODUÇÃO DO VIDEO
     tamanho?: string;
+    bytes?: any;
     base64?: string; //USADO PARA EXIBIR AS IMAGENS DE PREVIEW, VIDEO E MUSICA
     dataCriacao?: Date;
     //FRONT
