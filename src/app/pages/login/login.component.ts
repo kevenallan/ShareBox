@@ -14,7 +14,13 @@ import { Router } from '@angular/router';
 import { LoginDTO } from '../../core/dto/login.dto';
 import { AuthService } from '../../core/services/auth.service';
 import { DialogModule } from 'primeng/dialog';
-import { ResponseModel } from '../../core/models/response.model';
+
+import {
+    Auth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    signOut
+} from '@angular/fire/auth';
 
 @Component({
     selector: 'app-login',
@@ -41,7 +47,8 @@ export class LoginComponent {
         private usuarioService: UsuarioService,
         private authService: AuthService,
         private alertService: AlertService,
-        private router: Router
+        private router: Router,
+        private auth: Auth
     ) {}
 
     login() {
@@ -72,6 +79,23 @@ export class LoginComponent {
                     }
                 }
             });
+    }
+
+    async loginWithGoogle() {
+        const provider = new GoogleAuthProvider();
+        try {
+            const result = await signInWithPopup(this.auth, provider);
+            console.log('Usuário logado: ', result.user);
+            const user = result.user;
+            if (user) {
+                console.log(user.uid);
+                console.log(user.displayName);
+                console.log(user.email);
+                console.log(user.photoURL);
+            }
+        } catch (error) {
+            console.error('Erro ao fazer login com Google: ', error);
+        }
     }
 
     abrirDialogEsquecerSenha() {
