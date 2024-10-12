@@ -88,10 +88,24 @@ export class LoginComponent {
             console.log('Usuário logado: ', result.user);
             const user = result.user;
             if (user) {
-                console.log(user.uid);
-                console.log(user.displayName);
-                console.log(user.email);
-                console.log(user.photoURL);
+                this.usuarioService
+                    .loginGoogle(user.uid)
+                    .subscribe((response: LoginDTO) => {
+                        if (response) {
+                            const usuarioLogado: LoginDTO = response;
+                            if (usuarioLogado) {
+                                const token = usuarioLogado.token;
+                                if (token) {
+                                    this.authService.setTokenStorage(token);
+                                    this.router.navigate(['/inicio']);
+                                }
+                            } else {
+                                this.alertService.showErrorAlert(
+                                    'Usuário ou Senha inválido.'
+                                );
+                            }
+                        }
+                    });
             }
         } catch (error) {
             console.error('Erro ao fazer login com Google: ', error);
