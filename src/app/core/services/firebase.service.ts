@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { Usuario } from '../models/usuario.model';
-import { lastValueFrom, map } from 'rxjs';
+import { lastValueFrom, map, Observable } from 'rxjs';
 import { ResponseModel } from '../models/response.model';
 
 @Injectable({
@@ -16,12 +16,11 @@ export class FirebaseService {
     //         this.http.get(`${environment.urlBackEnd}/firebase/get-config`)
     //     );
     // }
-    getConfig(): Promise<any> {
+    getConfig(): Observable<any> {
         return this.http
             .get<ResponseModel>(`${environment.urlBackEnd}/firebase/get-config`)
             .pipe(
                 map((response: ResponseModel) => response.model) // Use o map para transformar a resposta
-            )
-            .toPromise(); // Chama toPromise no final da cadeia
+            );
     }
 }

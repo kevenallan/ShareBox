@@ -57,7 +57,6 @@ export class ArquivoService {
     ) {}
 
     listar() {
-        console.log('environment', environment.urlBackEnd);
         return this.http
             .get<ResponseModel>(`${environment.urlBackEnd}/arquivo/listar`)
             .pipe(
