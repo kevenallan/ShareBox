@@ -31,18 +31,31 @@
                 <button
                     class="form-submit-btn custom-gradient-button"
                     type="submit"
+                    style="width: 100%"
                     (click)="login()"
                 >
                     Entrar
                 </button>
 
-                <p
-                    class="cadastro cursor-pointer roxo"
-                    (click)="abrirDialogEsquecerSenha()"
+                <div class="container-ou">
+                    <hr class="hr-width margin-right-5" />
+                    <div class="width-20">OU</div>
+                    <hr class="hr-width margin-left-5" />
+                </div>
+
+                <button
+                    class="btn-login-google form-submit-btn"
+                    (click)="loginWithGoogle()"
                 >
+                    <img
+                        src="https://img.icons8.com/color/22/000000/google-logo.png"
+                    />
+                </button>
+
+                <p class="cursor-pointer" (click)="abrirDialogEsquecerSenha()">
                     Esqueceu a senha?
                 </p>
-                <p class="cadastro cursor-pointer" (click)="telaCadastro()">
+                <p class="cursor-pointer" (click)="telaCadastro()">
                     Cadastre-se aqui
                 </p>
             </form>

@@ -16,6 +16,16 @@ export class UsuarioService {
             .post(`${environment.urlBackEnd}/usuario/login`, usuario)
             .pipe(map((response: ResponseModel) => response.model));
     }
+
+    loginGoogle(uid: string) {
+        let params = new HttpParams().set('uid', uid);
+        return this.http
+            .get(`${environment.urlBackEnd}/usuario/login-google`, {
+                params
+            })
+            .pipe(map((response: ResponseModel) => response.model));
+    }
+
     cadastro(usuario: Usuario) {
         return this.http
             .post(`${environment.urlBackEnd}/usuario/cadastrar`, usuario)
