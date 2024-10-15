@@ -107,7 +107,10 @@ export class PrincipalComponent implements OnInit {
                 }
             },
             {
-                icon: 'pi pi-file-plus'
+                icon: 'pi pi-file-plus',
+                command: () => {
+                    this.abrirEditorTexto(undefined);
+                }
             }
         ];
     }
@@ -314,12 +317,12 @@ export class PrincipalComponent implements OnInit {
         this.openDialogMidia(arquivo);
     }
 
-    openDialogEditorTexto(arquivo: Arquivo) {
+    openDialogEditorTexto(arquivo: Arquivo | undefined) {
         const dialog = this.editorTextoDialog; // Referência ao componente de diálogo
         dialog.showDialogEditorTexto(arquivo);
     }
 
-    abrirEditorTexto(arquivo: Arquivo) {
+    abrirEditorTexto(arquivo: Arquivo | undefined) {
         this.openDialogEditorTexto(arquivo);
     }
 

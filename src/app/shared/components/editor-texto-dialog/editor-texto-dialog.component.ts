@@ -1,5 +1,11 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import {
+    Component,
+    EventEmitter,
+    Input,
+    OnDestroy,
+    Output
+} from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { DialogModule } from 'primeng/dialog';
 import { EditorModule } from 'primeng/editor';
@@ -7,10 +13,17 @@ import { ButtonModule } from 'primeng/button';
 
 import { ArquivoService } from '../../../core/services/arquivo.service';
 import { Arquivo } from '../../../core/models/arquivo.model';
+import { CommonModule } from '@angular/common';
 @Component({
     selector: 'app-editor-texto-dialog',
     standalone: true,
-    imports: [FormsModule, DialogModule, EditorModule, ButtonModule],
+    imports: [
+        FormsModule,
+        CommonModule,
+        DialogModule,
+        EditorModule,
+        ButtonModule
+    ],
     templateUrl: './editor-texto-dialog.component.html',
     styleUrls: ['./editor-texto-dialog.component.scss']
 })
@@ -23,7 +36,9 @@ export class EditorTextoDialogComponent {
 
     arquivo?: Arquivo;
 
-    constructor(private arquivoService: ArquivoService) {}
+    constructor(private arquivoService: ArquivoService) {
+        console.log('contructor', this.arquivo);
+    }
 
     async showDialogEditorTexto(arquivo: Arquivo | undefined) {
         if (arquivo) {
@@ -31,13 +46,17 @@ export class EditorTextoDialogComponent {
             this.header = 'Editar ' + arquivo.nome;
             this.mimeType = arquivo.mimeType;
             this.texto = await this.getTexto(arquivo);
+        } else {
+            this.header = 'Criar arquivo';
         }
-
+        console.log(this.arquivo);
         this.displayEditor = true;
     }
 
     hideDialogEditor() {
         this.displayEditor = false;
+        this.arquivo = undefined;
+        this.texto = '';
     }
 
     async getTexto(arquivo: Arquivo) {
@@ -63,6 +82,24 @@ export class EditorTextoDialogComponent {
         formData.append('nome', nomeArquivo);
         formData.append('nomeArquivoAntigo', nomeArquivo);
         this.arquivoService.update(formData).subscribe(() => {
+            this.eventUpdate.emit();
+            this.hideDialogEditor();
+        });
+    }
+
+    uploadArquivo() {
+        const nomeArquivo = 'Novo Documento de texto.txt';
+        const fileExtension = nomeArquivo.split('.')[1];
+        const file = this.arquivoService.convertTxtToFile(
+            this.texto || '',
+            nomeArquivo
+        );
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('nome', nomeArquivo);
+        formData.append('extensao', fileExtension);
+
+        this.arquivoService.upload(formData).subscribe(() => {
             this.eventUpdate.emit();
             this.hideDialogEditor();
         });

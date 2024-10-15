@@ -15,18 +15,18 @@
     color: $cor-roxa;
 }
 
-:host ::ng-deep .p-button {
+:host ::ng-deep .p-speeddial-button {
     border: none;
 }
 
-:host ::ng-deep .p-button:focus {
+:host ::ng-deep .p-speeddial-button:focus {
     border: 1px solid $cor-rosa-claro;
 }
 
-:host ::ng-deep .p-button:not(:disabled):hover {
-    border: 1px solid white;
-    background: white;
-}
+// :host ::ng-deep .p-button:not(:disabled):hover {
+//     border: 1px solid white;
+//     background: white;
+// }
 
 //DESABILITAR INPUT UPLOAD
 .none {
