@@ -88,7 +88,6 @@ export class LoginComponent {
         const provider = new GoogleAuthProvider();
         try {
             const result = await signInWithPopup(this.auth, provider);
-            console.log('Usuário logado: ', result.user);
             const user = result.user;
             if (user) {
                 this.usuarioService

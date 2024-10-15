@@ -35,21 +35,21 @@ export class EditorTextoDialogComponent {
     mimeType?: string;
 
     arquivo?: Arquivo;
+    arquivoList: Arquivo[] = [];
 
-    constructor(private arquivoService: ArquivoService) {
-        console.log('contructor', this.arquivo);
+    constructor(private arquivoService: ArquivoService) {}
+
+    async showDialogEditorTexto(arquivo: Arquivo) {
+        this.arquivo = arquivo;
+        this.header = 'Editar ' + arquivo.nome;
+        this.mimeType = arquivo.mimeType;
+        this.texto = await this.getTexto(arquivo);
+        this.displayEditor = true;
     }
 
-    async showDialogEditorTexto(arquivo: Arquivo | undefined) {
-        if (arquivo) {
-            this.arquivo = arquivo;
-            this.header = 'Editar ' + arquivo.nome;
-            this.mimeType = arquivo.mimeType;
-            this.texto = await this.getTexto(arquivo);
-        } else {
-            this.header = 'Criar arquivo';
-        }
-        console.log(this.arquivo);
+    async showDialogCriarArquivoTexto(arquivoList: Arquivo[]) {
+        this.arquivoList = arquivoList;
+        this.header = 'Criar arquivo';
         this.displayEditor = true;
     }
 
@@ -88,7 +88,7 @@ export class EditorTextoDialogComponent {
     }
 
     uploadArquivo() {
-        const nomeArquivo = 'Novo Documento de texto.txt';
+        const nomeArquivo = this.getNomeArquivoNovo();
         const fileExtension = nomeArquivo.split('.')[1];
         const file = this.arquivoService.convertTxtToFile(
             this.texto || '',
@@ -103,5 +103,20 @@ export class EditorTextoDialogComponent {
             this.eventUpdate.emit();
             this.hideDialogEditor();
         });
+    }
+
+    getNomeArquivoNovo() {
+        let nomeArquivoNovo = 'Novo Documento de texto';
+        const extensao = '.txt';
+        let contador = 2;
+
+        const nomeJaExiste = (nome: string) =>
+            this.arquivoList.some((arquivo) => arquivo.nome === nome);
+
+        while (nomeJaExiste(nomeArquivoNovo)) {
+            nomeArquivoNovo = `Novo Documento de texto (${contador})`;
+            contador++;
+        }
+        return nomeArquivoNovo + extensao;
     }
 }

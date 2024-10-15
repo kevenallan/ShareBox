@@ -112,7 +112,7 @@ export class PrincipalComponent implements OnInit {
                 tooltip: 'Cria arquivo de texto',
                 iconStyle: { 'font-size': '22px' },
                 command: () => {
-                    this.abrirEditorTexto(undefined);
+                    this.abrirCriarArquivoTexto(this.arquivoList);
                 }
             }
         ];
@@ -319,13 +319,22 @@ export class PrincipalComponent implements OnInit {
         this.openDialogMidia(arquivo);
     }
 
-    openDialogEditorTexto(arquivo: Arquivo | undefined) {
+    openDialogEditorTexto(arquivo: Arquivo) {
         const dialog = this.editorTextoDialog; // Referência ao componente de diálogo
         dialog.showDialogEditorTexto(arquivo);
     }
 
-    abrirEditorTexto(arquivo: Arquivo | undefined) {
+    openDialogCriarArquivoTexto(arquivoList: Arquivo[]) {
+        const dialog = this.editorTextoDialog; // Referência ao componente de diálogo
+        dialog.showDialogCriarArquivoTexto(arquivoList);
+    }
+
+    abrirEditorTexto(arquivo: Arquivo) {
         this.openDialogEditorTexto(arquivo);
+    }
+
+    abrirCriarArquivoTexto(arquivoList: Arquivo[]) {
+        this.openDialogCriarArquivoTexto(arquivoList);
     }
 
     abrirArquivo(arquivo: Arquivo) {
