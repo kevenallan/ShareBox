@@ -25,13 +25,14 @@ export class EditorTextoDialogComponent {
 
     constructor(private arquivoService: ArquivoService) {}
 
-    async showDialogEditorTexto(arquivo: Arquivo) {
-        this.arquivo = arquivo;
-        this.header = 'Editar ' + arquivo.nome;
-        this.mimeType = arquivo.mimeType;
-        this.displayEditor = true;
+    async showDialogEditorTexto(arquivo: Arquivo | undefined) {
+        if (arquivo) {
+            this.arquivo = arquivo;
+            this.header = 'Editar ' + arquivo.nome;
+            this.mimeType = arquivo.mimeType;
+            this.texto = await this.getTexto(arquivo);
+        }
 
-        this.texto = await this.getTexto(arquivo);
         this.displayEditor = true;
     }
 

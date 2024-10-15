@@ -70,6 +70,9 @@ export class LoginComponent {
                         const token = usuarioLogado.token;
                         if (token) {
                             this.authService.setTokenStorage(token);
+                            this.authService.setUsuarioStorage(
+                                usuarioLogado.usuarioModel
+                            );
                             this.router.navigate(['/inicio']);
                         }
                     } else {

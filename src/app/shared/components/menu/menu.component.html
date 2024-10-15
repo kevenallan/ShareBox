@@ -21,9 +21,12 @@
             >
                 <p-avatar
                     (click)="op.toggle($event)"
-                    styleClass="cursor-pointer"
+                    styleClass="cursor-pointer avatar"
                     icon="pi pi-user"
                     shape="circle"
+                    label="{{ inicialUsuario }}"
+                    [pTooltip]="nomeUsuario"
+                    tooltipPosition="left"
                 >
                 </p-avatar>
 

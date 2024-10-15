@@ -88,6 +88,8 @@ export class PrincipalComponent implements OnInit {
     @ViewChild('midiaDialog') midiaDialog!: MidiaDialogComponent;
     @ViewChild('editorTextoDialog')
     editorTextoDialog!: EditorTextoDialogComponent;
+
+    items!: any;
     constructor(
         private arquivoService: ArquivoService,
         private alertService: AlertService,
@@ -96,6 +98,18 @@ export class PrincipalComponent implements OnInit {
 
     ngOnInit() {
         this.listar();
+
+        this.items = [
+            {
+                icon: 'pi pi-upload',
+                command: () => {
+                    this.clickUploadFile();
+                }
+            },
+            {
+                icon: 'pi pi-file-plus'
+            }
+        ];
     }
 
     clickUploadFile() {

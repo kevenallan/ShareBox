@@ -19,13 +19,9 @@
         (change)="fileUpdate($event)"
         multiple
     />
-    <p-button
-        icon="pi pi-plus"
-        [rounded]="true"
-        [text]="true"
-        [raised]="true"
-        (click)="clickUploadFile()"
-    />
+</div>
+<div class="add-arquivo">
+    <p-speedDial [model]="items" direction="up" />
 </div>
 
 <p-toast />

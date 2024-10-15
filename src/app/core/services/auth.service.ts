@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
+import { Usuario } from '../models/usuario.model';
 
 @Injectable({
     providedIn: 'root'
@@ -36,6 +37,12 @@ export class AuthService {
 
     setTokenStorage(token: string) {
         localStorage.setItem('token', token);
+    }
+
+    setUsuarioStorage(usuario: Usuario | undefined) {
+        if (usuario) {
+            localStorage.setItem('usuario', usuario.nome ?? '');
+        }
     }
 
     getTokenExpirationDate(token: string) {
