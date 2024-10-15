@@ -203,7 +203,6 @@ export class PrincipalComponent implements OnInit {
     uploadFile(arquivo: FormData): void {
         this.arquivoService.upload(arquivo).subscribe(() => {
             this.listar();
-            this.showToastSuccess();
         });
     }
 
@@ -455,13 +454,5 @@ export class PrincipalComponent implements OnInit {
                 tamanho
             });
         }
-    }
-
-    showToastSuccess() {
-        this.toastService.add({
-            severity: 'success',
-            summary: 'Sucesso',
-            detail: 'Arquivo adicionado'
-        });
     }
 }
