@@ -20,11 +20,21 @@
         multiple
     />
 </div>
-<div>
-    <p-speedDial [model]="items" direction="up" />
-</div>
 
-<p-toast />
+<p-speedDial [model]="items" direction="up">
+    <ng-template pTemplate="item" let-item>
+        <a
+            class="p-speeddial-action"
+            pTooltip="{{ item.tooltip }}"
+            tooltipPosition="left"
+            (click)="item.command()"
+        >
+            <span class="p-button-icon" [ngStyle]="item.style">
+                <i [class]="item.icon" [ngStyle]="item.iconStyle"></i>
+            </span>
+        </a>
+    </ng-template>
+</p-speedDial>
 
 <!-- TOTALIZADORES? -->
 <div class="totalizadores">

@@ -102,12 +102,15 @@ export class PrincipalComponent implements OnInit {
         this.items = [
             {
                 icon: 'pi pi-upload',
+                tooltip: 'Upload',
                 command: () => {
                     this.clickUploadFile();
                 }
             },
             {
                 icon: 'pi pi-file-plus',
+                tooltip: 'Cria arquivo de texto',
+                iconStyle: { 'font-size': '22px' },
                 command: () => {
                     this.abrirEditorTexto(undefined);
                 }

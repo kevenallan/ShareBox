@@ -13,6 +13,9 @@
     height: 50px;
     background-color: white;
     color: $cor-roxa;
+    box-shadow:
+        0 4px 6px rgba(0, 0, 0, 0.1),
+        0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 :host ::ng-deep .p-speeddial-button {
@@ -23,10 +26,12 @@
     border: 1px solid $cor-rosa-claro;
 }
 
-// :host ::ng-deep .p-button:not(:disabled):hover {
-//     border: 1px solid white;
-//     background: white;
-// }
+:host ::ng-deep .p-speeddial-action {
+    background: $cor-roxa;
+    box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.1),
+    0 1px 3px rgba(0, 0, 0, 0.08);
+}
 
 //DESABILITAR INPUT UPLOAD
 .none {
