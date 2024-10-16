@@ -6,7 +6,7 @@ import { Arquivo } from '../../core/models/arquivo.model';
 import { AlertService } from '../../core/services/alert.service';
 import { LocalDateTimeFormatPipe } from '../../shared/pipe/local-date-time-format.pipe';
 import { MidiaDialogComponent } from '../../shared/components/midia-dialog/midia-dialog.component';
-import JSZip from 'jszip';
+import JSZip, { file } from 'jszip';
 
 //PRIMENG
 import { ToastModule } from 'primeng/toast';
@@ -139,6 +139,10 @@ export class PrincipalComponent implements OnInit {
         if (formData.has('files')) {
             this.uploadFile(formData);
         }
+        const fileInput = document.getElementById(
+            'fileUploadInput'
+        ) as HTMLInputElement;
+        fileInput.value = '';
     }
 
     clickUpdateFile(arquivoAtual: Arquivo) {
@@ -192,7 +196,6 @@ export class PrincipalComponent implements OnInit {
                 file = this.renomearFile(file, novoNomeArquivo);
                 return file;
             }
-
             return;
         }
         return file;
@@ -218,6 +221,7 @@ export class PrincipalComponent implements OnInit {
             });
             this.adicionarImgPreview();
             this.calcularTotais();
+            this.arquivosSelecionados = [];
         });
     }
 
@@ -502,7 +506,6 @@ export class PrincipalComponent implements OnInit {
 
     async deletarArquivos() {
         if (this.arquivosSelecionados && this.arquivosSelecionados.length > 0) {
-            console.log(this.arquivosSelecionados)
             try {
                 const isDelete =
                     await this.alertService.showConfirmationAlertDeleteFile(
@@ -510,7 +513,7 @@ export class PrincipalComponent implements OnInit {
                         'Tem certeza que deseja deletar os arquivos?'
                     );
                 if (isDelete) {
-                    let arquivosList = new Array();
+                    let arquivosList = [];
                     for (let arquivo of this.arquivosSelecionados) {
                         arquivosList.push(
                             this.arquivoService.concatenarNomeExtensaoArquivo(
