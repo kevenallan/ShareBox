@@ -119,6 +119,20 @@
     width: 90%;
 }
 
+.centralizar-checkbox {
+    display: flex;
+    justify-content: center;
+}
+
+:host ::ng-deep .p-checkbox .p-checkbox-box.p-highlight{
+    border-color: white;
+    background-color: $cor-roxa;
+}
+
+:host ::ng-deep .p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box:hover{
+    border-color: $cor-roxa;
+}
+
 :host ::ng-deep .p-inputtext:enabled:focus {
     border-color: $cor-azul-claro !important;
     box-shadow: 0 0 0 0.2rem $cor-rosa-claro !important;

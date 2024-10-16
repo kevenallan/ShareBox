@@ -61,6 +61,7 @@ import { TotalizadorModel } from '../../core/models/totalizador.model';
 })
 export class PrincipalComponent implements OnInit {
     arquivoList: Arquivo[] = [];
+    arquivosSelecionados: Arquivo[] = [];
     totalizadoresArquivos: TotalizadorModel[] = [
         {
             titulo: 'IMAGENS',
