@@ -41,5 +41,8 @@ npm install firebase @angular/fire
 npm install jwt-decode
 
 ## EXECUTA O PROJETO NA REDE
+
 ng serve --host 0.0.0.0
 
+npm install -g npm@10.9.0
+npm install jszip

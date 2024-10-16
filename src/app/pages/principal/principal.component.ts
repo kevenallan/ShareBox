@@ -6,6 +6,7 @@ import { Arquivo } from '../../core/models/arquivo.model';
 import { AlertService } from '../../core/services/alert.service';
 import { LocalDateTimeFormatPipe } from '../../shared/pipe/local-date-time-format.pipe';
 import { MidiaDialogComponent } from '../../shared/components/midia-dialog/midia-dialog.component';
+import JSZip from 'jszip';
 
 //PRIMENG
 import { ToastModule } from 'primeng/toast';
@@ -468,5 +469,36 @@ export class PrincipalComponent implements OnInit {
             lastModified: originalFile.lastModified
         });
         return renamedFile;
+    }
+
+    desabilitarAcoesEmLote() {
+        return this.arquivosSelecionados.length > 0;
+    }
+
+    downloadArquivosZip() {
+        if (this.arquivosSelecionados && this.arquivosSelecionados.length > 0) {
+            const zip = new JSZip();
+
+            this.arquivosSelecionados.forEach((arquivo) => {
+                let blob = this.base64ToBlob(
+                    arquivo.base64 || '',
+                    arquivo.mimeType || ''
+                );
+                zip.file(
+                    this.arquivoService.concatenarNomeExtensaoArquivo(
+                        arquivo.nome,
+                        arquivo.extensao
+                    ),
+                    blob
+                );
+            });
+
+            zip.generateAsync({ type: 'blob' }).then((content) => {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(content);
+                link.download = 'sharebox-arquivos.zip';
+                link.click();
+            });
+        }
     }
 }
