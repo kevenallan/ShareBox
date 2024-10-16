@@ -279,15 +279,13 @@ export class PrincipalComponent implements OnInit {
                     'Tem certeza que deseja deletar o arquivo?'
                 );
             if (isDelete) {
-                await this.arquivoService.deletar(
+                const nomeArquivoList = [
                     this.arquivoService.concatenarNomeExtensaoArquivo(
                         nomeArquivo,
                         extensao
                     )
-                );
-                this.alertService.showSuccessAlert(
-                    'Arquivo deletado com sucesso!'
-                );
+                ];
+                await this.arquivoService.deletar(nomeArquivoList);
                 this.listar();
             }
         } catch (error) {
@@ -499,6 +497,34 @@ export class PrincipalComponent implements OnInit {
                 link.download = 'sharebox-arquivos.zip';
                 link.click();
             });
+        }
+    }
+
+    async deletarArquivos() {
+        if (this.arquivosSelecionados && this.arquivosSelecionados.length > 0) {
+            console.log(this.arquivosSelecionados)
+            try {
+                const isDelete =
+                    await this.alertService.showConfirmationAlertDeleteFile(
+                        'Deletar Arquivos',
+                        'Tem certeza que deseja deletar os arquivos?'
+                    );
+                if (isDelete) {
+                    let arquivosList = new Array();
+                    for (let arquivo of this.arquivosSelecionados) {
+                        arquivosList.push(
+                            this.arquivoService.concatenarNomeExtensaoArquivo(
+                                arquivo.nome,
+                                arquivo.extensao
+                            )
+                        );
+                    }
+                    await this.arquivoService.deletar(arquivosList);
+                    this.listar();
+                }
+            } catch (error) {
+                this.alertService.showErrorAlert('Erro ao deletar o arquivo.');
+            }
         }
     }
 }
