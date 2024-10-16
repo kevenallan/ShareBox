@@ -90,13 +90,13 @@ export class AlertService {
 
     async showInputAlertFileName(
         arquivosExistentes: string[],
-        arquivoAtual: FormData
-    ): Promise<FormData | null> {
+        fileAtual: File
+    ): Promise<string | null> {
         const result = await Swal.fire({
             title: 'Nome do arquivo duplicado',
             text: 'Por favor, escolha outro nome:',
             input: 'text',
-            inputValue: arquivoAtual.get('nome') as string, // Garantindo que o valor seja string
+            inputValue: fileAtual.name as string, // Garantindo que o valor seja string
             icon: 'info',
             inputPlaceholder: 'Escolha um novo nome',
             showCancelButton: true,
@@ -124,8 +124,7 @@ export class AlertService {
         });
 
         if (result.isConfirmed) {
-            arquivoAtual.set('nome', result.value);
-            return arquivoAtual;
+            return result.value;
         }
 
         return null;

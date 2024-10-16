@@ -127,22 +127,16 @@ export class PrincipalComponent implements OnInit {
     }
 
     async fileUpload(event: any): Promise<void> {
-        const file = event.target.files[0];
-        if (file) {
-            const fileName = file.name;
-            const fileExtension = fileName.split('.').pop(); // Pega a extensão do arquivo
-
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('nome', fileName);
-            formData.append('extensao', fileExtension);
-
-            const arquivoExistente =
-                await this.verificarExistenciaArquivo(formData);
-
-            if (!arquivoExistente) {
-                this.uploadFile(formData);
+        const files = event.target.files;
+        const formData = new FormData();
+        for (let file of files) {
+            const fileAdd = await this.verificarNomeArquivo(file);
+            if (fileAdd) {
+                formData.append('files', fileAdd);
             }
+        }
+        if (formData.has('files')) {
+            this.uploadFile(formData);
         }
     }
 
@@ -183,25 +177,24 @@ export class PrincipalComponent implements OnInit {
         }
     }
 
-    async verificarExistenciaArquivo(arquivo: FormData): Promise<boolean> {
-        const nomeArquivo = arquivo.get('nome')?.toString();
-        const arquivoVerificado = await this.arquivoService.buscarArquivo(
-            nomeArquivo || ''
-        );
+    async verificarNomeArquivo(file: File): Promise<File | undefined> {
+        let nomeArquivo = file.name.split('.')[0];
 
         const lista: string[] = [];
         this.arquivoList.map((arquivo) => {
             lista.push(arquivo.nome);
         });
+        if (nomeArquivo != undefined && lista.includes(nomeArquivo)) {
+            const novoNomeArquivo: string | null =
+                await this.alertService.showInputAlertFileName(lista, file);
+            if (novoNomeArquivo) {
+                file = this.renomearFile(file, novoNomeArquivo);
+                return file;
+            }
 
-        if (arquivoVerificado.size > 0) {
-            const arquivoRenomeado: FormData | null =
-                await this.alertService.showInputAlertFileName(lista, arquivo);
-            if (arquivoRenomeado) this.uploadFile(arquivoRenomeado);
-            return true;
+            return;
         }
-
-        return false;
+        return file;
     }
 
     uploadFile(arquivo: FormData): void {
@@ -467,5 +460,13 @@ export class PrincipalComponent implements OnInit {
                 tamanho
             });
         }
+    }
+
+    renomearFile(originalFile: File, newName: string): File {
+        const renamedFile = new File([originalFile], newName, {
+            type: originalFile.type,
+            lastModified: originalFile.lastModified
+        });
+        return renamedFile;
     }
 }
