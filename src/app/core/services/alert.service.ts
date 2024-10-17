@@ -11,20 +11,7 @@ export class AlertService {
     showSuccessAlert(titulo: string) {
         Swal.fire({
             title: titulo,
-            // text: 'Successful.',
             icon: 'success',
-            confirmButtonText: 'OK',
-            customClass: {
-                confirmButton: 'swal2-custom-confirm'
-            }
-        });
-    }
-
-    showInfoAlert(texto: string) {
-        Swal.fire({
-            title: 'Information',
-            text: texto,
-            icon: 'info',
             confirmButtonText: 'OK',
             customClass: {
                 confirmButton: 'swal2-custom-confirm'
@@ -56,25 +43,9 @@ export class AlertService {
         });
     }
 
-    async showConfirmationAlertDeleteFile(titulo: string, texto: string) {
+    async showConfirmationAlertFile(titulo: string, texto: string) {
         const result = await Swal.fire({
             title: titulo,
-            text: texto,
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Sim',
-            cancelButtonText: 'Não',
-            customClass: {
-                confirmButton: 'swal2-custom-confirm',
-                cancelButton: 'swal2-custom-cancel'
-            }
-        });
-        return result.isConfirmed;
-    }
-
-    async showConfirmationAlertUploadFile(texto: string): Promise<boolean> {
-        const result = await Swal.fire({
-            title: 'Sobrescrever Arquivo',
             text: texto,
             icon: 'question',
             showCancelButton: true,

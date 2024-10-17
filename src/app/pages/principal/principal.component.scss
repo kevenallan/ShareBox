@@ -29,8 +29,8 @@
 :host ::ng-deep .p-speeddial-action {
     background: $cor-roxa;
     box-shadow:
-    0 4px 6px rgba(0, 0, 0, 0.1),
-    0 1px 3px rgba(0, 0, 0, 0.08);
+        0 4px 6px rgba(0, 0, 0, 0.1),
+        0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 //DESABILITAR INPUT UPLOAD
@@ -119,12 +119,12 @@
     width: 90%;
 }
 
-:host ::ng-deep .p-checkbox .p-checkbox-box.p-highlight{
+:host ::ng-deep .p-checkbox .p-checkbox-box.p-highlight {
     border-color: white;
     background-color: $cor-roxa;
 }
 
-:host ::ng-deep .p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box:hover{
+:host ::ng-deep .p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box:hover {
     border-color: $cor-roxa;
 }
 
@@ -148,7 +148,17 @@
     color: $cor-roxa;
 }
 
-th, td {
+th,
+td {
     text-align: center;
     vertical-align: middle;
+}
+
+.btn-cancelar-editar {
+    color: red !important;
+    margin-left: 5px;
+}
+
+.btn-confirmar-editar {
+    color: green !important;
 }

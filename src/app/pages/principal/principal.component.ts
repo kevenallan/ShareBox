@@ -96,6 +96,8 @@ export class PrincipalComponent implements OnInit {
     editorTextoDialog!: EditorTextoDialogComponent;
 
     items!: any;
+
+    mostrarCardsInfos = false;
     constructor(
         private arquivoService: ArquivoService,
         private alertService: AlertService,
@@ -176,7 +178,8 @@ export class PrincipalComponent implements OnInit {
             );
 
             const desejaSobrescrever =
-                await this.alertService.showConfirmationAlertUploadFile(
+                await this.alertService.showConfirmationAlertFile(
+                    'Sobrescrever Arquivo',
                     'Tem certeza que deseja sobrescrever o arquivo?'
                 );
 
@@ -281,11 +284,10 @@ export class PrincipalComponent implements OnInit {
 
     async deletar(nomeArquivo: string, extensao: string) {
         try {
-            const isDelete =
-                await this.alertService.showConfirmationAlertDeleteFile(
-                    'Deletar Arquivo',
-                    'Tem certeza que deseja deletar o arquivo?'
-                );
+            const isDelete = await this.alertService.showConfirmationAlertFile(
+                'Deletar Arquivo',
+                'Tem certeza que deseja deletar o arquivo?'
+            );
             if (isDelete) {
                 const nomeArquivoList = [
                     this.arquivoService.concatenarNomeExtensaoArquivo(
@@ -512,7 +514,7 @@ export class PrincipalComponent implements OnInit {
         if (this.arquivosSelecionados && this.arquivosSelecionados.length > 0) {
             try {
                 const isDelete =
-                    await this.alertService.showConfirmationAlertDeleteFile(
+                    await this.alertService.showConfirmationAlertFile(
                         'Deletar Arquivos',
                         'Tem certeza que deseja deletar os arquivos?'
                     );
@@ -591,5 +593,13 @@ export class PrincipalComponent implements OnInit {
             this.arquivoEmEdicao.linha
         ) as HTMLInputElement;
         idLinhaEmEdicao.click();
+    }
+
+    mostrarInformacoes() {
+        if (this.mostrarCardsInfos) {
+            this.mostrarCardsInfos = false;
+        } else {
+            this.mostrarCardsInfos = true;
+        }
     }
 }

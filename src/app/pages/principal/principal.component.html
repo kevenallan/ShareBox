@@ -37,7 +37,7 @@
 </p-speedDial>
 
 <!-- TOTALIZADORES? -->
-<div class="totalizadores">
+<div class="totalizadores" *ngIf="mostrarCardsInfos">
     <div
         class="card-totalizador box-3d"
         *ngFor="let totalizador of totalizadoresArquivos"
@@ -85,12 +85,23 @@
                         </div>
                         <div style="margin-left: 10px">
                             <p-button
+                                (click)="mostrarInformacoes()"
+                                icon="pi pi-chart-bar"
+                                [text]="true"
+                                [raised]="true"
+                                pTooltip="Mostrar informações"
+                                tooltipPosition="bottom"
+                            />
+                            <p-button
                                 (click)="downloadArquivosZip()"
                                 icon="pi pi-download"
                                 [text]="true"
                                 [raised]="true"
                                 pTooltip="Download"
                                 tooltipPosition="bottom"
+                                [style]="{
+                                    'margin-left': '10px'
+                                }"
                                 [disabled]="!desabilitarAcoesEmLote()"
                             />
                             <p-button
@@ -263,8 +274,9 @@
                                     pSaveEditableRow
                                     icon="pi pi-check"
                                     (click)="onRowEditSave(idx)"
-                                    class="p-button-rounded p-button-text p-button-success mr-2"
+                                    class="p-button-rounded p-button-text btn-confirmar-editar"
                                 ></button>
+
                                 <button
                                     *ngIf="editing"
                                     pButton
@@ -274,7 +286,7 @@
                                     icon="pi pi-times"
                                     (click)="onRowEditCancel()"
                                     id="{{ idx }}"
-                                    class="p-button-rounded p-button-text p-button-danger"
+                                    class="p-button-rounded p-button-text btn-cancelar-editar"
                                 ></button>
                             </div>
                         </td>
