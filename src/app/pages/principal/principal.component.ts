@@ -66,6 +66,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 export class PrincipalComponent implements OnInit {
     arquivoList: Arquivo[] = [];
     arquivosSelecionados: Arquivo[] = [];
+    arquivoEmEdicao: any = { linha: undefined, arquivo: new Arquivo() };
     totalizadoresArquivos: TotalizadorModel[] = [
         {
             titulo: 'IMAGENS',
@@ -534,8 +535,6 @@ export class PrincipalComponent implements OnInit {
         }
     }
 
-    arquivoEmEdicao: any = { linha: undefined, arquivo: new Arquivo() };
-
     onRowEditInit(arquivo: Arquivo, index: number) {
         if (
             this.arquivoEmEdicao.linha != undefined &&
@@ -545,7 +544,6 @@ export class PrincipalComponent implements OnInit {
         }
         this.arquivoEmEdicao.linha = index;
         this.arquivoEmEdicao.arquivo.nome = arquivo.nome;
-        console.log(this.arquivoEmEdicao);
     }
 
     onRowEditSave(index: number) {
