@@ -547,8 +547,36 @@ export class PrincipalComponent implements OnInit {
     }
 
     onRowEditSave(index: number) {
-        if (this.arquivoEmEdicao.arquivo.nome.length > 0) {
-            this.arquivoList[index].nome = this.arquivoEmEdicao.arquivo.nome;
+        if (this.arquivoEmEdicao.arquivo.nome == this.arquivoList[index].nome) {
+            return;
+        } else if (this.arquivoEmEdicao.arquivo.nome.length == 0) {
+            this.alertService.showWarningAlert(
+                'O nome do arquivo não pode ficar em branco.'
+            );
+        } else {
+            // this.arquivoList[index].nome = this.arquivoEmEdicao.arquivo.nome;
+            const formData = new FormData();
+            let blob = this.base64ToBlob(
+                this.arquivoList[index].base64 || '',
+                this.arquivoList[index].mimeType || ''
+            );
+            formData.append('file', blob);
+            formData.append(
+                'nome',
+                this.arquivoService.concatenarNomeExtensaoArquivo(
+                    this.arquivoEmEdicao.arquivo.nome,
+                    this.arquivoList[index].extensao
+                )
+            );
+            formData.append('extensao', this.arquivoList[index].extensao);
+            formData.append(
+                'nomeArquivoAntigo',
+                this.arquivoService.concatenarNomeExtensaoArquivo(
+                    this.arquivoList[index].nome,
+                    this.arquivoList[index].extensao
+                )
+            );
+            this.updateFile(formData);
             this.removerEdicaoLinha();
         }
     }
