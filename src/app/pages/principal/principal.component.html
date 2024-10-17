@@ -37,7 +37,11 @@
 </p-speedDial>
 
 <!-- TOTALIZADORES? -->
-<div class="totalizadores" *ngIf="mostrarCardsInfos">
+<!-- 1 & 2 -->
+<div
+    class="totalizadores"
+    [ngClass]="{ show: mostrarCardsInfos, hide: !mostrarCardsInfos }"
+>
     <div
         class="card-totalizador box-3d"
         *ngFor="let totalizador of totalizadoresArquivos"
@@ -69,7 +73,7 @@
                 currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} registros"
             >
                 <ng-template pTemplate="caption">
-                    <div style="display: flex; justify-content: space-between">
+                    <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
                         <div>
                             <p-iconField iconPosition="left" class="ml-auto">
                                 <p-inputIcon>

@@ -42,9 +42,64 @@
 .totalizadores {
     display: flex;
     justify-content: center;
-    // width: 100%;
     flex-wrap: wrap;
 }
+
+.titulo-totalizador {
+    font-weight: bold;
+}
+
+.card-totalizador p {
+    margin: 5px;
+}
+
+//1
+// .card-totalizador {
+//     background:
+//         linear-gradient(#212121, #212121) padding-box,
+//         linear-gradient(
+//                 135deg,
+//                 pink 10%,
+//                 rgb(197, 32, 197) 40%,
+//                 rgb(145, 226, 253) 85%
+//             )
+//             border-box;
+//     border: 4px solid transparent;
+//     color: white;
+//     padding: 5px 15px 5px;
+//     font-size: smaller;
+//     margin: 0px 12px;
+//     opacity: 0;
+//     visibility: hidden;
+//     transform: translateY(20px);
+//     transition:
+//         opacity 0.5s ease-in-out,
+//         transform 0.5s ease-in-out,
+//         visibility 0s 0.5s;
+// }
+
+// .show .card-totalizador {
+//     visibility: visible;
+//     opacity: 1;
+//     height: auto;
+//     transform: translateY(0);
+//     transition:
+//         opacity 0.5s ease-in-out,
+//         transform 0.5s ease-in-out,
+//         visibility 0s 0s;
+// }
+
+// .hide .card-totalizador {
+//     opacity: 0;
+//     height: 0;
+//     transform: translateY(20px);
+//     transition:
+//         opacity 0.5s ease-in-out,
+//         transform 0.5s ease-in-out,
+//         visibility 0s 0.5s;
+// }
+
+//2
 .card-totalizador {
     background:
         linear-gradient(#212121, #212121) padding-box,
@@ -57,19 +112,37 @@
             border-box;
     border: 4px solid transparent;
     color: white;
-    // padding-left: 15px;
-    // padding-right: 15px;
-    padding: 5px 15px 5px;
+    padding: 5px 15px;
     font-size: smaller;
     margin: 0px 12px;
+    opacity: 0;
+    visibility: hidden;
+    transform: scaleY(0);
+    transform-origin: top; /* Para encolher a partir do topo */
+    transition:
+        opacity 0.5s ease-in-out,
+        transform 0.5s ease-in-out,
+        visibility 0s 0.5s;
 }
 
-.titulo-totalizador {
-    font-weight: bold;
+.show .card-totalizador {
+    visibility: visible;
+    opacity: 1;
+    transform: scaleY(1);
+    transition:
+        opacity 0.5s ease-in-out,
+        transform 0.5s ease-in-out,
+        visibility 0s 0s;
 }
 
-.card-totalizador p {
-    margin: 5px;
+.hide .card-totalizador {
+    opacity: 0;
+    height: 0;
+    transform: scaleY(0);
+    transition:
+        opacity 0s ease-in-out, //opacity 0.5s ease-in-out,
+        transform 0.5s ease-in-out,
+        visibility 0s 0.5s;
 }
 
 // TABELA DE ARQUIVOS
@@ -86,7 +159,7 @@
             )
             border-box;
     border: 4px solid transparent;
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 :host ::ng-deep .p-datatable .p-datatable-thead > tr > th,

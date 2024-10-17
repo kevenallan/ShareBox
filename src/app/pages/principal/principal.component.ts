@@ -596,10 +596,6 @@ export class PrincipalComponent implements OnInit {
     }
 
     mostrarInformacoes() {
-        if (this.mostrarCardsInfos) {
-            this.mostrarCardsInfos = false;
-        } else {
-            this.mostrarCardsInfos = true;
-        }
+        this.mostrarCardsInfos = !this.mostrarCardsInfos;
     }
 }
