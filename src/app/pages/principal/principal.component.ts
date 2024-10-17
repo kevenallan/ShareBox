@@ -219,7 +219,6 @@ export class PrincipalComponent implements OnInit {
     listar() {
         this.arquivoService.listar().subscribe((response) => {
             this.arquivoList = response;
-            console.log(this.arquivoList);
             this.arquivoList.map((arquivo) => {
                 arquivo.base64 = arquivo.bytes;
             });
@@ -535,23 +534,36 @@ export class PrincipalComponent implements OnInit {
         }
     }
 
-    clonedArquivos: { [s: string]: Arquivo } = {};
-    nomeAlterar = '';
+    arquivoEmEdicao: any = { linha: undefined, arquivo: new Arquivo() };
 
     onRowEditInit(arquivo: Arquivo, index: number) {
-        this.clonedArquivos[arquivo.nome as string] = { ...arquivo };
-        this.nomeAlterar = arquivo.nome;
+        if (
+            this.arquivoEmEdicao.linha != undefined &&
+            index != this.arquivoEmEdicao.linha
+        ) {
+            this.removerEdicaoLinha();
+        }
+        this.arquivoEmEdicao.linha = index;
+        this.arquivoEmEdicao.arquivo.nome = arquivo.nome;
+        console.log(this.arquivoEmEdicao);
     }
 
-    onRowEditSave(arquivo: Arquivo) {
-        console.log(arquivo.nome);
-        if (arquivo.nome.length > 0) {
-            delete this.clonedArquivos[arquivo.nome as string];
+    onRowEditSave(index: number) {
+        if (this.arquivoEmEdicao.arquivo.nome.length > 0) {
+            this.arquivoList[index].nome = this.arquivoEmEdicao.arquivo.nome;
+            this.removerEdicaoLinha();
         }
     }
 
-    onRowEditCancel(arquivo: Arquivo, index: number) {
-        this.arquivoList[index] = this.clonedArquivos[arquivo.nome as string];
-        delete this.clonedArquivos[arquivo.nome as string];
+    onRowEditCancel() {
+        this.arquivoEmEdicao.linha = undefined;
+        this.arquivoEmEdicao.arquivo = new Arquivo();
+    }
+
+    removerEdicaoLinha() {
+        const idLinhaEmEdicao = document.getElementById(
+            this.arquivoEmEdicao.linha
+        ) as HTMLInputElement;
+        idLinhaEmEdicao.click();
     }
 }

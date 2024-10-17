@@ -137,7 +137,7 @@
                     pTemplate="body"
                     let-arquivo
                     let-editing="editing"
-                    let-ri="rowIndex"
+                    let-idx="rowIndex"
                 >
                     <tr [pEditableRow]="arquivo">
                         <td>
@@ -171,7 +171,9 @@
                                     <input
                                         pInputText
                                         type="text"
-                                        [(ngModel)]="nomeAlterar"
+                                        [(ngModel)]="
+                                            this.arquivoEmEdicao.arquivo.nome
+                                        "
                                     />
                                 </ng-template>
                                 <ng-template pTemplate="output">
@@ -198,28 +200,6 @@
                                     [raised]="true"
                                     severity="help"
                                 />
-
-                                <button
-                                    *ngIf="editing"
-                                    pButton
-                                    pRipple
-                                    type="button"
-                                    pSaveEditableRow
-                                    icon="pi pi-check"
-                                    (click)="onRowEditSave(arquivo)"
-                                    class="p-button-rounded p-button-text p-button-success mr-2"
-                                ></button>
-                                <button
-                                    *ngIf="editing"
-                                    pButton
-                                    pRipple
-                                    type="button"
-                                    pCancelEditableRow
-                                    icon="pi pi-times"
-                                    (click)="onRowEditCancel(arquivo, ri)"
-                                    id="{{ ri }}"
-                                    class="p-button-rounded p-button-text p-button-danger"
-                                ></button>
 
                                 <p-overlayPanel #op>
                                     <p-button
@@ -265,7 +245,7 @@
                                         [style]="{ color: '#e81cff' }"
                                     />
                                     <p-button
-                                        (click)="onRowEditInit(arquivo, ri)"
+                                        (click)="onRowEditInit(arquivo, idx); op.hide()"
                                         pInitEditableRow
                                         icon="pi pi-pencil"
                                         [rounded]="true"
@@ -277,6 +257,28 @@
                                         [style]="{ color: '#e81cff' }"
                                     />
                                 </p-overlayPanel>
+
+                                <button
+                                    *ngIf="editing"
+                                    pButton
+                                    pRipple
+                                    type="button"
+                                    pSaveEditableRow
+                                    icon="pi pi-check"
+                                    (click)="onRowEditSave(idx)"
+                                    class="p-button-rounded p-button-text p-button-success mr-2"
+                                ></button>
+                                <button
+                                    *ngIf="editing"
+                                    pButton
+                                    pRipple
+                                    type="button"
+                                    pCancelEditableRow
+                                    icon="pi pi-times"
+                                    (click)="onRowEditCancel()"
+                                    id="{{ idx }}"
+                                    class="p-button-rounded p-button-text p-button-danger"
+                                ></button>
                             </div>
                         </td>
                     </tr>
