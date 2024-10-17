@@ -28,6 +28,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { MenuComponent } from '../../shared/components/menu/menu.component';
 import { TotalizadorModel } from '../../core/models/totalizador.model';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-principal',
@@ -53,7 +54,9 @@ import { TotalizadorModel } from '../../core/models/totalizador.model';
         TooltipModule,
         EditorTextoDialogComponent,
         IconFieldModule,
-        InputIconModule
+        InputIconModule,
+        FormsModule,
+        ReactiveFormsModule
     ],
 
     templateUrl: './principal.component.html',
@@ -216,6 +219,7 @@ export class PrincipalComponent implements OnInit {
     listar() {
         this.arquivoService.listar().subscribe((response) => {
             this.arquivoList = response;
+            console.log(this.arquivoList);
             this.arquivoList.map((arquivo) => {
                 arquivo.base64 = arquivo.bytes;
             });
@@ -529,5 +533,25 @@ export class PrincipalComponent implements OnInit {
                 this.alertService.showErrorAlert('Erro ao deletar o arquivo.');
             }
         }
+    }
+
+    clonedArquivos: { [s: string]: Arquivo } = {};
+    nomeAlterar = '';
+
+    onRowEditInit(arquivo: Arquivo, index: number) {
+        this.clonedArquivos[arquivo.nome as string] = { ...arquivo };
+        this.nomeAlterar = arquivo.nome;
+    }
+
+    onRowEditSave(arquivo: Arquivo) {
+        console.log(arquivo.nome);
+        if (arquivo.nome.length > 0) {
+            delete this.clonedArquivos[arquivo.nome as string];
+        }
+    }
+
+    onRowEditCancel(arquivo: Arquivo, index: number) {
+        this.arquivoList[index] = this.clonedArquivos[arquivo.nome as string];
+        delete this.clonedArquivos[arquivo.nome as string];
     }
 }
