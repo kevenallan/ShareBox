@@ -119,11 +119,6 @@
     width: 90%;
 }
 
-.centralizar-checkbox {
-    display: flex;
-    justify-content: center;
-}
-
 :host ::ng-deep .p-checkbox .p-checkbox-box.p-highlight{
     border-color: white;
     background-color: $cor-roxa;
@@ -151,4 +146,9 @@
 :host ::ng-deep .p-paginator .p-paginator-current,
 :host ::ng-deep .p-paginator button {
     color: $cor-roxa;
+}
+
+th, td {
+    text-align: center;
+    vertical-align: middle;
 }

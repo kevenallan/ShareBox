@@ -87,7 +87,6 @@
                             <p-button
                                 (click)="downloadArquivosZip()"
                                 icon="pi pi-download"
-                                [rounded]="true"
                                 [text]="true"
                                 [raised]="true"
                                 pTooltip="Download"
@@ -97,7 +96,6 @@
                             <p-button
                                 (click)="deletarArquivos()"
                                 icon="pi pi-trash"
-                                [rounded]="true"
                                 [text]="true"
                                 [raised]="true"
                                 pTooltip="Deletar"
@@ -113,9 +111,7 @@
                 <ng-template pTemplate="header">
                     <tr>
                         <th style="width: 4rem">
-                            <p-tableHeaderCheckbox
-                                class="centralizar-checkbox"
-                            />
+                            <p-tableHeaderCheckbox />
                         </th>
                         <th>Arquivo</th>
                         <th pSortableColumn="nome">
@@ -141,10 +137,7 @@
                 >
                     <tr [pEditableRow]="arquivo">
                         <td>
-                            <p-tableCheckbox
-                                [value]="arquivo"
-                                class="centralizar-checkbox"
-                            />
+                            <p-tableCheckbox [value]="arquivo" />
                         </td>
                         <td>
                             <ng-container *ngIf="arquivo.previewSrc">
@@ -245,7 +238,10 @@
                                         [style]="{ color: '#e81cff' }"
                                     />
                                     <p-button
-                                        (click)="onRowEditInit(arquivo, idx); op.hide()"
+                                        (click)="
+                                            onRowEditInit(arquivo, idx);
+                                            op.hide()
+                                        "
                                         pInitEditableRow
                                         icon="pi pi-pencil"
                                         [rounded]="true"
