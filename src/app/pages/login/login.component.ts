@@ -68,13 +68,8 @@ export class LoginComponent {
                     const usuarioLogado: LoginDTO = response;
                     if (usuarioLogado) {
                         const token = usuarioLogado.token;
-                        if (token) {
-                            this.authService.setTokenStorage(token);
-                            this.authService.setUsuarioStorage(
-                                usuarioLogado.usuarioModel
-                            );
-                            this.router.navigate(['/inicio']);
-                        }
+                        this.authService.setLoginStorage(usuarioLogado);
+                        this.router.navigate(['/inicio']);
                     } else {
                         this.alertService.showErrorAlert(
                             'Usuário ou Senha inválido.'
@@ -89,16 +84,23 @@ export class LoginComponent {
         try {
             const result = await signInWithPopup(this.auth, provider);
             const user = result.user;
+
             if (user) {
+                const usuario = new Usuario();
+                usuario.email = user.email || '';
+                usuario.id = user.uid;
+                usuario.nome = user.displayName || '';
+
                 this.usuarioService
-                    .loginGoogle(user.uid)
+                    .loginGoogle(usuario)
                     .subscribe((response: LoginDTO) => {
                         if (response) {
-                            const usuarioLogado: LoginDTO = response;
-                            if (usuarioLogado) {
-                                const token = usuarioLogado.token;
+                            const loginDTO: LoginDTO = response;
+                            if (loginDTO) {
+                                loginDTO.usuarioModel.isUsuarioGoogle = true;
+                                const token = loginDTO.token;
                                 if (token) {
-                                    this.authService.setTokenStorage(token);
+                                    this.authService.setLoginStorage(loginDTO);
                                     this.router.navigate(['/inicio']);
                                 }
                             } else {

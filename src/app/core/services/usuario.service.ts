@@ -17,12 +17,9 @@ export class UsuarioService {
             .pipe(map((response: ResponseModel) => response.model));
     }
 
-    loginGoogle(uid: string) {
-        let params = new HttpParams().set('uid', uid);
+    loginGoogle(usuario: Usuario) {
         return this.http
-            .get(`${environment.urlBackEnd}/usuario/login-google`, {
-                params
-            })
+            .post(`${environment.urlBackEnd}/usuario/login-google`, usuario)
             .pipe(map((response: ResponseModel) => response.model));
     }
 
@@ -71,6 +68,17 @@ export class UsuarioService {
             this.http
                 .put(
                     `${environment.urlBackEnd}/usuario/atualizar-usuario`,
+                    usuarioAtualizado
+                )
+                .pipe(map((response: ResponseModel) => response.model))
+        );
+    }
+
+    async atualizarUsuarioGoogle(usuarioAtualizado: Usuario) {
+        return await lastValueFrom(
+            this.http
+                .put(
+                    `${environment.urlBackEnd}/usuario/atualizar-usuario-google`,
                     usuarioAtualizado
                 )
                 .pipe(map((response: ResponseModel) => response.model))

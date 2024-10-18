@@ -23,7 +23,7 @@ export class AuthGuard implements CanActivate {
             return true;
         } else {
             this.alertService.showWarningAlert('Sua sessão expirou');
-            this.authService.removeAuthorizationToken();
+            this.authService.logout();
             this.router.navigate(['/login']);
             return false;
         }

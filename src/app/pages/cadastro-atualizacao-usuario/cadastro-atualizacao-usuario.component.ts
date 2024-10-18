@@ -33,6 +33,7 @@ import { MenuComponent } from '../../shared/components/menu/menu.component';
 export class CadastroAtualizacaoUsuarioComponent implements OnInit {
     cadastroAtualizacaoForm!: FormGroup;
     isEditarPerfil: boolean = false;
+    isUsuarioGoogle: boolean = false;
     msgVoltar = 'Voltar para a tela de login';
     constructor(
         private router: Router,
@@ -64,6 +65,9 @@ export class CadastroAtualizacaoUsuarioComponent implements OnInit {
 
         if (this.router.url === '/editar-perfil') {
             this.isEditarPerfil = true;
+            this.isUsuarioGoogle =
+                this.authService.isUsuarioGoogle() === true ? true : false;
+
             this.msgVoltar = 'Voltar para a tela inicial';
             const usuarioLogado = await this.usuarioService.dadosUsuario();
             this.cadastroAtualizacaoForm.setValue({
@@ -73,6 +77,12 @@ export class CadastroAtualizacaoUsuarioComponent implements OnInit {
                 senha: usuarioLogado.senha,
                 confirmarSenha: usuarioLogado.senha
             });
+            if (this.isUsuarioGoogle) {
+                this.cadastroAtualizacaoForm.get('email')?.disable();
+                this.cadastroAtualizacaoForm.get('usuario')?.disable();
+                this.cadastroAtualizacaoForm.get('senha')?.disable();
+                this.cadastroAtualizacaoForm.get('confirmarSenha')?.disable();
+            }
         }
     }
 
@@ -106,8 +116,8 @@ export class CadastroAtualizacaoUsuarioComponent implements OnInit {
         this.usuarioService
             .cadastro(usuario)
             .subscribe((loginDTO: LoginDTO) => {
-                if (loginDTO.token) {
-                    this.authService.setTokenStorage(loginDTO.token);
+                if (loginDTO) {
+                    this.authService.setLoginStorage(loginDTO);
                     this.router.navigate(['/inicio']);
                 }
             });
@@ -116,7 +126,12 @@ export class CadastroAtualizacaoUsuarioComponent implements OnInit {
     async atualizarUsuario() {
         const usuario: Usuario = this.getUsuario();
 
-        await this.usuarioService.atualizarUsuario(usuario);
+        if (this.isUsuarioGoogle) {
+            await this.usuarioService.atualizarUsuarioGoogle(usuario);
+        } else {
+            await this.usuarioService.atualizarUsuario(usuario);
+        }
+        this.authService.setNomeUsuarioStorage(usuario.nome);
     }
     getUsuario() {
         const form = this.cadastroAtualizacaoForm;

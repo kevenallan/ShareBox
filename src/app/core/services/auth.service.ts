@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
 import { Usuario } from '../models/usuario.model';
+import { LoginDTO } from '../dto/login.dto';
 
 @Injectable({
     providedIn: 'root'
@@ -22,8 +23,10 @@ export class AuthService {
         return token;
     }
 
-    removeAuthorizationToken() {
+    logout() {
         localStorage.removeItem('token');
+        localStorage.removeItem('isUsuarioGoogle');
+        localStorage.removeItem('usuario');
     }
 
     getUsuarioFromToken(): any {
@@ -35,14 +38,24 @@ export class AuthService {
         return null;
     }
 
-    setTokenStorage(token: string) {
-        localStorage.setItem('token', token);
+    isUsuarioGoogle() {
+        const isUsuarioGoogle = localStorage.getItem('isUsuarioGoogle');
+        return isUsuarioGoogle === 'true';
     }
 
-    setUsuarioStorage(usuario: Usuario | undefined) {
-        if (usuario) {
-            localStorage.setItem('usuario', usuario.nome ?? '');
+    setLoginStorage(loginDTO: LoginDTO) {
+        localStorage.setItem('token', loginDTO.token);
+        if (loginDTO.usuarioModel) {
+            this.setNomeUsuarioStorage(loginDTO.usuarioModel.nome);
+            localStorage.setItem(
+                'isUsuarioGoogle',
+                loginDTO.usuarioModel.isUsuarioGoogle ? 'true' : 'false'
+            );
         }
+    }
+
+    setNomeUsuarioStorage(nomeUsuario: string) {
+        localStorage.setItem('usuario', nomeUsuario);
     }
 
     getTokenExpirationDate(token: string) {

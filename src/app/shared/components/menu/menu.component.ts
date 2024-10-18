@@ -50,7 +50,7 @@ export class MenuComponent implements OnInit {
     }
 
     sair() {
-        this.authService.removeAuthorizationToken();
+        this.authService.logout();
         this.router.navigate(['/login']);
     }
     telaPrincipal() {
