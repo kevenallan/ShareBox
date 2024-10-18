@@ -84,4 +84,10 @@ export class UsuarioService {
                 .pipe(map((response: ResponseModel) => response.model))
         );
     }
+
+    async deletar() {
+        return await lastValueFrom(
+            this.http.delete(`${environment.urlBackEnd}/usuario/deletar`)
+        );
+    }
 }

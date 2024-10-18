@@ -39,7 +39,8 @@ export class CadastroAtualizacaoUsuarioComponent implements OnInit {
         private router: Router,
         private formBuilder: FormBuilder,
         private usuarioService: UsuarioService,
-        private authService: AuthService
+        private authService: AuthService,
+        private alertService: AlertService
     ) {}
 
     async ngOnInit(): Promise<void> {
@@ -143,5 +144,17 @@ export class CadastroAtualizacaoUsuarioComponent implements OnInit {
             senha: form.get('senha')?.value
         };
         return usuario;
+    }
+
+    async deletar() {
+        const isDeletar = await this.alertService.showConfirmationAlertWarning(
+            'Deletar conta do usuário',
+            'Tem certeza que deseja deletar sua conta?'
+        );
+        if (isDeletar) {
+            await this.usuarioService.deletar();
+            this.authService.logout();
+            this.router.navigate(["/login"])
+        }
     }
 }

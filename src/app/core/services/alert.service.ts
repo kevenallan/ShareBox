@@ -59,6 +59,22 @@ export class AlertService {
         return result.isConfirmed;
     }
 
+    async showConfirmationAlertWarning(titulo: string, texto: string) {
+        const result = await Swal.fire({
+            title: titulo,
+            text: texto,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sim',
+            cancelButtonText: 'Não',
+            customClass: {
+                confirmButton: 'swal2-custom-confirm',
+                cancelButton: 'swal2-custom-cancel'
+            }
+        });
+        return result.isConfirmed;
+    }
+
     async showInputAlertFileName(
         arquivosExistentes: string[],
         fileAtual: File
