@@ -118,18 +118,22 @@
                     As senhas não coincidem.
                 </div>
             </div>
-            <p-button
-                (click)="deletar()"
-                icon="pi pi-trash"
-                [text]="true"
-                [raised]="true"
+            <div
                 pTooltip="Deletar conta"
                 tooltipPosition="right"
-                [style]="{
-                    'background-color': 'gray',
-                    color: 'white'
-                }"
-            />
+                style="width: fit-content"
+            >
+                <p-button
+                    (click)="deletar()"
+                    icon="pi pi-trash"
+                    [text]="true"
+                    [raised]="true"
+                    [style]="{
+                        'background-color': 'gray',
+                        color: 'white'
+                    }"
+                />
+            </div>
             <button
                 class="form-submit-btn custom-gradient-button"
                 type="submit"
