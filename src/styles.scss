@@ -58,3 +58,42 @@ body {
     text-overflow: ellipsis; /* Adiciona "..." ao final do texto cortado */
     max-width: 100px; /* Define um tamanho máximo para a coluna */
 }
+
+//LOADING
+@import 'styles/variaveis.scss';
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1100;
+}
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 8px solid rgba(0, 0, 0, 0.1);
+    border-left-color: #fff;
+    border-radius: 50%;
+    animation: spin 1.5s linear infinite;
+}
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+    100%,
+    0% {
+        border-left-color: $cor-rosa-claro;
+    }
+    33% {
+        border-left-color: $cor-roxa;
+    }
+    50% {
+        border-left-color: $cor-azul-claro;
+    }
+}

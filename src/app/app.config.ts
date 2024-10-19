@@ -18,15 +18,21 @@ import { getAuth } from 'firebase/auth';
 import { environment } from '../environments/environment';
 import { FirebaseService } from './core/services/firebase.service';
 import { firstValueFrom } from 'rxjs';
+import { LoadingService } from './core/services/loading.service';
 
 // Variável para armazenar a configuração do Firebase
 let firebaseConfig: any = null;
 
 // Função para carregar a configuração do Firebase antes de iniciar o app
-function loadFirebaseConfig(configService: FirebaseService) {
+function loadFirebaseConfig(
+    configService: FirebaseService,
+    loadingService: LoadingService
+) {
+    loadingService.exibirTelaLoadingInitializeFirebase();
     return () =>
         firstValueFrom(configService.getConfig()).then((config) => {
             firebaseConfig = config;
+            loadingService.ocultarTelaLoadingInitializeFirebase();
         });
 }
 
@@ -45,7 +51,7 @@ export const appConfig: ApplicationConfig = {
         {
             provide: APP_INITIALIZER,
             useFactory: loadFirebaseConfig,
-            deps: [FirebaseService],
+            deps: [FirebaseService, LoadingService],
             multi: true
         },
         provideFirebaseApp(() => {
