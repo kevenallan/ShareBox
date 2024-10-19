@@ -34,7 +34,7 @@ export class CadastroAtualizacaoUsuarioComponent implements OnInit {
     cadastroAtualizacaoForm!: FormGroup;
     isEditarPerfil: boolean = false;
     isUsuarioGoogle: boolean = false;
-    msgVoltar = 'Voltar para a tela de login';
+    msgVoltar = 'Tela de login';
     constructor(
         private router: Router,
         private formBuilder: FormBuilder,
@@ -69,7 +69,7 @@ export class CadastroAtualizacaoUsuarioComponent implements OnInit {
             this.isUsuarioGoogle =
                 this.authService.isUsuarioGoogle() === true ? true : false;
 
-            this.msgVoltar = 'Voltar para a tela inicial';
+            this.msgVoltar = 'Tela inicial';
             const usuarioLogado = await this.usuarioService.dadosUsuario();
             this.cadastroAtualizacaoForm.setValue({
                 nome: usuarioLogado.nome,
@@ -133,6 +133,7 @@ export class CadastroAtualizacaoUsuarioComponent implements OnInit {
             await this.usuarioService.atualizarUsuario(usuario);
         }
         this.authService.setNomeUsuarioStorage(usuario.nome);
+        this.router.navigate(['/inicio']);
     }
     getUsuario() {
         const form = this.cadastroAtualizacaoForm;
@@ -154,7 +155,7 @@ export class CadastroAtualizacaoUsuarioComponent implements OnInit {
         if (isDeletar) {
             await this.usuarioService.deletar();
             this.authService.logout();
-            this.router.navigate(["/login"])
+            this.router.navigate(['/login']);
         }
     }
 }

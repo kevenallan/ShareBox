@@ -140,7 +140,8 @@
     height: 0;
     transform: scaleY(0);
     transition:
-        opacity 0s ease-in-out, //opacity 0.5s ease-in-out,
+        opacity 0s ease-in-out,
+        //opacity 0.5s ease-in-out,
         transform 0.5s ease-in-out,
         visibility 0s 0.5s;
 }
@@ -234,4 +235,16 @@ td {
 
 .btn-confirmar-editar {
     color: green !important;
+}
+
+.acoes-table {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+    .acoes-table {
+        justify-content: center;
+    }
 }
