@@ -6,6 +6,7 @@ import { Arquivo } from '../../core/models/arquivo.model';
 import { AlertService } from '../../core/services/alert.service';
 import { LocalDateTimeFormatPipe } from '../../shared/pipe/local-date-time-format.pipe';
 import { MidiaDialogComponent } from '../../shared/components/midia-dialog/midia-dialog.component';
+import JSZip, { file } from 'jszip';
 
 //PRIMENG
 import { ToastModule } from 'primeng/toast';
@@ -27,6 +28,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { MenuComponent } from '../../shared/components/menu/menu.component';
 import { TotalizadorModel } from '../../core/models/totalizador.model';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-principal',
@@ -52,7 +54,9 @@ import { TotalizadorModel } from '../../core/models/totalizador.model';
         TooltipModule,
         EditorTextoDialogComponent,
         IconFieldModule,
-        InputIconModule
+        InputIconModule,
+        FormsModule,
+        ReactiveFormsModule
     ],
 
     templateUrl: './principal.component.html',
@@ -61,6 +65,8 @@ import { TotalizadorModel } from '../../core/models/totalizador.model';
 })
 export class PrincipalComponent implements OnInit {
     arquivoList: Arquivo[] = [];
+    arquivosSelecionados: Arquivo[] = [];
+    arquivoEmEdicao: any = { linha: undefined, arquivo: new Arquivo() };
     totalizadoresArquivos: TotalizadorModel[] = [
         {
             titulo: 'IMAGENS',
@@ -88,6 +94,10 @@ export class PrincipalComponent implements OnInit {
     @ViewChild('midiaDialog') midiaDialog!: MidiaDialogComponent;
     @ViewChild('editorTextoDialog')
     editorTextoDialog!: EditorTextoDialogComponent;
+
+    items!: any;
+
+    mostrarCardsInfos = false;
     constructor(
         private arquivoService: ArquivoService,
         private alertService: AlertService,
@@ -96,6 +106,24 @@ export class PrincipalComponent implements OnInit {
 
     ngOnInit() {
         this.listar();
+
+        this.items = [
+            {
+                icon: 'pi pi-upload',
+                tooltip: 'Upload',
+                command: () => {
+                    this.clickUploadFile();
+                }
+            },
+            {
+                icon: 'pi pi-file-plus',
+                tooltip: 'Cria arquivo de texto',
+                iconStyle: { 'font-size': '22px' },
+                command: () => {
+                    this.abrirCriarArquivoTexto(this.arquivoList);
+                }
+            }
+        ];
     }
 
     clickUploadFile() {
@@ -106,23 +134,21 @@ export class PrincipalComponent implements OnInit {
     }
 
     async fileUpload(event: any): Promise<void> {
-        const file = event.target.files[0];
-        if (file) {
-            const fileName = file.name;
-            const fileExtension = fileName.split('.').pop(); // Pega a extensão do arquivo
-
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('nome', fileName);
-            formData.append('extensao', fileExtension);
-
-            const arquivoExistente =
-                await this.verificarExistenciaArquivo(formData);
-
-            if (!arquivoExistente) {
-                this.uploadFile(formData);
+        const files = event.target.files;
+        const formData = new FormData();
+        for (let file of files) {
+            const fileAdd = await this.verificarNomeArquivo(file);
+            if (fileAdd) {
+                formData.append('files', fileAdd);
             }
         }
+        if (formData.has('files')) {
+            this.uploadFile(formData);
+        }
+        const fileInput = document.getElementById(
+            'fileUploadInput'
+        ) as HTMLInputElement;
+        fileInput.value = '';
     }
 
     clickUpdateFile(arquivoAtual: Arquivo) {
@@ -152,7 +178,8 @@ export class PrincipalComponent implements OnInit {
             );
 
             const desejaSobrescrever =
-                await this.alertService.showConfirmationAlertUploadFile(
+                await this.alertService.showConfirmationAlertFile(
+                    'Sobrescrever Arquivo',
                     'Tem certeza que deseja sobrescrever o arquivo?'
                 );
 
@@ -162,31 +189,28 @@ export class PrincipalComponent implements OnInit {
         }
     }
 
-    async verificarExistenciaArquivo(arquivo: FormData): Promise<boolean> {
-        const nomeArquivo = arquivo.get('nome')?.toString();
-        const arquivoVerificado = await this.arquivoService.buscarArquivo(
-            nomeArquivo || ''
-        );
+    async verificarNomeArquivo(file: File): Promise<File | undefined> {
+        let nomeArquivo = file.name.split('.')[0];
 
         const lista: string[] = [];
         this.arquivoList.map((arquivo) => {
             lista.push(arquivo.nome);
         });
-
-        if (arquivoVerificado.size > 0) {
-            const arquivoRenomeado: FormData | null =
-                await this.alertService.showInputAlertFileName(lista, arquivo);
-            if (arquivoRenomeado) this.uploadFile(arquivoRenomeado);
-            return true;
+        if (nomeArquivo != undefined && lista.includes(nomeArquivo)) {
+            const novoNomeArquivo: string | null =
+                await this.alertService.showInputAlertFileName(lista, file);
+            if (novoNomeArquivo) {
+                file = this.renomearFile(file, novoNomeArquivo);
+                return file;
+            }
+            return;
         }
-
-        return false;
+        return file;
     }
 
     uploadFile(arquivo: FormData): void {
         this.arquivoService.upload(arquivo).subscribe(() => {
             this.listar();
-            this.showToastSuccess();
         });
     }
 
@@ -204,6 +228,7 @@ export class PrincipalComponent implements OnInit {
             });
             this.adicionarImgPreview();
             this.calcularTotais();
+            this.arquivosSelecionados = [];
         });
     }
 
@@ -259,21 +284,18 @@ export class PrincipalComponent implements OnInit {
 
     async deletar(nomeArquivo: string, extensao: string) {
         try {
-            const isDelete =
-                await this.alertService.showConfirmationAlertDeleteFile(
-                    'Deletar Arquivo',
-                    'Tem certeza que deseja deletar o arquivo?'
-                );
+            const isDelete = await this.alertService.showConfirmationAlertFile(
+                'Deletar Arquivo',
+                'Tem certeza que deseja deletar o arquivo?'
+            );
             if (isDelete) {
-                await this.arquivoService.deletar(
+                const nomeArquivoList = [
                     this.arquivoService.concatenarNomeExtensaoArquivo(
                         nomeArquivo,
                         extensao
                     )
-                );
-                this.alertService.showSuccessAlert(
-                    'Arquivo deletado com sucesso!'
-                );
+                ];
+                await this.arquivoService.deletar(nomeArquivoList);
                 this.listar();
             }
         } catch (error) {
@@ -305,8 +327,17 @@ export class PrincipalComponent implements OnInit {
         dialog.showDialogEditorTexto(arquivo);
     }
 
+    openDialogCriarArquivoTexto(arquivoList: Arquivo[]) {
+        const dialog = this.editorTextoDialog; // Referência ao componente de diálogo
+        dialog.showDialogCriarArquivoTexto(arquivoList);
+    }
+
     abrirEditorTexto(arquivo: Arquivo) {
         this.openDialogEditorTexto(arquivo);
+    }
+
+    abrirCriarArquivoTexto(arquivoList: Arquivo[]) {
+        this.openDialogCriarArquivoTexto(arquivoList);
     }
 
     abrirArquivo(arquivo: Arquivo) {
@@ -440,11 +471,131 @@ export class PrincipalComponent implements OnInit {
         }
     }
 
-    showToastSuccess() {
-        this.toastService.add({
-            severity: 'success',
-            summary: 'Sucesso',
-            detail: 'Arquivo adicionado'
+    renomearFile(originalFile: File, newName: string): File {
+        const renamedFile = new File([originalFile], newName, {
+            type: originalFile.type,
+            lastModified: originalFile.lastModified
         });
+        return renamedFile;
+    }
+
+    desabilitarAcoesEmLote() {
+        return this.arquivosSelecionados.length > 0;
+    }
+
+    downloadArquivosZip() {
+        if (this.arquivosSelecionados && this.arquivosSelecionados.length > 0) {
+            const zip = new JSZip();
+
+            this.arquivosSelecionados.forEach((arquivo) => {
+                let blob = this.base64ToBlob(
+                    arquivo.base64 || '',
+                    arquivo.mimeType || ''
+                );
+                zip.file(
+                    this.arquivoService.concatenarNomeExtensaoArquivo(
+                        arquivo.nome,
+                        arquivo.extensao
+                    ),
+                    blob
+                );
+            });
+
+            zip.generateAsync({ type: 'blob' }).then((content) => {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(content);
+                link.download = 'sharebox-arquivos.zip';
+                link.click();
+            });
+        }
+    }
+
+    async deletarArquivos() {
+        if (this.arquivosSelecionados && this.arquivosSelecionados.length > 0) {
+            try {
+                const isDelete =
+                    await this.alertService.showConfirmationAlertFile(
+                        'Deletar Arquivos',
+                        'Tem certeza que deseja deletar os arquivos?'
+                    );
+                if (isDelete) {
+                    let arquivosList = [];
+                    for (let arquivo of this.arquivosSelecionados) {
+                        arquivosList.push(
+                            this.arquivoService.concatenarNomeExtensaoArquivo(
+                                arquivo.nome,
+                                arquivo.extensao
+                            )
+                        );
+                    }
+                    await this.arquivoService.deletar(arquivosList);
+                    this.listar();
+                }
+            } catch (error) {
+                this.alertService.showErrorAlert('Erro ao deletar o arquivo.');
+            }
+        }
+    }
+
+    onRowEditInit(arquivo: Arquivo, index: number) {
+        if (
+            this.arquivoEmEdicao.linha != undefined &&
+            index != this.arquivoEmEdicao.linha
+        ) {
+            this.removerEdicaoLinha();
+        }
+        this.arquivoEmEdicao.linha = index;
+        this.arquivoEmEdicao.arquivo.nome = arquivo.nome;
+    }
+
+    onRowEditSave(index: number) {
+        if (this.arquivoEmEdicao.arquivo.nome == this.arquivoList[index].nome) {
+            return;
+        } else if (this.arquivoEmEdicao.arquivo.nome.length == 0) {
+            this.alertService.showWarningAlert(
+                'O nome do arquivo não pode ficar em branco.'
+            );
+        } else {
+            // this.arquivoList[index].nome = this.arquivoEmEdicao.arquivo.nome;
+            const formData = new FormData();
+            let blob = this.base64ToBlob(
+                this.arquivoList[index].base64 || '',
+                this.arquivoList[index].mimeType || ''
+            );
+            formData.append('file', blob);
+            formData.append(
+                'nome',
+                this.arquivoService.concatenarNomeExtensaoArquivo(
+                    this.arquivoEmEdicao.arquivo.nome,
+                    this.arquivoList[index].extensao
+                )
+            );
+            formData.append('extensao', this.arquivoList[index].extensao);
+            formData.append(
+                'nomeArquivoAntigo',
+                this.arquivoService.concatenarNomeExtensaoArquivo(
+                    this.arquivoList[index].nome,
+                    this.arquivoList[index].extensao
+                )
+            );
+            this.updateFile(formData);
+            this.removerEdicaoLinha();
+        }
+    }
+
+    onRowEditCancel() {
+        this.arquivoEmEdicao.linha = undefined;
+        this.arquivoEmEdicao.arquivo = new Arquivo();
+    }
+
+    removerEdicaoLinha() {
+        const idLinhaEmEdicao = document.getElementById(
+            this.arquivoEmEdicao.linha
+        ) as HTMLInputElement;
+        idLinhaEmEdicao.click();
+    }
+
+    mostrarInformacoes() {
+        this.mostrarCardsInfos = !this.mostrarCardsInfos;
     }
 }

@@ -16,6 +16,13 @@ export class UsuarioService {
             .post(`${environment.urlBackEnd}/usuario/login`, usuario)
             .pipe(map((response: ResponseModel) => response.model));
     }
+
+    loginGoogle(usuario: Usuario) {
+        return this.http
+            .post(`${environment.urlBackEnd}/usuario/login-google`, usuario)
+            .pipe(map((response: ResponseModel) => response.model));
+    }
+
     cadastro(usuario: Usuario) {
         return this.http
             .post(`${environment.urlBackEnd}/usuario/cadastrar`, usuario)
@@ -64,6 +71,23 @@ export class UsuarioService {
                     usuarioAtualizado
                 )
                 .pipe(map((response: ResponseModel) => response.model))
+        );
+    }
+
+    async atualizarUsuarioGoogle(usuarioAtualizado: Usuario) {
+        return await lastValueFrom(
+            this.http
+                .put(
+                    `${environment.urlBackEnd}/usuario/atualizar-usuario-google`,
+                    usuarioAtualizado
+                )
+                .pipe(map((response: ResponseModel) => response.model))
+        );
+    }
+
+    async deletar() {
+        return await lastValueFrom(
+            this.http.delete(`${environment.urlBackEnd}/usuario/deletar`)
         );
     }
 }

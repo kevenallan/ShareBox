@@ -1,17 +1,11 @@
 export class Arquivo {
-    nome: string;
-    file?: File; //ARMAZENA O ARQUIVO NA HORA DO UPLOAD
-    extensao: string;
-    mimeType?: string; //USADO NA REPRODUÇÃO DO VIDEO
-    tamanho?: string;
+    nome: string = '';
+    file?: File;
+    extensao: string = 'extensão desconhecida';
+    mimeType?: string;
+    tamanho: string = '0 KB';
     bytes?: any;
-    base64?: string; //USADO PARA EXIBIR AS IMAGENS DE PREVIEW, VIDEO E MUSICA
+    base64?: string;
     dataCriacao?: Date;
-    //FRONT
-    previewSrc?: string; //USADO PARA EXIBIR A IMAGEM DE PREVIEW NA TABELA
-
-    constructor(nome: string, extensao: string) {
-        this.nome = nome;
-        this.extensao = extensao;
-    }
+    previewSrc?: string;
 }

@@ -1,11 +1,36 @@
 @import './../../../styles/variaveis.scss';
 
 //BTN UPLOAD/UPDATE
-.add-arquivo {
+:host ::ng-deep .p-speeddial {
     position: fixed;
     bottom: 30px;
     right: 30px;
     z-index: 1;
+}
+
+:host ::ng-deep .p-speeddial-button {
+    width: 50px;
+    height: 50px;
+    background-color: white;
+    color: $cor-roxa;
+    box-shadow:
+        0 4px 6px rgba(0, 0, 0, 0.1),
+        0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+:host ::ng-deep .p-speeddial-button {
+    border: none;
+}
+
+:host ::ng-deep .p-speeddial-button:focus {
+    border: 1px solid $cor-rosa-claro;
+}
+
+:host ::ng-deep .p-speeddial-action {
+    background: $cor-roxa;
+    box-shadow:
+        0 4px 6px rgba(0, 0, 0, 0.1),
+        0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 //DESABILITAR INPUT UPLOAD
@@ -17,9 +42,64 @@
 .totalizadores {
     display: flex;
     justify-content: center;
-    // width: 100%;
     flex-wrap: wrap;
 }
+
+.titulo-totalizador {
+    font-weight: bold;
+}
+
+.card-totalizador p {
+    margin: 5px;
+}
+
+//1
+// .card-totalizador {
+//     background:
+//         linear-gradient(#212121, #212121) padding-box,
+//         linear-gradient(
+//                 135deg,
+//                 pink 10%,
+//                 rgb(197, 32, 197) 40%,
+//                 rgb(145, 226, 253) 85%
+//             )
+//             border-box;
+//     border: 4px solid transparent;
+//     color: white;
+//     padding: 5px 15px 5px;
+//     font-size: smaller;
+//     margin: 0px 12px;
+//     opacity: 0;
+//     visibility: hidden;
+//     transform: translateY(20px);
+//     transition:
+//         opacity 0.5s ease-in-out,
+//         transform 0.5s ease-in-out,
+//         visibility 0s 0.5s;
+// }
+
+// .show .card-totalizador {
+//     visibility: visible;
+//     opacity: 1;
+//     height: auto;
+//     transform: translateY(0);
+//     transition:
+//         opacity 0.5s ease-in-out,
+//         transform 0.5s ease-in-out,
+//         visibility 0s 0s;
+// }
+
+// .hide .card-totalizador {
+//     opacity: 0;
+//     height: 0;
+//     transform: translateY(20px);
+//     transition:
+//         opacity 0.5s ease-in-out,
+//         transform 0.5s ease-in-out,
+//         visibility 0s 0.5s;
+// }
+
+//2
 .card-totalizador {
     background:
         linear-gradient(#212121, #212121) padding-box,
@@ -32,19 +112,38 @@
             border-box;
     border: 4px solid transparent;
     color: white;
-    // padding-left: 15px;
-    // padding-right: 15px;
-    padding: 5px 15px 5px;
+    padding: 5px 15px;
     font-size: smaller;
     margin: 0px 12px;
+    opacity: 0;
+    visibility: hidden;
+    transform: scaleY(0);
+    transform-origin: top; /* Para encolher a partir do topo */
+    transition:
+        opacity 0.5s ease-in-out,
+        transform 0.5s ease-in-out,
+        visibility 0s 0.5s;
 }
 
-.titulo-totalizador {
-    font-weight: bold;
+.show .card-totalizador {
+    visibility: visible;
+    opacity: 1;
+    transform: scaleY(1);
+    transition:
+        opacity 0.5s ease-in-out,
+        transform 0.5s ease-in-out,
+        visibility 0s 0s;
 }
 
-.card-totalizador p {
-    margin: 5px;
+.hide .card-totalizador {
+    opacity: 0;
+    height: 0;
+    transform: scaleY(0);
+    transition:
+        opacity 0s ease-in-out,
+        //opacity 0.5s ease-in-out,
+        transform 0.5s ease-in-out,
+        visibility 0s 0.5s;
 }
 
 // TABELA DE ARQUIVOS
@@ -61,7 +160,7 @@
             )
             border-box;
     border: 4px solid transparent;
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 :host ::ng-deep .p-datatable .p-datatable-thead > tr > th,
@@ -94,6 +193,15 @@
     width: 90%;
 }
 
+:host ::ng-deep .p-checkbox .p-checkbox-box.p-highlight {
+    border-color: white;
+    background-color: $cor-roxa;
+}
+
+:host ::ng-deep .p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box:hover {
+    border-color: $cor-roxa;
+}
+
 :host ::ng-deep .p-inputtext:enabled:focus {
     border-color: $cor-azul-claro !important;
     box-shadow: 0 0 0 0.2rem $cor-rosa-claro !important;
@@ -112,4 +220,31 @@
 :host ::ng-deep .p-paginator .p-paginator-current,
 :host ::ng-deep .p-paginator button {
     color: $cor-roxa;
+}
+
+th,
+td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.btn-cancelar-editar {
+    color: red !important;
+    margin-left: 5px;
+}
+
+.btn-confirmar-editar {
+    color: green !important;
+}
+
+.acoes-table {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+    .acoes-table {
+        justify-content: center;
+    }
 }

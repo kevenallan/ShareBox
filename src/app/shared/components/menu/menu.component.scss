@@ -21,7 +21,7 @@
 }
 
 .menu-avatar:hover {
-    background-color:rgb(247, 230, 243);
+    background-color: rgb(247, 230, 243);
     border-radius: 10px;
 }
 
@@ -34,3 +34,7 @@
     margin-left: 10px;
 }
 
+:host ::ng-deep .p-avatar-circle {
+    background-color: white;
+    color: $cor-roxa;
+}

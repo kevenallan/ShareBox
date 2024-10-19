@@ -11,20 +11,7 @@ export class AlertService {
     showSuccessAlert(titulo: string) {
         Swal.fire({
             title: titulo,
-            // text: 'Successful.',
             icon: 'success',
-            confirmButtonText: 'OK',
-            customClass: {
-                confirmButton: 'swal2-custom-confirm'
-            }
-        });
-    }
-
-    showInfoAlert(texto: string) {
-        Swal.fire({
-            title: 'Information',
-            text: texto,
-            icon: 'info',
             confirmButtonText: 'OK',
             customClass: {
                 confirmButton: 'swal2-custom-confirm'
@@ -56,7 +43,7 @@ export class AlertService {
         });
     }
 
-    async showConfirmationAlertDeleteFile(titulo: string, texto: string) {
+    async showConfirmationAlertFile(titulo: string, texto: string) {
         const result = await Swal.fire({
             title: titulo,
             text: texto,
@@ -72,11 +59,11 @@ export class AlertService {
         return result.isConfirmed;
     }
 
-    async showConfirmationAlertUploadFile(texto: string): Promise<boolean> {
+    async showConfirmationAlertWarning(titulo: string, texto: string) {
         const result = await Swal.fire({
-            title: 'Sobrescrever Arquivo',
+            title: titulo,
             text: texto,
-            icon: 'question',
+            icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Sim',
             cancelButtonText: 'Não',
@@ -90,13 +77,13 @@ export class AlertService {
 
     async showInputAlertFileName(
         arquivosExistentes: string[],
-        arquivoAtual: FormData
-    ): Promise<FormData | null> {
+        fileAtual: File
+    ): Promise<string | null> {
         const result = await Swal.fire({
             title: 'Nome do arquivo duplicado',
             text: 'Por favor, escolha outro nome:',
             input: 'text',
-            inputValue: arquivoAtual.get('nome') as string, // Garantindo que o valor seja string
+            inputValue: fileAtual.name as string, // Garantindo que o valor seja string
             icon: 'info',
             inputPlaceholder: 'Escolha um novo nome',
             showCancelButton: true,
@@ -124,8 +111,7 @@ export class AlertService {
         });
 
         if (result.isConfirmed) {
-            arquivoAtual.set('nome', result.value);
-            return arquivoAtual;
+            return result.value;
         }
 
         return null;

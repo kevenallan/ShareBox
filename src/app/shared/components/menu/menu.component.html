@@ -2,8 +2,9 @@
     <p-menubar [model]="items">
         <ng-template pTemplate="start">
             <div
-                class="div-icon-box"
+                class="div-icon-box cursor-pointer"
                 style="display: flex; align-items: center"
+                (click)="telaPrincipal()"
             >
                 <img
                     src="/assets/favicon.ico"
@@ -20,9 +21,12 @@
             >
                 <p-avatar
                     (click)="op.toggle($event)"
-                    styleClass="cursor-pointer"
+                    styleClass="cursor-pointer avatar"
                     icon="pi pi-user"
                     shape="circle"
+                    label="{{ inicialUsuario }}"
+                    [pTooltip]="nomeUsuario"
+                    tooltipPosition="left"
                 >
                 </p-avatar>
 

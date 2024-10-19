@@ -57,7 +57,6 @@ export class ArquivoService {
     ) {}
 
     listar() {
-        console.log('environment', environment.urlBackEnd);
         return this.http
             .get<ResponseModel>(`${environment.urlBackEnd}/arquivo/listar`)
             .pipe(
@@ -97,8 +96,11 @@ export class ArquivoService {
         );
     }
 
-    async deletar(nomeArquivo: string) {
-        let params = new HttpParams().set('nomeArquivo', nomeArquivo);
+    async deletar(nomesArquivos: string[]) {
+        let params = new HttpParams();
+        nomesArquivos.forEach((nomeArquivo) => {
+            params = params.append('nomesArquivos', nomeArquivo);
+        });
         await lastValueFrom(
             this.http.delete<void>(
                 `${environment.urlBackEnd}/arquivo/deletar`,

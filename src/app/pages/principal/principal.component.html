@@ -2,7 +2,7 @@
 <app-menu></app-menu>
 
 <!-- BTN'S UPLOAD/UPDATE ARQUIVO -->
-<div class="add-arquivo">
+<div>
     <input
         id="fileUploadInput"
         class="none"
@@ -19,19 +19,29 @@
         (change)="fileUpdate($event)"
         multiple
     />
-    <p-button
-        icon="pi pi-plus"
-        [rounded]="true"
-        [text]="true"
-        [raised]="true"
-        (click)="clickUploadFile()"
-    />
 </div>
 
-<p-toast />
+<p-speedDial [model]="items" direction="up">
+    <ng-template pTemplate="item" let-item>
+        <a
+            class="p-speeddial-action"
+            pTooltip="{{ item.tooltip }}"
+            tooltipPosition="left"
+            (click)="item.command()"
+        >
+            <span class="p-button-icon" [ngStyle]="item.style">
+                <i [class]="item.icon" [ngStyle]="item.iconStyle"></i>
+            </span>
+        </a>
+    </ng-template>
+</p-speedDial>
 
 <!-- TOTALIZADORES? -->
-<div class="totalizadores">
+<!-- 1 & 2 -->
+<div
+    class="totalizadores"
+    [ngClass]="{ show: mostrarCardsInfos, hide: !mostrarCardsInfos }"
+>
     <div
         class="card-totalizador box-3d"
         *ngFor="let totalizador of totalizadoresArquivos"
@@ -49,6 +59,9 @@
             <p-table
                 #tbArquivos
                 [value]="arquivoList"
+                dataKey="nome"
+                editMode="row"
+                [(selection)]="arquivosSelecionados"
                 [tableStyle]="{ 'min-width': '50rem' }"
                 styleClass="p-datatable-sm"
                 responsiveLayout="stack"
@@ -60,25 +73,61 @@
                 currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} registros"
             >
                 <ng-template pTemplate="caption">
-                    <div class="flex inpFiltrarArquivos">
-                        <p-iconField
-                            iconPosition="left"
-                            class="ml-auto inpFiltrarArquivos"
-                        >
-                            <p-inputIcon>
-                                <i class="pi pi-search"></i>
-                            </p-inputIcon>
-                            <input
-                                pInputText
-                                type="text"
-                                (input)="filterArquivos($event, tbArquivos)"
-                                placeholder="Pesquisar arquivo..."
+                    <div class="acoes-table">
+                        <div class="mtb-5" style="margin: 5px 0px">
+                            <p-iconField iconPosition="left" class="ml-auto">
+                                <p-inputIcon>
+                                    <i class="pi pi-search"></i>
+                                </p-inputIcon>
+                                <input
+                                    pInputText
+                                    type="text"
+                                    (input)="filterArquivos($event, tbArquivos)"
+                                    placeholder="Pesquisar arquivo..."
+                                />
+                            </p-iconField>
+                        </div>
+                        <div class="mtb-5">
+                            <p-button
+                                (click)="mostrarInformacoes()"
+                                icon="pi pi-chart-bar"
+                                [text]="true"
+                                [raised]="true"
+                                pTooltip="Mostrar informações"
+                                tooltipPosition="bottom"
                             />
-                        </p-iconField>
+                            <p-button
+                                (click)="downloadArquivosZip()"
+                                icon="pi pi-download"
+                                [text]="true"
+                                [raised]="true"
+                                pTooltip="Download"
+                                tooltipPosition="bottom"
+                                [style]="{
+                                    'margin-left': '10px'
+                                }"
+                                [disabled]="!desabilitarAcoesEmLote()"
+                            />
+                            <p-button
+                                (click)="deletarArquivos()"
+                                icon="pi pi-trash"
+                                [text]="true"
+                                [raised]="true"
+                                pTooltip="Deletar"
+                                tooltipPosition="bottom"
+                                [style]="{
+                                    'margin-left': '10px'
+                                }"
+                                [disabled]="!desabilitarAcoesEmLote()"
+                            />
+                        </div>
                     </div>
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
+                        <th style="width: 4rem">
+                            <p-tableHeaderCheckbox />
+                        </th>
                         <th>Arquivo</th>
                         <th pSortableColumn="nome">
                             Nome <p-sortIcon field="nome" />
@@ -95,8 +144,16 @@
                         <th>Ações</th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-arquivo>
-                    <tr>
+                <ng-template
+                    pTemplate="body"
+                    let-arquivo
+                    let-editing="editing"
+                    let-idx="rowIndex"
+                >
+                    <tr [pEditableRow]="arquivo">
+                        <td>
+                            <p-tableCheckbox [value]="arquivo" />
+                        </td>
                         <td>
                             <ng-container *ngIf="arquivo.previewSrc">
                                 <img
@@ -116,7 +173,23 @@
                             </ng-container>
                         </td>
 
-                        <td class="text-truncate">{{ arquivo.nome }}</td>
+                        <td class="text-truncate" pTooltip="{{ arquivo.nome }}">
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input
+                                        pInputText
+                                        type="text"
+                                        [(ngModel)]="
+                                            this.arquivoEmEdicao.arquivo.nome
+                                        "
+                                        style="width: 100%"
+                                    />
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{ arquivo.nome }}
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
                         <td class="text-truncate">{{ arquivo.extensao }}</td>
                         <td class="text-truncate">{{ arquivo.tamanho }}</td>
                         <td>
@@ -128,6 +201,7 @@
                         <td>
                             <div class="flex align-items-center gap-2">
                                 <p-button
+                                    *ngIf="!editing"
                                     (click)="op.toggle($event)"
                                     icon="pi pi-cog"
                                     [rounded]="true"
@@ -179,7 +253,45 @@
                                         tooltipPosition="bottom"
                                         [style]="{ color: '#e81cff' }"
                                     />
+                                    <p-button
+                                        (click)="
+                                            onRowEditInit(arquivo, idx);
+                                            op.hide()
+                                        "
+                                        pInitEditableRow
+                                        icon="pi pi-pencil"
+                                        [rounded]="true"
+                                        [text]="true"
+                                        [raised]="true"
+                                        class="btn-acoes"
+                                        pTooltip="Editar nome"
+                                        tooltipPosition="bottom"
+                                        [style]="{ color: '#e81cff' }"
+                                    />
                                 </p-overlayPanel>
+
+                                <button
+                                    *ngIf="editing"
+                                    pButton
+                                    pRipple
+                                    type="button"
+                                    pSaveEditableRow
+                                    icon="pi pi-check"
+                                    (click)="onRowEditSave(idx)"
+                                    class="p-button-rounded p-button-text btn-confirmar-editar"
+                                ></button>
+
+                                <button
+                                    *ngIf="editing"
+                                    pButton
+                                    pRipple
+                                    type="button"
+                                    pCancelEditableRow
+                                    icon="pi pi-times"
+                                    (click)="onRowEditCancel()"
+                                    id="{{ idx }}"
+                                    class="p-button-rounded p-button-text btn-cancelar-editar"
+                                ></button>
                             </div>
                         </td>
                     </tr>
@@ -190,4 +302,5 @@
 </div>
 
 <app-midia-dialog #midiaDialog> </app-midia-dialog>
-<app-editor-texto-dialog #editorTextoDialog> </app-editor-texto-dialog>
+<app-editor-texto-dialog #editorTextoDialog (eventUpdate)="listar()">
+</app-editor-texto-dialog>

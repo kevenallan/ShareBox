@@ -33,12 +33,14 @@ import { MenuComponent } from '../../shared/components/menu/menu.component';
 export class CadastroAtualizacaoUsuarioComponent implements OnInit {
     cadastroAtualizacaoForm!: FormGroup;
     isEditarPerfil: boolean = false;
-    msgVoltar = 'Voltar para a tela de login';
+    isUsuarioGoogle: boolean = false;
+    msgVoltar = 'Tela de login';
     constructor(
         private router: Router,
         private formBuilder: FormBuilder,
         private usuarioService: UsuarioService,
-        private authService: AuthService
+        private authService: AuthService,
+        private alertService: AlertService
     ) {}
 
     async ngOnInit(): Promise<void> {
@@ -64,7 +66,10 @@ export class CadastroAtualizacaoUsuarioComponent implements OnInit {
 
         if (this.router.url === '/editar-perfil') {
             this.isEditarPerfil = true;
-            this.msgVoltar = 'Voltar para a tela inicial';
+            this.isUsuarioGoogle =
+                this.authService.isUsuarioGoogle() === true ? true : false;
+
+            this.msgVoltar = 'Tela inicial';
             const usuarioLogado = await this.usuarioService.dadosUsuario();
             this.cadastroAtualizacaoForm.setValue({
                 nome: usuarioLogado.nome,
@@ -73,6 +78,12 @@ export class CadastroAtualizacaoUsuarioComponent implements OnInit {
                 senha: usuarioLogado.senha,
                 confirmarSenha: usuarioLogado.senha
             });
+            if (this.isUsuarioGoogle) {
+                this.cadastroAtualizacaoForm.get('email')?.disable();
+                this.cadastroAtualizacaoForm.get('usuario')?.disable();
+                this.cadastroAtualizacaoForm.get('senha')?.disable();
+                this.cadastroAtualizacaoForm.get('confirmarSenha')?.disable();
+            }
         }
     }
 
@@ -106,8 +117,8 @@ export class CadastroAtualizacaoUsuarioComponent implements OnInit {
         this.usuarioService
             .cadastro(usuario)
             .subscribe((loginDTO: LoginDTO) => {
-                if (loginDTO.token) {
-                    this.authService.setTokenStorage(loginDTO.token);
+                if (loginDTO) {
+                    this.authService.setLoginStorage(loginDTO);
                     this.router.navigate(['/inicio']);
                 }
             });
@@ -116,7 +127,13 @@ export class CadastroAtualizacaoUsuarioComponent implements OnInit {
     async atualizarUsuario() {
         const usuario: Usuario = this.getUsuario();
 
-        await this.usuarioService.atualizarUsuario(usuario);
+        if (this.isUsuarioGoogle) {
+            await this.usuarioService.atualizarUsuarioGoogle(usuario);
+        } else {
+            await this.usuarioService.atualizarUsuario(usuario);
+        }
+        this.authService.setNomeUsuarioStorage(usuario.nome);
+        this.router.navigate(['/inicio']);
     }
     getUsuario() {
         const form = this.cadastroAtualizacaoForm;
@@ -128,5 +145,17 @@ export class CadastroAtualizacaoUsuarioComponent implements OnInit {
             senha: form.get('senha')?.value
         };
         return usuario;
+    }
+
+    async deletar() {
+        const isDeletar = await this.alertService.showConfirmationAlertWarning(
+            'Deletar conta do usuário',
+            'Tem certeza que deseja deletar sua conta?'
+        );
+        if (isDeletar) {
+            await this.usuarioService.deletar();
+            this.authService.logout();
+            this.router.navigate(['/login']);
+        }
     }
 }

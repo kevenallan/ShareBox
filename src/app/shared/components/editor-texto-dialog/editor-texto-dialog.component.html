@@ -10,10 +10,18 @@
     </div>
     <div class="btn-editar">
         <p-button
+            *ngIf="arquivo"
             label="Editar"
             [text]="true"
             [raised]="true"
             (click)="updateArquivo()"
+        />
+        <p-button
+            *ngIf="!arquivo"
+            label="Salvar"
+            [text]="true"
+            [raised]="true"
+            (click)="uploadArquivo()"
         />
     </div>
 </p-dialog>
