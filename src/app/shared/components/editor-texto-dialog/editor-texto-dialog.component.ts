@@ -89,15 +89,12 @@ export class EditorTextoDialogComponent {
 
     uploadArquivo() {
         const nomeArquivo = this.getNomeArquivoNovo();
-        const fileExtension = nomeArquivo.split('.')[1];
         const file = this.arquivoService.convertTxtToFile(
             this.texto || '',
             nomeArquivo
         );
         const formData = new FormData();
-        formData.append('file', file);
-        formData.append('nome', nomeArquivo);
-        formData.append('extensao', fileExtension);
+        formData.append('files', file);
 
         this.arquivoService.upload(formData).subscribe(() => {
             this.eventUpdate.emit();
