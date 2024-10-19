@@ -73,8 +73,8 @@
                 currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} registros"
             >
                 <ng-template pTemplate="caption">
-                    <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
-                        <div>
+                    <div class="acoes-table">
+                        <div class="mtb-5" style="margin: 5px 0px">
                             <p-iconField iconPosition="left" class="ml-auto">
                                 <p-inputIcon>
                                     <i class="pi pi-search"></i>
@@ -87,7 +87,7 @@
                                 />
                             </p-iconField>
                         </div>
-                        <div style="margin-left: 10px">
+                        <div class="mtb-5">
                             <p-button
                                 (click)="mostrarInformacoes()"
                                 icon="pi pi-chart-bar"
