@@ -71,6 +71,14 @@ export class ArquivoService {
         );
     }
 
+    uploadLink(formData: FormData) {
+        return this.http
+            .post(`${environment.urlBackEnd}/arquivo/upload-zip-link`, formData)
+            .pipe(
+                map((response: ResponseModel) => response.model as string) // retorna apenas o model
+            );
+    }
+
     update(formData: FormData) {
         return this.http.put(
             `${environment.urlBackEnd}/arquivo/update`,

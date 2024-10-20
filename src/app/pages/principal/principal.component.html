@@ -88,38 +88,47 @@
                             </p-iconField>
                         </div>
                         <div class="mtb-5">
-                            <p-button
-                                (click)="mostrarInformacoes()"
-                                icon="pi pi-chart-bar"
-                                [text]="true"
-                                [raised]="true"
+                            <div
                                 pTooltip="Mostrar informações"
                                 tooltipPosition="bottom"
-                            />
-                            <p-button
-                                (click)="downloadArquivosZip()"
-                                icon="pi pi-download"
-                                [text]="true"
-                                [raised]="true"
-                                pTooltip="Download"
+                            >
+                                <p-button
+                                    (click)="mostrarInformacoes()"
+                                    icon="pi pi-chart-bar"
+                                    [text]="true"
+                                    [raised]="true"
+                                />
+                            </div>
+                            <div
+                                pTooltip="Link de download"
                                 tooltipPosition="bottom"
-                                [style]="{
-                                    'margin-left': '10px'
-                                }"
-                                [disabled]="!desabilitarAcoesEmLote()"
-                            />
-                            <p-button
-                                (click)="deletarArquivos()"
-                                icon="pi pi-trash"
-                                [text]="true"
-                                [raised]="true"
-                                pTooltip="Deletar"
-                                tooltipPosition="bottom"
-                                [style]="{
-                                    'margin-left': '10px'
-                                }"
-                                [disabled]="!desabilitarAcoesEmLote()"
-                            />
+                            >
+                                <p-button
+                                    (click)="obterArquivoDoZip()"
+                                    icon="pi pi-link"
+                                    [text]="true"
+                                    [raised]="true"
+                                    [disabled]="!desabilitarAcoesEmLote()"
+                                />
+                            </div>
+                            <div pTooltip="Download" tooltipPosition="bottom">
+                                <p-button
+                                    (click)="downloadArquivosZip()"
+                                    icon="pi pi-download"
+                                    [text]="true"
+                                    [raised]="true"
+                                    [disabled]="!desabilitarAcoesEmLote()"
+                                />
+                            </div>
+                            <div pTooltip="Deletar" tooltipPosition="bottom">
+                                <p-button
+                                    (click)="deletarArquivos()"
+                                    icon="pi pi-trash"
+                                    [text]="true"
+                                    [raised]="true"
+                                    [disabled]="!desabilitarAcoesEmLote()"
+                                />
+                            </div>
                         </div>
                     </div>
                 </ng-template>

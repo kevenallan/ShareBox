@@ -248,3 +248,10 @@ td {
         justify-content: center;
     }
 }
+
+.mtb-5 {
+    display: flex;
+    & div {
+        margin-left: 10px;
+    }
+}

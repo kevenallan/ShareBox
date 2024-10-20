@@ -7,6 +7,7 @@ import { AlertService } from '../../core/services/alert.service';
 import { LocalDateTimeFormatPipe } from '../../shared/pipe/local-date-time-format.pipe';
 import { MidiaDialogComponent } from '../../shared/components/midia-dialog/midia-dialog.component';
 import JSZip, { file } from 'jszip';
+import { Clipboard } from '@angular/cdk/clipboard';
 
 //PRIMENG
 import { ToastModule } from 'primeng/toast';
@@ -101,7 +102,7 @@ export class PrincipalComponent implements OnInit {
     constructor(
         private arquivoService: ArquivoService,
         private alertService: AlertService,
-        private toastService: MessageService
+        private clipboard: Clipboard
     ) {}
 
     ngOnInit() {
@@ -505,8 +506,48 @@ export class PrincipalComponent implements OnInit {
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(content);
                 link.download = 'sharebox-arquivos.zip';
+                console.log(link);
                 link.click();
             });
+        }
+    }
+
+    async obterArquivoDoZip(): Promise<void> {
+        if (this.arquivosSelecionados && this.arquivosSelecionados.length > 0) {
+            const zip = new JSZip();
+
+            // Adiciona todos os arquivos selecionados ao ZIP
+            this.arquivosSelecionados.forEach((arquivo) => {
+                let blob = this.base64ToBlob(
+                    arquivo.base64 || '',
+                    arquivo.mimeType || ''
+                );
+                zip.file(
+                    this.arquivoService.concatenarNomeExtensaoArquivo(
+                        arquivo.nome,
+                        arquivo.extensao
+                    ),
+                    blob
+                );
+            });
+
+            // Gera o ZIP e transforma em um File para enviar ao back-end
+            try {
+                const zipContent = await zip.generateAsync({ type: 'blob' }); // Gera o conteúdo do ZIP como Blob
+                const zipFile = new File(
+                    [zipContent],
+                    'sharebox-arquivos.zip',
+                    { type: 'application/zip' }
+                );
+                const formData = new FormData();
+                formData.append('file', zipFile);
+                this.arquivoService.uploadLink(formData).subscribe((link) => {
+                    console.log(link);
+                    this.clipboard.copy(link);
+                });
+            } catch (error) {
+                this.alertService.showErrorAlert('Erro ao gerar link');
+            }
         }
     }
 
