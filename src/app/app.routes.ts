@@ -5,6 +5,7 @@ import { AuthGuard } from './core/guards/auth.guard';
 import { LoginGuard } from './core/guards/login.guard';
 import { CadastroAtualizacaoUsuarioComponent } from './pages/cadastro-atualizacao-usuario/cadastro-atualizacao-usuario.component';
 import { AlterarSenhaComponent } from './pages/alterar-senha/alterar-senha.component';
+import { ArquivosCompartilhadosComponent } from './pages/arquivos-compartilhados/arquivos-compartilhados.component';
 
 export const routes: Routes = [
     {
@@ -25,6 +26,11 @@ export const routes: Routes = [
     {
         path: 'alterar-sua-senha',
         component: AlterarSenhaComponent
+    },
+    {
+        path: 'arquivos-compartilhados',
+        component: ArquivosCompartilhadosComponent,
+        canActivate: [AuthGuard]
     },
     { path: '**', redirectTo: '/login' }
 ];
