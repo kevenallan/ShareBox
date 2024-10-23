@@ -92,6 +92,8 @@ export class PrincipalComponent implements OnInit {
     ];
     arquivoUpdate!: Arquivo;
 
+    emailInvalido: boolean = false;
+
     @ViewChild('midiaDialog') midiaDialog!: MidiaDialogComponent;
     @ViewChild('editorTextoDialog')
     editorTextoDialog!: EditorTextoDialogComponent;
@@ -638,5 +640,38 @@ export class PrincipalComponent implements OnInit {
 
     mostrarInformacoes() {
         this.mostrarCardsInfos = !this.mostrarCardsInfos;
+    }
+
+    async compartilharArquivo(emailInput: HTMLInputElement) {
+        const email = emailInput.value;
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailPattern.test(email)) {
+            this.emailInvalido = true;
+            return;
+        }
+
+        this.emailInvalido = false;
+        const formData = new FormData();
+        formData.append('email', email);
+        this.arquivosSelecionados.forEach((arquivo) => {
+            formData.append(
+                'arquivos',
+                this.arquivoService.concatenarNomeExtensaoArquivo(
+                    arquivo.nome,
+                    arquivo.extensao
+                )
+            );
+        });
+        await this.arquivoService.compartilharArquivos(formData);
+        this.arquivosSelecionados = [];
+        emailInput.value = '';
+    }
+
+    onEmailChange(email: string) {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (emailPattern.test(email)) {
+            this.emailInvalido = false;
+        }
     }
 }

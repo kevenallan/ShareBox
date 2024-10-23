@@ -129,6 +129,55 @@
                                     [disabled]="!desabilitarAcoesEmLote()"
                                 />
                             </div>
+                            <div
+                                pTooltip="Compartilhar arquivo(s)"
+                                tooltipPosition="bottom"
+                            >
+                                <p-button
+                                    (click)="opca.toggle($event)"
+                                    icon="pi pi-share-alt"
+                                    [text]="true"
+                                    [raised]="true"
+                                    [disabled]="!desabilitarAcoesEmLote()"
+                                />
+                                <p-overlayPanel #opca class="opca">
+                                    <input
+                                        pInputText
+                                        #emailInput
+                                        type="text"
+                                        placeholder="e-mail"
+                                        [ngClass]="{
+                                            'input-error': emailInvalido
+                                        }"
+                                        [style]="{
+                                            'margin-right': '10px !important'
+                                        }"
+                                        (input)="onEmailChange(emailInput.value)"
+                                    />
+                                    <p-button
+                                        (click)="
+                                            compartilharArquivo(
+                                                emailInput
+                                            )
+                                        "
+                                        icon="pi pi-share-alt"
+                                        [text]="true"
+                                        [raised]="true"
+                                        [style]="{
+                                            color: '#e81cff',
+                                            'margin-right': '10px !important'
+                                        }"
+                                    ></p-button>
+                                    <div style="width: 100%">
+                                        <small
+                                            *ngIf="emailInvalido"
+                                            style="color: red"
+                                            >Por favor, insira um e-mail
+                                            válido.</small
+                                        >
+                                    </div>
+                                </p-overlayPanel>
+                            </div>
                         </div>
                     </div>
                 </ng-template>

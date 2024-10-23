@@ -119,6 +119,17 @@ export class ArquivoService {
         );
     }
 
+    async compartilharArquivos(formData: FormData) {
+        console.log('service');
+
+        await lastValueFrom(
+            this.http.post(
+                `${environment.urlBackEnd}/usuario/compartilhar-arquivos`,
+                formData
+            )
+        );
+    }
+
     //---
     isImagemExtensao(extensao: string) {
         return this.imagemExtensoes.includes(extensao);
