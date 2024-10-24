@@ -11,6 +11,7 @@ import { UsuarioService } from '../../core/services/usuario.service';
 import { Arquivo } from '../../core/models/arquivo.model';
 import { ArquivoService } from '../../core/services/arquivo.service';
 import { MidiaDialogComponent } from '../../shared/components/midia-dialog/midia-dialog.component';
+import { EditorTextoDialogComponent } from '../../shared/components/editor-texto-dialog/editor-texto-dialog.component';
 
 @Component({
     selector: 'app-arquivos-compartilhados',
@@ -24,7 +25,8 @@ import { MidiaDialogComponent } from '../../shared/components/midia-dialog/midia
         OverlayModule,
         OverlayPanelModule,
         CommonModule,
-        MidiaDialogComponent
+        MidiaDialogComponent,
+        EditorTextoDialogComponent
     ],
     providers: [DatePipe],
     templateUrl: './arquivos-compartilhados.component.html',
@@ -34,6 +36,8 @@ export class ArquivosCompartilhadosComponent implements OnInit {
     arquivosCompartilhados!: Arquivo[];
 
     @ViewChild('midiaDialog') midiaDialog!: MidiaDialogComponent;
+    @ViewChild('editorTextoDialog')
+    editorTextoDialog!: EditorTextoDialogComponent;
 
     constructor(
         private usuarioService: UsuarioService,
@@ -85,56 +89,18 @@ export class ArquivosCompartilhadosComponent implements OnInit {
     }
 
     abrirArquivo(arquivo: Arquivo) {
-        if (
-            this.arquivoService.isImagemExtensao(arquivo.extensao) ||
-            this.arquivoService.isVideoExtensao(arquivo.extensao) ||
-            this.arquivoService.isAudioExtensao(arquivo.extensao)
-        ) {
-            this.abrirMidia(arquivo);
-            // }
-            // else if (this.arquivoService.isTxtExtensao(arquivo.extensao)) {
-            //     this.abrirEditorTexto(arquivo);
-        } else if (this.arquivoService.isPdfExtensao(arquivo.extensao)) {
-            const blob = this.base64ToBlob(
-                arquivo.base64 || '',
-                'application/pdf'
-            );
-            const url = URL.createObjectURL(blob);
-            window.open(url, '_blank', 'noopener,noreferrer');
-        }
-    }
+        let dialog: any;
 
-    abrirMidia(arquivo: Arquivo) {
-        const dialog = this.midiaDialog;
-        dialog.showDialogMidia(arquivo);
-    }
-
-    base64ToBlob(base64: string, type: string): Blob {
-        const byteCharacters = atob(base64);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        if (this.arquivoService.isMidiaExtensao(arquivo.extensao)) {
+            dialog = this.midiaDialog;
+        } else {
+            dialog = this.editorTextoDialog;
         }
-        const byteArray = new Uint8Array(byteNumbers);
-        return new Blob([byteArray], { type });
+
+        this.arquivoService.abrirDialog(arquivo, dialog);
     }
 
     downloadFile(arquivo: Arquivo): void {
-        this.arquivoService
-            .download(arquivo.pathArquivo)
-            .subscribe((response: Blob) => {
-                const blob = new Blob([response], { type: response.type });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = this.arquivoService.concatenarNomeExtensaoArquivo(
-                    arquivo.nome,
-                    arquivo.extensao
-                ); // Nome do arquivo a ser baixado
-                document.body.appendChild(a);
-                a.click(); // Inicia o download
-                document.body.removeChild(a); // Remove o link após o clique
-                window.URL.revokeObjectURL(url); // Limpa a URL temporária
-            });
+        this.arquivoService.downloadFile(arquivo.pathArquivo);
     }
 }

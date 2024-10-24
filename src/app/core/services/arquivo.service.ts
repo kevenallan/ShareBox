@@ -158,6 +158,14 @@ export class ArquivoService {
             !this.isTxtExtensao(extensao)
         );
     }
+    isMidiaExtensao(extensao: string): boolean {
+        return (
+            this.isImagemExtensao(extensao) ||
+            this.isVideoExtensao(extensao) ||
+            this.isAudioExtensao(extensao)
+        );
+    }
+
     //TXT
     async convertTxtBase64ToText(base64: string): Promise<string> {
         const decodedText = atob(base64); // Decodifica o conteúdo Base64
@@ -175,7 +183,56 @@ export class ArquivoService {
         });
         return file;
     }
+    convertBase64ToBlob(base64: string, type: string): Blob {
+        const byteCharacters = atob(base64);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        return new Blob([byteArray], { type });
+    }
+
     concatenarNomeExtensaoArquivo(nomeArquivo: string, extensao: string) {
         return nomeArquivo + '.' + extensao;
+    }
+
+    abrirDialog(arquivoOuLista: Arquivo | Arquivo[], dialog: any) {
+        const arquivoList: Arquivo[] = Array.isArray(arquivoOuLista)
+            ? arquivoOuLista
+            : [arquivoOuLista];
+        const arquivo = arquivoList[0]; // Considerando o primeiro arquivo da lista ou o único arquivo
+        if (this.isMidiaExtensao(arquivo.extensao)) {
+            dialog.showDialogMidia(arquivo);
+        } else if (this.isTxtExtensao(arquivo.extensao)) {
+            dialog.showDialogEditorTexto(arquivo);
+        } else if (Array.isArray(arquivoOuLista)) {
+            dialog.showDialogCriarArquivoTexto(arquivoList);
+        } else if (this.isPdfExtensao(arquivo.extensao)) {
+            const blob = this.convertBase64ToBlob(
+                arquivo.base64 || '',
+                'application/pdf'
+            );
+            const url = URL.createObjectURL(blob);
+            window.open(url, '_blank', 'noopener,noreferrer');
+        }
+    }
+
+    downloadFile(nomeArquivo: string): void {
+        this.download(nomeArquivo).subscribe((response: Blob) => {
+            const blob = new Blob([response], { type: response.type });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            if (nomeArquivo.includes('/')) {
+                a.download = nomeArquivo.split('/')[1];
+            } else {
+                a.download = nomeArquivo;
+            }
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        });
     }
 }

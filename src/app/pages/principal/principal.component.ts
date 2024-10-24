@@ -123,7 +123,7 @@ export class PrincipalComponent implements OnInit {
                 tooltip: 'Cria arquivo de texto',
                 iconStyle: { 'font-size': '22px' },
                 command: () => {
-                    this.abrirCriarArquivoTexto(this.arquivoList);
+                    this.abrirArquivo(this.arquivoList);
                 }
             }
         ];
@@ -241,28 +241,13 @@ export class PrincipalComponent implements OnInit {
         });
     }
 
-    downloadFile(nomeArquivo: string, extensao: string): void {
-        this.arquivoService
-            .download(
-                this.arquivoService.concatenarNomeExtensaoArquivo(
-                    nomeArquivo,
-                    extensao
-                )
+    downloadFile(arquivo: Arquivo): void {
+        this.arquivoService.downloadFile(
+            this.arquivoService.concatenarNomeExtensaoArquivo(
+                arquivo.nome,
+                arquivo.extensao
             )
-            .subscribe((response: Blob) => {
-                const blob = new Blob([response], { type: response.type });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = this.arquivoService.concatenarNomeExtensaoArquivo(
-                    nomeArquivo,
-                    extensao
-                ); // Nome do arquivo a ser baixado
-                document.body.appendChild(a);
-                a.click(); // Inicia o download
-                document.body.removeChild(a); // Remove o link após o clique
-                window.URL.revokeObjectURL(url); // Limpa a URL temporária
-            });
+        );
     }
 
     preview(arquivo: Arquivo) {
@@ -306,60 +291,18 @@ export class PrincipalComponent implements OnInit {
         }
     }
 
-    base64ToBlob(base64: string, type: string): Blob {
-        const byteCharacters = atob(base64);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
+    abrirArquivo(arquivo: Arquivo | Arquivo[]) {
+        let dialog: any;
+        if (Array.isArray(arquivo)) {
+            dialog = this.editorTextoDialog;
+        } else {
+            if (this.arquivoService.isMidiaExtensao(arquivo.extensao)) {
+                dialog = this.midiaDialog;
+            } else {
+                dialog = this.editorTextoDialog;
+            }
         }
-        const byteArray = new Uint8Array(byteNumbers);
-        return new Blob([byteArray], { type });
-    }
-
-    openDialogMidia(arquivo: Arquivo) {
-        const dialog = this.midiaDialog; // Referência ao componente de diálogo
-        dialog.showDialogMidia(arquivo);
-    }
-
-    abrirMidia(arquivo: Arquivo) {
-        this.openDialogMidia(arquivo);
-    }
-
-    openDialogEditorTexto(arquivo: Arquivo) {
-        const dialog = this.editorTextoDialog; // Referência ao componente de diálogo
-        dialog.showDialogEditorTexto(arquivo);
-    }
-
-    openDialogCriarArquivoTexto(arquivoList: Arquivo[]) {
-        const dialog = this.editorTextoDialog; // Referência ao componente de diálogo
-        dialog.showDialogCriarArquivoTexto(arquivoList);
-    }
-
-    abrirEditorTexto(arquivo: Arquivo) {
-        this.openDialogEditorTexto(arquivo);
-    }
-
-    abrirCriarArquivoTexto(arquivoList: Arquivo[]) {
-        this.openDialogCriarArquivoTexto(arquivoList);
-    }
-
-    abrirArquivo(arquivo: Arquivo) {
-        if (
-            this.arquivoService.isImagemExtensao(arquivo.extensao) ||
-            this.arquivoService.isVideoExtensao(arquivo.extensao) ||
-            this.arquivoService.isAudioExtensao(arquivo.extensao)
-        ) {
-            this.abrirMidia(arquivo);
-        } else if (this.arquivoService.isTxtExtensao(arquivo.extensao)) {
-            this.abrirEditorTexto(arquivo);
-        } else if (this.arquivoService.isPdfExtensao(arquivo.extensao)) {
-            const blob = this.base64ToBlob(
-                arquivo.base64 || '',
-                'application/pdf'
-            );
-            const url = URL.createObjectURL(blob);
-            window.open(url, '_blank', 'noopener,noreferrer');
-        }
+        this.arquivoService.abrirDialog(arquivo, dialog);
     }
 
     isArquivoGenerico(extensao: string) {
@@ -491,7 +434,7 @@ export class PrincipalComponent implements OnInit {
             const zip = new JSZip();
 
             this.arquivosSelecionados.forEach((arquivo) => {
-                let blob = this.base64ToBlob(
+                let blob = this.arquivoService.convertBase64ToBlob(
                     arquivo.base64 || '',
                     arquivo.mimeType || ''
                 );
@@ -520,7 +463,7 @@ export class PrincipalComponent implements OnInit {
 
             // Adiciona todos os arquivos selecionados ao ZIP
             this.arquivosSelecionados.forEach((arquivo) => {
-                let blob = this.base64ToBlob(
+                let blob = this.arquivoService.convertBase64ToBlob(
                     arquivo.base64 || '',
                     arquivo.mimeType || ''
                 );
@@ -601,7 +544,7 @@ export class PrincipalComponent implements OnInit {
         } else {
             // this.arquivoList[index].nome = this.arquivoEmEdicao.arquivo.nome;
             const formData = new FormData();
-            let blob = this.base64ToBlob(
+            let blob = this.arquivoService.convertBase64ToBlob(
                 this.arquivoList[index].base64 || '',
                 this.arquivoList[index].mimeType || ''
             );
