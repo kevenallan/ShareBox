@@ -63,12 +63,13 @@ export class LoginComponent {
         }
         this.usuarioService
             .login(this.usuario)
-            .subscribe((response: LoginDTO) => {
+            .subscribe(async (response: LoginDTO) => {
                 if (response) {
                     const usuarioLogado: LoginDTO = response;
                     if (usuarioLogado) {
                         const token = usuarioLogado.token;
                         this.authService.setLoginStorage(usuarioLogado);
+                        await this.usuarioService.listarArquivosCompartilhados();
                         this.router.navigate(['/inicio']);
                     } else {
                         this.alertService.showErrorAlert(

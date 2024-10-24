@@ -8,4 +8,5 @@ export class Arquivo {
     base64?: string;
     dataCriacao?: Date;
     previewSrc?: string;
+    pathArquivo: string = '';
 }

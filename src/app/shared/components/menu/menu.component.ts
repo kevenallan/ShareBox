@@ -32,15 +32,18 @@ export class MenuComponent implements OnInit {
         private authService: AuthService
     ) {
         this.items = [
-            // {
-            //     label: 'Home',
-            //     icon: 'pi pi-home'
-            // },
-            // {
-            //     label: 'Features',
-            //     icon: 'pi pi-star'
-            // }
+            {
+                label: 'Arquivos compartilhados',
+                icon: 'pi pi-folder',
+                command: () => {
+                    this.redirecionarTelaArquivosCompartilhados();
+                }
+            }
         ];
+    }
+
+    redirecionarTelaArquivosCompartilhados() {
+        this.router.navigate(['/arquivos-compartilhados']);
     }
 
     ngOnInit(): void {

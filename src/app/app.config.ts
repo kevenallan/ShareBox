@@ -30,10 +30,14 @@ function loadFirebaseConfig(
 ) {
     loadingService.exibirTelaLoadingInitializeFirebase();
     return () =>
-        firstValueFrom(configService.getConfig()).then((config) => {
-            firebaseConfig = config;
-            loadingService.ocultarTelaLoadingInitializeFirebase();
-        });
+        firstValueFrom(configService.getConfig())
+            .then((config) => {
+                firebaseConfig = config;
+                loadingService.ocultarTelaLoadingInitializeFirebase();
+            })
+            .catch(() => {
+                loadingService.ocultarTelaLoadingInitializeFirebase();
+            });
 }
 
 export const appConfig: ApplicationConfig = {

@@ -36,6 +36,7 @@ export class EditorTextoDialogComponent {
 
     arquivo?: Arquivo;
     arquivoList: Arquivo[] = [];
+    isEditar: boolean = true;
 
     constructor(private arquivoService: ArquivoService) {}
 
@@ -45,6 +46,10 @@ export class EditorTextoDialogComponent {
         this.mimeType = arquivo.mimeType;
         this.texto = await this.getTexto(arquivo);
         this.displayEditor = true;
+        
+        if (arquivo.pathArquivo != null && arquivo.pathArquivo.length > 0) {
+            this.isEditar = false;
+        }
     }
 
     async showDialogCriarArquivoTexto(arquivoList: Arquivo[]) {
@@ -57,6 +62,7 @@ export class EditorTextoDialogComponent {
         this.displayEditor = false;
         this.arquivo = undefined;
         this.texto = '';
+        this.isEditar = true;
     }
 
     async getTexto(arquivo: Arquivo) {
@@ -89,15 +95,12 @@ export class EditorTextoDialogComponent {
 
     uploadArquivo() {
         const nomeArquivo = this.getNomeArquivoNovo();
-        const fileExtension = nomeArquivo.split('.')[1];
         const file = this.arquivoService.convertTxtToFile(
             this.texto || '',
             nomeArquivo
         );
         const formData = new FormData();
-        formData.append('file', file);
-        formData.append('nome', nomeArquivo);
-        formData.append('extensao', fileExtension);
+        formData.append('files', file);
 
         this.arquivoService.upload(formData).subscribe(() => {
             this.eventUpdate.emit();

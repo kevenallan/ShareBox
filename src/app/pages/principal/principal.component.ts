@@ -7,6 +7,7 @@ import { AlertService } from '../../core/services/alert.service';
 import { LocalDateTimeFormatPipe } from '../../shared/pipe/local-date-time-format.pipe';
 import { MidiaDialogComponent } from '../../shared/components/midia-dialog/midia-dialog.component';
 import JSZip, { file } from 'jszip';
+import { Clipboard } from '@angular/cdk/clipboard';
 
 //PRIMENG
 import { ToastModule } from 'primeng/toast';
@@ -91,6 +92,8 @@ export class PrincipalComponent implements OnInit {
     ];
     arquivoUpdate!: Arquivo;
 
+    emailInvalido: boolean = false;
+
     @ViewChild('midiaDialog') midiaDialog!: MidiaDialogComponent;
     @ViewChild('editorTextoDialog')
     editorTextoDialog!: EditorTextoDialogComponent;
@@ -101,7 +104,7 @@ export class PrincipalComponent implements OnInit {
     constructor(
         private arquivoService: ArquivoService,
         private alertService: AlertService,
-        private toastService: MessageService
+        private clipboard: Clipboard
     ) {}
 
     ngOnInit() {
@@ -120,7 +123,7 @@ export class PrincipalComponent implements OnInit {
                 tooltip: 'Cria arquivo de texto',
                 iconStyle: { 'font-size': '22px' },
                 command: () => {
-                    this.abrirCriarArquivoTexto(this.arquivoList);
+                    this.abrirArquivo(this.arquivoList);
                 }
             }
         ];
@@ -238,28 +241,13 @@ export class PrincipalComponent implements OnInit {
         });
     }
 
-    downloadFile(nomeArquivo: string, extensao: string): void {
-        this.arquivoService
-            .download(
-                this.arquivoService.concatenarNomeExtensaoArquivo(
-                    nomeArquivo,
-                    extensao
-                )
+    downloadFile(arquivo: Arquivo): void {
+        this.arquivoService.downloadFile(
+            this.arquivoService.concatenarNomeExtensaoArquivo(
+                arquivo.nome,
+                arquivo.extensao
             )
-            .subscribe((response: Blob) => {
-                const blob = new Blob([response], { type: response.type });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = this.arquivoService.concatenarNomeExtensaoArquivo(
-                    nomeArquivo,
-                    extensao
-                ); // Nome do arquivo a ser baixado
-                document.body.appendChild(a);
-                a.click(); // Inicia o download
-                document.body.removeChild(a); // Remove o link após o clique
-                window.URL.revokeObjectURL(url); // Limpa a URL temporária
-            });
+        );
     }
 
     preview(arquivo: Arquivo) {
@@ -303,60 +291,18 @@ export class PrincipalComponent implements OnInit {
         }
     }
 
-    base64ToBlob(base64: string, type: string): Blob {
-        const byteCharacters = atob(base64);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
+    abrirArquivo(arquivo: Arquivo | Arquivo[]) {
+        let dialog: any;
+        if (Array.isArray(arquivo)) {
+            dialog = this.editorTextoDialog;
+        } else {
+            if (this.arquivoService.isMidiaExtensao(arquivo.extensao)) {
+                dialog = this.midiaDialog;
+            } else {
+                dialog = this.editorTextoDialog;
+            }
         }
-        const byteArray = new Uint8Array(byteNumbers);
-        return new Blob([byteArray], { type });
-    }
-
-    openDialogMidia(arquivo: Arquivo) {
-        const dialog = this.midiaDialog; // Referência ao componente de diálogo
-        dialog.showDialogMidia(arquivo);
-    }
-
-    abrirMidia(arquivo: Arquivo) {
-        this.openDialogMidia(arquivo);
-    }
-
-    openDialogEditorTexto(arquivo: Arquivo) {
-        const dialog = this.editorTextoDialog; // Referência ao componente de diálogo
-        dialog.showDialogEditorTexto(arquivo);
-    }
-
-    openDialogCriarArquivoTexto(arquivoList: Arquivo[]) {
-        const dialog = this.editorTextoDialog; // Referência ao componente de diálogo
-        dialog.showDialogCriarArquivoTexto(arquivoList);
-    }
-
-    abrirEditorTexto(arquivo: Arquivo) {
-        this.openDialogEditorTexto(arquivo);
-    }
-
-    abrirCriarArquivoTexto(arquivoList: Arquivo[]) {
-        this.openDialogCriarArquivoTexto(arquivoList);
-    }
-
-    abrirArquivo(arquivo: Arquivo) {
-        if (
-            this.arquivoService.isImagemExtensao(arquivo.extensao) ||
-            this.arquivoService.isVideoExtensao(arquivo.extensao) ||
-            this.arquivoService.isAudioExtensao(arquivo.extensao)
-        ) {
-            this.abrirMidia(arquivo);
-        } else if (this.arquivoService.isTxtExtensao(arquivo.extensao)) {
-            this.abrirEditorTexto(arquivo);
-        } else if (this.arquivoService.isPdfExtensao(arquivo.extensao)) {
-            const blob = this.base64ToBlob(
-                arquivo.base64 || '',
-                'application/pdf'
-            );
-            const url = URL.createObjectURL(blob);
-            window.open(url, '_blank', 'noopener,noreferrer');
-        }
+        this.arquivoService.abrirDialog(arquivo, dialog);
     }
 
     isArquivoGenerico(extensao: string) {
@@ -488,7 +434,7 @@ export class PrincipalComponent implements OnInit {
             const zip = new JSZip();
 
             this.arquivosSelecionados.forEach((arquivo) => {
-                let blob = this.base64ToBlob(
+                let blob = this.arquivoService.convertBase64ToBlob(
                     arquivo.base64 || '',
                     arquivo.mimeType || ''
                 );
@@ -505,8 +451,48 @@ export class PrincipalComponent implements OnInit {
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(content);
                 link.download = 'sharebox-arquivos.zip';
+                console.log(link);
                 link.click();
             });
+        }
+    }
+
+    async obterArquivoDoZip(): Promise<void> {
+        if (this.arquivosSelecionados && this.arquivosSelecionados.length > 0) {
+            const zip = new JSZip();
+
+            // Adiciona todos os arquivos selecionados ao ZIP
+            this.arquivosSelecionados.forEach((arquivo) => {
+                let blob = this.arquivoService.convertBase64ToBlob(
+                    arquivo.base64 || '',
+                    arquivo.mimeType || ''
+                );
+                zip.file(
+                    this.arquivoService.concatenarNomeExtensaoArquivo(
+                        arquivo.nome,
+                        arquivo.extensao
+                    ),
+                    blob
+                );
+            });
+
+            // Gera o ZIP e transforma em um File para enviar ao back-end
+            try {
+                const zipContent = await zip.generateAsync({ type: 'blob' }); // Gera o conteúdo do ZIP como Blob
+                const zipFile = new File(
+                    [zipContent],
+                    'sharebox-arquivos.zip',
+                    { type: 'application/zip' }
+                );
+                const formData = new FormData();
+                formData.append('file', zipFile);
+                this.arquivoService.uploadLink(formData).subscribe((link) => {
+                    console.log(link);
+                    this.clipboard.copy(link);
+                });
+            } catch (error) {
+                this.alertService.showErrorAlert('Erro ao gerar link');
+            }
         }
     }
 
@@ -558,7 +544,7 @@ export class PrincipalComponent implements OnInit {
         } else {
             // this.arquivoList[index].nome = this.arquivoEmEdicao.arquivo.nome;
             const formData = new FormData();
-            let blob = this.base64ToBlob(
+            let blob = this.arquivoService.convertBase64ToBlob(
                 this.arquivoList[index].base64 || '',
                 this.arquivoList[index].mimeType || ''
             );
@@ -597,5 +583,38 @@ export class PrincipalComponent implements OnInit {
 
     mostrarInformacoes() {
         this.mostrarCardsInfos = !this.mostrarCardsInfos;
+    }
+
+    async compartilharArquivo(emailInput: HTMLInputElement) {
+        const email = emailInput.value;
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailPattern.test(email)) {
+            this.emailInvalido = true;
+            return;
+        }
+
+        this.emailInvalido = false;
+        const formData = new FormData();
+        formData.append('email', email);
+        this.arquivosSelecionados.forEach((arquivo) => {
+            formData.append(
+                'arquivos',
+                this.arquivoService.concatenarNomeExtensaoArquivo(
+                    arquivo.nome,
+                    arquivo.extensao
+                )
+            );
+        });
+        await this.arquivoService.compartilharArquivos(formData);
+        this.arquivosSelecionados = [];
+        emailInput.value = '';
+    }
+
+    onEmailChange(email: string) {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (emailPattern.test(email)) {
+            this.emailInvalido = false;
+        }
     }
 }

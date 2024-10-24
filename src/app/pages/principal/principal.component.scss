@@ -1,4 +1,4 @@
-@import './../../../styles/variaveis.scss';
+@import 'variaveis';
 
 //BTN UPLOAD/UPDATE
 :host ::ng-deep .p-speeddial {
@@ -53,53 +53,6 @@
     margin: 5px;
 }
 
-//1
-// .card-totalizador {
-//     background:
-//         linear-gradient(#212121, #212121) padding-box,
-//         linear-gradient(
-//                 135deg,
-//                 pink 10%,
-//                 rgb(197, 32, 197) 40%,
-//                 rgb(145, 226, 253) 85%
-//             )
-//             border-box;
-//     border: 4px solid transparent;
-//     color: white;
-//     padding: 5px 15px 5px;
-//     font-size: smaller;
-//     margin: 0px 12px;
-//     opacity: 0;
-//     visibility: hidden;
-//     transform: translateY(20px);
-//     transition:
-//         opacity 0.5s ease-in-out,
-//         transform 0.5s ease-in-out,
-//         visibility 0s 0.5s;
-// }
-
-// .show .card-totalizador {
-//     visibility: visible;
-//     opacity: 1;
-//     height: auto;
-//     transform: translateY(0);
-//     transition:
-//         opacity 0.5s ease-in-out,
-//         transform 0.5s ease-in-out,
-//         visibility 0s 0s;
-// }
-
-// .hide .card-totalizador {
-//     opacity: 0;
-//     height: 0;
-//     transform: translateY(20px);
-//     transition:
-//         opacity 0.5s ease-in-out,
-//         transform 0.5s ease-in-out,
-//         visibility 0s 0.5s;
-// }
-
-//2
 .card-totalizador {
     background:
         linear-gradient(#212121, #212121) padding-box,
@@ -247,4 +200,15 @@ td {
     .acoes-table {
         justify-content: center;
     }
+}
+
+.mtb-5 {
+    display: flex;
+    & div {
+        margin-left: 10px;
+    }
+}
+
+.opca {
+    display: flex;
 }

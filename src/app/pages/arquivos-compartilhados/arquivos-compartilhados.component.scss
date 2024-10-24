@@ -1,0 +1,97 @@
+@import 'variaveis';
+// TABELA DE ARQUIVOS
+//BORDA DA TABELA
+.style-card,
+.card-totalizador {
+    background:
+        linear-gradient(#212121, #212121) padding-box,
+        linear-gradient(
+                135deg,
+                pink 10%,
+                rgb(197, 32, 197) 40%,
+                rgb(145, 226, 253) 85%
+            )
+            border-box;
+    border: 4px solid transparent;
+    margin-top: 15px;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th,
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr,
+:host ::ng-deep .p-paginator {
+    background: #212121;
+    color: white;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-header {
+    background-color: #212121;
+}
+
+:host ::ng-deep .p-datatable .p-sortable-column .p-sortable-column-icon {
+    color: white;
+}
+
+//AÇÕES DENTRO DO BTN DE ACÕES (DOWNLOAD/UPLOAD ..)
+.btn-acoes {
+    margin-left: 10px;
+}
+
+//ALINHAR TABELA
+.container-table {
+    display: flex;
+    justify-content: center;
+}
+
+.width-card {
+    width: 90%;
+}
+
+:host ::ng-deep .p-checkbox .p-checkbox-box.p-highlight {
+    border-color: white;
+    background-color: $cor-roxa;
+}
+
+:host ::ng-deep .p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box:hover {
+    border-color: $cor-roxa;
+}
+
+:host ::ng-deep .p-inputtext:enabled:focus {
+    border-color: $cor-azul-claro !important;
+    box-shadow: 0 0 0 0.2rem $cor-rosa-claro !important;
+}
+
+:host ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+    color: $cor-roxa;
+    background: white;
+}
+
+:host ::ng-deep .p-dropdown .p-dropdown-label,
+:host ::ng-deep .p-paginator .p-paginator-current,
+:host ::ng-deep .p-paginator button {
+    color: $cor-roxa;
+}
+
+th,
+td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.acoes-table {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+    .acoes-table {
+        justify-content: center;
+    }
+}
+
+.mtb-5 {
+    display: flex;
+    & div {
+        margin-left: 10px;
+    }
+}

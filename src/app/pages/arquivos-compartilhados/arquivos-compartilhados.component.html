@@ -1,0 +1,116 @@
+<!-- MENU -->
+<app-menu></app-menu>
+
+<!-- TABELA -->
+<div class="container-table">
+    <div class="width-card">
+        <div class="style-card box-3d">
+            <p-table
+                #tbArquivos
+                [value]="arquivosCompartilhados"
+                dataKey="nome"
+                editMode="row"
+                [tableStyle]="{ 'min-width': '50rem' }"
+                styleClass="p-datatable-sm"
+                responsiveLayout="stack"
+                [paginator]="true"
+                [rows]="5"
+                [rowsPerPageOptions]="[5, 10, 20]"
+                [globalFilterFields]="['nome', 'extensao']"
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} registros"
+            >
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Arquivo</th>
+                        <th pSortableColumn="nome">
+                            Nome <p-sortIcon field="nome" />
+                        </th>
+                        <th pSortableColumn="extensao">
+                            Extensão <p-sortIcon field="extensao" />
+                        </th>
+                        <th pSortableColumn="tamanho">
+                            Tamanho <p-sortIcon field="tamanho" />
+                        </th>
+                        <th pSortableColumn="dataCriacao">
+                            Data Envio <p-sortIcon field="dataCriacao" />
+                        </th>
+                        <th>Ações</th>
+                    </tr>
+                </ng-template>
+                <ng-template
+                    pTemplate="body"
+                    let-arquivo
+                    let-editing="editing"
+                    let-idx="rowIndex"
+                >
+                    <tr>
+                        <td>
+                            <ng-container *ngIf="arquivo.previewSrc">
+                                <img
+                                    id="previews"
+                                    [src]="arquivo.previewSrc"
+                                    (click)="abrirArquivo(arquivo)"
+                                    width="50"
+                                    height="50"
+                                    alt="{{ arquivo.nome }}"
+                                    class="redimensionar-imagem"
+                                    [ngClass]="{
+                                        'cursor-pointer': !isArquivoGenerico(
+                                            arquivo.extensao
+                                        )
+                                    }"
+                                />
+                            </ng-container>
+                        </td>
+                        <td class="text-truncate" pTooltip="{{ arquivo.nome }}">
+                            {{ arquivo.nome }}
+                        </td>
+                        <td class="text-truncate">{{ arquivo.extensao }}</td>
+                        <td class="text-truncate">{{ arquivo.tamanho }}</td>
+                        <td>
+                            {{
+                                arquivo.dataCriacao
+                                    | localDateTimeFormat: 'dd/MM/yyyy HH:mm:ss'
+                            }}
+                        </td>
+                        <td>
+                            <div class="flex align-items-center gap-2">
+                                <p-button
+                                    *ngIf="!editing"
+                                    (click)="op.toggle($event)"
+                                    icon="pi pi-cog"
+                                    [rounded]="true"
+                                    [text]="true"
+                                    [raised]="true"
+                                    severity="help"
+                                />
+
+                                <p-overlayPanel #op>
+                                    <p-button
+                                        icon="pi pi-download"
+                                        (onClick)="downloadFile(arquivo)"
+                                        [rounded]="true"
+                                        [text]="true"
+                                        [raised]="true"
+                                        pTooltip="Download"
+                                        tooltipPosition="bottom"
+                                        [style]="{ color: '#e81cff' }"
+                                    />
+                                </p-overlayPanel>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL -->
+<app-midia-dialog #midiaDialog> </app-midia-dialog>
+<app-editor-texto-dialog
+    #editorTextoDialog
+    (eventUpdate)="listarArquivosCompartilhados()"
+>
+</app-editor-texto-dialog>

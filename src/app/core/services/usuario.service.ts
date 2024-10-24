@@ -90,4 +90,14 @@ export class UsuarioService {
             this.http.delete(`${environment.urlBackEnd}/usuario/deletar`)
         );
     }
+
+    async listarArquivosCompartilhados() {
+        return await lastValueFrom(
+            this.http
+                .get(
+                    `${environment.urlBackEnd}/usuario/listar-arquivos-compartilhados`
+                )
+                .pipe(map((response: ResponseModel) => response.model))
+        );
+    }
 }
