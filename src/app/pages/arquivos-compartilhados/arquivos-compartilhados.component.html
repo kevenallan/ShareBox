@@ -89,12 +89,7 @@
                                 <p-overlayPanel #op>
                                     <p-button
                                         icon="pi pi-download"
-                                        (onClick)="
-                                            downloadFile(
-                                                arquivo.nome,
-                                                arquivo.extensao
-                                            )
-                                        "
+                                        (onClick)="downloadFile(arquivo)"
                                         [rounded]="true"
                                         [text]="true"
                                         [raised]="true"

@@ -119,22 +119,17 @@ export class ArquivosCompartilhadosComponent implements OnInit {
         return new Blob([byteArray], { type });
     }
 
-    downloadFile(nomeArquivo: string, extensao: string): void {
+    downloadFile(arquivo: Arquivo): void {
         this.arquivoService
-            .download(
-                this.arquivoService.concatenarNomeExtensaoArquivo(
-                    nomeArquivo,
-                    extensao
-                )
-            )
+            .download(arquivo.pathArquivo)
             .subscribe((response: Blob) => {
                 const blob = new Blob([response], { type: response.type });
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
                 a.download = this.arquivoService.concatenarNomeExtensaoArquivo(
-                    nomeArquivo,
-                    extensao
+                    arquivo.nome,
+                    arquivo.extensao
                 ); // Nome do arquivo a ser baixado
                 document.body.appendChild(a);
                 a.click(); // Inicia o download
