@@ -204,7 +204,7 @@ export class ArquivoService {
         const arquivo = arquivoList[0]; // Considerando o primeiro arquivo da lista ou o único arquivo
         if (this.isMidiaExtensao(arquivo.extensao)) {
             dialog.showDialogMidia(arquivo);
-        } else if (this.isTxtExtensao(arquivo.extensao)) {
+        } else if (this.isTxtExtensao(arquivo.extensao) && !Array.isArray(arquivoOuLista)) {
             dialog.showDialogEditorTexto(arquivo);
         } else if (Array.isArray(arquivoOuLista)) {
             dialog.showDialogCriarArquivoTexto(arquivoList);

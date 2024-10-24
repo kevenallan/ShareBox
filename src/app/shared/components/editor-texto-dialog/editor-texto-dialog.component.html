@@ -6,11 +6,11 @@
     (onHide)="hideDialogEditor()"
 >
     <div>
-        <textarea [(ngModel)]="texto"></textarea>
+        <textarea [(ngModel)]="texto" [disabled]="!isEditar"></textarea>
     </div>
     <div class="btn-editar">
         <p-button
-            *ngIf="arquivo"
+            *ngIf="arquivo && isEditar"
             label="Editar"
             [text]="true"
             [raised]="true"
