@@ -17,6 +17,7 @@ export class ArquivoService {
     pdfExtensao = 'pdf';
     txtExtensao = 'txt';
     docxExtensao = 'docx';
+    excelXlsxExtensao = 'xlsx'
 
     //PREFIXO BASE64
     imagemBase64Prefixos = [
@@ -54,7 +55,7 @@ export class ArquivoService {
     constructor(
         private http: HttpClient,
         private authService: AuthService
-    ) {}
+    ) { }
 
     listar() {
         return this.http
@@ -143,6 +144,9 @@ export class ArquivoService {
     isPdfExtensao(extensao: string) {
         return this.pdfExtensao === extensao;
     }
+    isExcelXlsxExtensao(extensao: string) {
+        return this.excelXlsxExtensao === extensao;
+    }
     isTxtExtensao(extensao: string) {
         return this.txtExtensao === extensao;
     }
@@ -155,7 +159,8 @@ export class ArquivoService {
             !this.isVideoExtensao(extensao) &&
             !this.isAudioExtensao(extensao) &&
             !this.isPdfExtensao(extensao) &&
-            !this.isTxtExtensao(extensao)
+            !this.isTxtExtensao(extensao) &&
+            !this.isExcelXlsxExtensao(extensao)
         );
     }
     isMidiaExtensao(extensao: string): boolean {
@@ -193,6 +198,19 @@ export class ArquivoService {
         return new Blob([byteArray], { type });
     }
 
+    convertBase64ToFile(base64: string, nomeArquivo: string) {
+        const mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'; // MIME para Excel
+        const byteString = atob(base64);
+        const arrayBuffer = new ArrayBuffer(byteString.length);
+        const intArray = new Uint8Array(arrayBuffer);
+
+        for (let i = 0; i < byteString.length; i++) {
+            intArray[i] = byteString.charCodeAt(i);
+        }
+
+        return new File([intArray], nomeArquivo, { type: mimeType });
+    }
+
     concatenarNomeExtensaoArquivo(nomeArquivo: string, extensao: string) {
         return nomeArquivo + '.' + extensao;
     }
@@ -202,10 +220,13 @@ export class ArquivoService {
             ? arquivoOuLista
             : [arquivoOuLista];
         const arquivo = arquivoList[0]; // Considerando o primeiro arquivo da lista ou o único arquivo
+
         if (this.isMidiaExtensao(arquivo.extensao)) {
             dialog.showDialogMidia(arquivo);
         } else if (this.isTxtExtensao(arquivo.extensao) && !Array.isArray(arquivoOuLista)) {
             dialog.showDialogEditorTexto(arquivo);
+        } else if (this.isExcelXlsxExtensao(arquivo.extensao)) {
+            dialog.showDialogExcelXlsx(arquivo);
         } else if (Array.isArray(arquivoOuLista)) {
             dialog.showDialogCriarArquivoTexto(arquivoList);
         } else if (this.isPdfExtensao(arquivo.extensao)) {

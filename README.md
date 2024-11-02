@@ -46,3 +46,5 @@ ng serve --host 0.0.0.0
 
 npm install -g npm@10.9.0
 npm install jszip
+
+npm install xlsx

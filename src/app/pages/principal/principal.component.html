@@ -3,32 +3,13 @@
 
 <!-- BTN'S UPLOAD/UPDATE ARQUIVO -->
 <div>
-    <input
-        id="fileUploadInput"
-        class="none"
-        placeholder="none"
-        type="file"
-        (change)="fileUpload($event)"
-        multiple
-    />
-    <input
-        id="fileUpdateInput"
-        class="none"
-        placeholder="none"
-        type="file"
-        (change)="fileUpdate($event)"
-        multiple
-    />
+    <input id="fileUploadInput" class="none" placeholder="none" type="file" (change)="fileUpload($event)" multiple />
+    <input id="fileUpdateInput" class="none" placeholder="none" type="file" (change)="fileUpdate($event)" multiple />
 </div>
 
 <p-speedDial [model]="items" direction="up">
     <ng-template pTemplate="item" let-item>
-        <a
-            class="p-speeddial-action"
-            pTooltip="{{ item.tooltip }}"
-            tooltipPosition="left"
-            (click)="item.command()"
-        >
+        <a class="p-speeddial-action" pTooltip="{{ item.tooltip }}" tooltipPosition="left" (click)="item.command()">
             <span class="p-button-icon" [ngStyle]="item.style">
                 <i [class]="item.icon" [ngStyle]="item.iconStyle"></i>
             </span>
@@ -38,14 +19,8 @@
 
 <!-- TOTALIZADORES? -->
 <!-- 1 & 2 -->
-<div
-    class="totalizadores"
-    [ngClass]="{ show: mostrarCardsInfos, hide: !mostrarCardsInfos }"
->
-    <div
-        class="card-totalizador box-3d"
-        *ngFor="let totalizador of totalizadoresArquivos"
-    >
+<div class="totalizadores" [ngClass]="{ show: mostrarCardsInfos, hide: !mostrarCardsInfos }">
+    <div class="card-totalizador box-3d" *ngFor="let totalizador of totalizadoresArquivos">
         <p class="titulo-totalizador">{{ totalizador.titulo }}</p>
         <p>Qtd. de arquivos: {{ totalizador.qtd }}</p>
         <p>Tamanho: {{ totalizador.tamanho }}</p>
@@ -56,22 +31,11 @@
 <div class="container-table">
     <div class="width-card">
         <div class="style-card box-3d">
-            <p-table
-                #tbArquivos
-                [value]="arquivoList"
-                dataKey="nome"
-                editMode="row"
-                [(selection)]="arquivosSelecionados"
-                [tableStyle]="{ 'min-width': '50rem' }"
-                styleClass="p-datatable-sm"
-                responsiveLayout="stack"
-                [paginator]="true"
-                [rows]="5"
-                [rowsPerPageOptions]="[5, 10, 20]"
-                [globalFilterFields]="['nome', 'extensao']"
-                [showCurrentPageReport]="true"
-                currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} registros"
-            >
+            <p-table #tbArquivos [value]="arquivoList" dataKey="nome" editMode="row"
+                [(selection)]="arquivosSelecionados" [tableStyle]="{ 'min-width': '50rem' }" styleClass="p-datatable-sm"
+                responsiveLayout="stack" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5, 10, 20]"
+                [globalFilterFields]="['nome', 'extensao']" [showCurrentPageReport]="true"
+                currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} registros">
                 <ng-template pTemplate="caption">
                     <div class="acoes-table">
                         <div class="mtb-5" style="margin: 5px 0px">
@@ -79,102 +43,47 @@
                                 <p-inputIcon>
                                     <i class="pi pi-search"></i>
                                 </p-inputIcon>
-                                <input
-                                    pInputText
-                                    type="text"
-                                    (input)="filterArquivos($event, tbArquivos)"
-                                    placeholder="Pesquisar arquivo..."
-                                />
+                                <input pInputText type="text" (input)="filterArquivos($event, tbArquivos)"
+                                    placeholder="Pesquisar arquivo..." />
                             </p-iconField>
                         </div>
                         <div class="mtb-5">
-                            <div
-                                pTooltip="Mostrar informações"
-                                tooltipPosition="bottom"
-                            >
-                                <p-button
-                                    (click)="mostrarInformacoes()"
-                                    icon="pi pi-chart-bar"
-                                    [text]="true"
-                                    [raised]="true"
-                                />
+                            <div pTooltip="Mostrar informações" tooltipPosition="bottom">
+                                <p-button (click)="mostrarInformacoes()" icon="pi pi-chart-bar" [text]="true"
+                                    [raised]="true" />
                             </div>
-                            <div
-                                pTooltip="Link de download"
-                                tooltipPosition="bottom"
-                            >
-                                <p-button
-                                    (click)="obterArquivoDoZip()"
-                                    icon="pi pi-link"
-                                    [text]="true"
-                                    [raised]="true"
-                                    [disabled]="!desabilitarAcoesEmLote()"
-                                />
+                            <div pTooltip="Link de download" tooltipPosition="bottom">
+                                <p-button (click)="obterArquivoDoZip()" icon="pi pi-link" [text]="true" [raised]="true"
+                                    [disabled]="!desabilitarAcoesEmLote()" />
                             </div>
                             <div pTooltip="Download" tooltipPosition="bottom">
-                                <p-button
-                                    (click)="downloadArquivosZip()"
-                                    icon="pi pi-download"
-                                    [text]="true"
-                                    [raised]="true"
-                                    [disabled]="!desabilitarAcoesEmLote()"
-                                />
+                                <p-button (click)="downloadArquivosZip()" icon="pi pi-download" [text]="true"
+                                    [raised]="true" [disabled]="!desabilitarAcoesEmLote()" />
                             </div>
                             <div pTooltip="Deletar" tooltipPosition="bottom">
-                                <p-button
-                                    (click)="deletarArquivos()"
-                                    icon="pi pi-trash"
-                                    [text]="true"
-                                    [raised]="true"
-                                    [disabled]="!desabilitarAcoesEmLote()"
-                                />
+                                <p-button (click)="deletarArquivos()" icon="pi pi-trash" [text]="true" [raised]="true"
+                                    [disabled]="!desabilitarAcoesEmLote()" />
                             </div>
-                            <div
-                                pTooltip="Compartilhar arquivo(s)"
-                                tooltipPosition="bottom"
-                            >
-                                <p-button
-                                    (click)="opca.toggle($event)"
-                                    icon="pi pi-share-alt"
-                                    [text]="true"
-                                    [raised]="true"
-                                    [disabled]="!desabilitarAcoesEmLote()"
-                                />
+                            <div pTooltip="Compartilhar arquivo(s)" tooltipPosition="bottom">
+                                <p-button (click)="opca.toggle($event)" icon="pi pi-share-alt" [text]="true"
+                                    [raised]="true" [disabled]="!desabilitarAcoesEmLote()" />
                                 <p-overlayPanel #opca class="opca">
-                                    <input
-                                        pInputText
-                                        #emailInput
-                                        type="text"
-                                        placeholder="e-mail"
-                                        [ngClass]="{
+                                    <input pInputText #emailInput type="text" placeholder="e-mail" [ngClass]="{
                                             'input-error': emailInvalido
-                                        }"
-                                        [style]="{
+                                        }" [style]="{
                                             'margin-right': '10px !important'
-                                        }"
-                                        (input)="onEmailChange(emailInput.value)"
-                                    />
-                                    <p-button
-                                        (click)="
+                                        }" (input)="onEmailChange(emailInput.value)" />
+                                    <p-button (click)="
                                             compartilharArquivo(
                                                 emailInput
                                             )
-                                        "
-                                        icon="pi pi-share-alt"
-                                        [text]="true"
-                                        [raised]="true"
-                                        [style]="{
+                                        " icon="pi pi-share-alt" [text]="true" [raised]="true" [style]="{
                                             color: '#e81cff',
                                             'margin-right': '10px !important'
-                                        }"
-                                    ></p-button>
+                                        }"></p-button>
                                     <div style="width: 100%">
-                                        <small
-                                            *ngIf="emailInvalido"
-                                            style="color: red"
-                                            >Por favor, insira um e-mail
-                                            válido.</small
-                                        >
+                                        <small *ngIf="emailInvalido" style="color: red">Por favor, insira um e-mail
+                                            válido.</small>
                                     </div>
                                 </p-overlayPanel>
                             </div>
@@ -202,46 +111,28 @@
                         <th>Ações</th>
                     </tr>
                 </ng-template>
-                <ng-template
-                    pTemplate="body"
-                    let-arquivo
-                    let-editing="editing"
-                    let-idx="rowIndex"
-                >
+                <ng-template pTemplate="body" let-arquivo let-editing="editing" let-idx="rowIndex">
                     <tr [pEditableRow]="arquivo">
                         <td>
                             <p-tableCheckbox [value]="arquivo" />
                         </td>
                         <td>
                             <ng-container *ngIf="arquivo.previewSrc">
-                                <img
-                                    id="previews"
-                                    [src]="arquivo.previewSrc"
-                                    (click)="abrirArquivo(arquivo)"
-                                    width="50"
-                                    height="50"
-                                    alt="{{ arquivo.nome }}"
-                                    class="redimensionar-imagem"
-                                    [ngClass]="{
+                                <img id="previews" [src]="arquivo.previewSrc" (click)="abrirArquivo(arquivo)" width="50"
+                                    height="50" alt="{{ arquivo.nome }}" class="redimensionar-imagem" [ngClass]="{
                                         'cursor-pointer': !isArquivoGenerico(
                                             arquivo.extensao
                                         )
-                                    }"
-                                />
+                                    }" />
                             </ng-container>
                         </td>
 
                         <td class="text-truncate" pTooltip="{{ arquivo.nome }}">
                             <p-cellEditor>
                                 <ng-template pTemplate="input">
-                                    <input
-                                        pInputText
-                                        type="text"
-                                        [(ngModel)]="
+                                    <input pInputText type="text" [(ngModel)]="
                                             this.arquivoEmEdicao.arquivo.nome
-                                        "
-                                        style="width: 100%"
-                                    />
+                                        " style="width: 100%" />
                                 </ng-template>
                                 <ng-template pTemplate="output">
                                     {{ arquivo.nome }}
@@ -252,103 +143,48 @@
                         <td class="text-truncate">{{ arquivo.tamanho }}</td>
                         <td>
                             {{
-                                arquivo.dataCriacao
-                                    | localDateTimeFormat: 'dd/MM/yyyy HH:mm:ss'
+                            arquivo.dataCriacao
+                            | localDateTimeFormat: 'dd/MM/yyyy HH:mm:ss'
                             }}
                         </td>
                         <td>
                             <div class="flex align-items-center gap-2">
-                                <p-button
-                                    *ngIf="!editing"
-                                    (click)="op.toggle($event)"
-                                    icon="pi pi-cog"
-                                    [rounded]="true"
-                                    [text]="true"
-                                    [raised]="true"
-                                    severity="help"
-                                />
+                                <p-button *ngIf="!editing" (click)="op.toggle($event)" icon="pi pi-cog" [rounded]="true"
+                                    [text]="true" [raised]="true" severity="help" />
 
                                 <p-overlayPanel #op>
-                                    <p-button
-                                        (onClick)="
+                                    <p-button (onClick)="
                                             downloadFile(
                                                 arquivo
                                             )
-                                        "
-                                        icon="pi pi-download"
-                                        [rounded]="true"
-                                        [text]="true"
-                                        [raised]="true"
-                                        pTooltip="Download"
-                                        tooltipPosition="bottom"
-                                        [style]="{ color: '#e81cff' }"
-                                    />
-                                    <p-button
-                                        (onClick)="clickUpdateFile(arquivo)"
-                                        icon="pi pi-upload"
-                                        [rounded]="true"
-                                        [text]="true"
-                                        [raised]="true"
-                                        class="btn-acoes"
-                                        pTooltip="Update"
-                                        tooltipPosition="bottom"
-                                        [style]="{ color: '#e81cff' }"
-                                    />
-                                    <p-button
-                                        (onClick)="
+                                        " icon="pi pi-download" [rounded]="true" [text]="true" [raised]="true"
+                                        pTooltip="Download" tooltipPosition="bottom" [style]="{ color: '#e81cff' }" />
+                                    <p-button (onClick)="clickUpdateFile(arquivo)" icon="pi pi-upload" [rounded]="true"
+                                        [text]="true" [raised]="true" class="btn-acoes" pTooltip="Update"
+                                        tooltipPosition="bottom" [style]="{ color: '#e81cff' }" />
+                                    <p-button (onClick)="
                                             deletar(
                                                 arquivo.nome,
                                                 arquivo.extensao
                                             )
-                                        "
-                                        icon="pi pi-trash"
-                                        [rounded]="true"
-                                        [text]="true"
-                                        [raised]="true"
-                                        class="btn-acoes"
-                                        pTooltip="Deletar"
-                                        tooltipPosition="bottom"
-                                        [style]="{ color: '#e81cff' }"
-                                    />
-                                    <p-button
-                                        (click)="
+                                        " icon="pi pi-trash" [rounded]="true" [text]="true" [raised]="true"
+                                        class="btn-acoes" pTooltip="Deletar" tooltipPosition="bottom"
+                                        [style]="{ color: '#e81cff' }" />
+                                    <p-button (click)="
                                             onRowEditInit(arquivo, idx);
                                             op.hide()
-                                        "
-                                        pInitEditableRow
-                                        icon="pi pi-pencil"
-                                        [rounded]="true"
-                                        [text]="true"
-                                        [raised]="true"
-                                        class="btn-acoes"
-                                        pTooltip="Editar nome"
-                                        tooltipPosition="bottom"
-                                        [style]="{ color: '#e81cff' }"
-                                    />
+                                        " pInitEditableRow icon="pi pi-pencil" [rounded]="true" [text]="true"
+                                        [raised]="true" class="btn-acoes" pTooltip="Editar nome"
+                                        tooltipPosition="bottom" [style]="{ color: '#e81cff' }" />
                                 </p-overlayPanel>
 
-                                <button
-                                    *ngIf="editing"
-                                    pButton
-                                    pRipple
-                                    type="button"
-                                    pSaveEditableRow
-                                    icon="pi pi-check"
-                                    (click)="onRowEditSave(idx)"
-                                    class="p-button-rounded p-button-text btn-confirmar-editar"
-                                ></button>
+                                <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow
+                                    icon="pi pi-check" (click)="onRowEditSave(idx)"
+                                    class="p-button-rounded p-button-text btn-confirmar-editar"></button>
 
-                                <button
-                                    *ngIf="editing"
-                                    pButton
-                                    pRipple
-                                    type="button"
-                                    pCancelEditableRow
-                                    icon="pi pi-times"
-                                    (click)="onRowEditCancel()"
-                                    id="{{ idx }}"
-                                    class="p-button-rounded p-button-text btn-cancelar-editar"
-                                ></button>
+                                <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow
+                                    icon="pi pi-times" (click)="onRowEditCancel()" id="{{ idx }}"
+                                    class="p-button-rounded p-button-text btn-cancelar-editar"></button>
                             </div>
                         </td>
                     </tr>
@@ -361,3 +197,5 @@
 <app-midia-dialog #midiaDialog> </app-midia-dialog>
 <app-editor-texto-dialog #editorTextoDialog (eventUpdate)="listar()">
 </app-editor-texto-dialog>
+<app-excel-dialog #excelDialog></app-excel-dialog>
+<app-excel-dialog #excelDialog></app-excel-dialog>
