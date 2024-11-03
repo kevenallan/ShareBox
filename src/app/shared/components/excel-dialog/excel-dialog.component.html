@@ -1,14 +1,35 @@
-<p-dialog [(visible)]="displayExcel" [modal]="true" [header]="header" [closable]="true" (onHide)="hideDialogEditor()">
+<p-dialog
+    [(visible)]="displayExcel"
+    [modal]="true"
+    [header]="header"
+    [closable]="true"
+    (onHide)="hideDialogEditor()"
+>
     <main>
         <ng-container *ngIf="excelData.length > 0">
-            <p-table [value]="excelData" editMode="cell" styleClass="p-datatable-gridlines">
+            <p-table
+                [value]="excelData"
+                editMode="cell"
+                styleClass="p-datatable-gridlines"
+            >
                 <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
                     <tr>
-                        <td *ngFor="let cell of row; let colIndex = index" [pEditableColumn]="true">
+                        <td
+                            *ngFor="let cell of row; let colIndex = index"
+                            [pEditableColumn]="true"
+                        >
                             <p-cellEditor>
                                 <ng-template pTemplate="input">
-                                    <input type="text" [(ngModel)]="excelData[rowIndex][colIndex]"
-                                        class="p-inputtext p-component" (focus)="onRowEditInit(rowIndex, colIndex)" />
+                                    <input
+                                        type="text"
+                                        [(ngModel)]="
+                                            celulaEmEdicao[rowIndex][colIndex]
+                                        "
+                                        class="p-inputtext p-component"
+                                        (change)="
+                                            onRowEditInit(rowIndex, colIndex)
+                                        "
+                                    />
                                 </ng-template>
                                 <ng-template pTemplate="output">
                                     {{ cell }}
@@ -21,8 +42,14 @@
         </ng-container>
     </main>
     <footer class="btn-footer-dialog">
-        <div style="display: flex; justify-content: end;">
-            <p-button label="Salvar" [text]="true" [raised]="true" icon="pi pi-save" (click)="salvarAlteracoes()" />
+        <div style="display: flex; justify-content: end">
+            <p-button
+                label="Salvar"
+                [text]="true"
+                [raised]="true"
+                icon="pi pi-save"
+                (click)="salvarAlteracoes()"
+            />
         </div>
     </footer>
 </p-dialog>

@@ -30,7 +30,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { MenuComponent } from '../../shared/components/menu/menu.component';
 import { TotalizadorModel } from '../../core/models/totalizador.model';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ExcelDialogComponent } from "../../shared/components/excel-dialog/excel-dialog.component";
+import { ExcelDialogComponent } from '../../shared/components/excel-dialog/excel-dialog.component';
 
 @Component({
     selector: 'app-principal',
@@ -108,7 +108,7 @@ export class PrincipalComponent implements OnInit {
         private arquivoService: ArquivoService,
         private alertService: AlertService,
         private clipboard: Clipboard
-    ) { }
+    ) {}
 
     ngOnInit() {
         this.listar();
@@ -303,12 +303,14 @@ export class PrincipalComponent implements OnInit {
         } else {
             if (this.arquivoService.isMidiaExtensao(arquivo.extensao)) {
                 dialog = this.midiaDialog;
-            } else if (this.arquivoService.isExcelXlsxExtensao(arquivo.extensao)) {
+            } else if (
+                this.arquivoService.isExcelXlsxExtensao(arquivo.extensao)
+            ) {
                 dialog = this.excelDialog;
             } else if (this.arquivoService.isTxtExtensao(arquivo.extensao)) {
                 dialog = this.editorTextoDialog;
             } else {
-                return
+                return;
             }
         }
         this.arquivoService.abrirDialog(arquivo, dialog);
