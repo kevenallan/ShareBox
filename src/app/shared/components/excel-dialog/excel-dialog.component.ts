@@ -68,6 +68,7 @@ export class ExcelDialogComponent {
             this.excelData = <any[][]>(
                 XLSX.utils.sheet_to_json(worksheet, { header: 1 })
             );
+
             this.celulaEmEdicao = this.excelData.map((row) => [...row]); // Faz uma cópia dos dados carregados
         };
 
@@ -121,21 +122,21 @@ export class ExcelDialogComponent {
         });
     }
 
-    onRowEditCancel() {
-        // if (this.arquivoEmEdicao.linha !== undefined && this.arquivoEmEdicao.coluna !== undefined) {
-        //     this.excelData[this.arquivoEmEdicao.linha + 1][this.arquivoEmEdicao.coluna] = this.arquivoEmEdicao.valorOriginal;
-        // }
-        // this.removerEdicaoLinha();
-    }
-
-    removerEdicaoLinha() {
-        // this.arquivoEmEdicao = { linha: undefined, coluna: undefined, valorOriginal: '' };
-    }
-
     salvarAlteracoes() {
-        // Função para salvar todas as alterações no arquivo Excel
-        console.log('Salvando todas as alterações:', this.excelData);
         this.onRowEditSave();
         this.displayExcel = false;
+    }
+
+    adicionarColuna() {
+        this.excelData.forEach((linha) => {
+            linha.push('-');
+        });
+        this.celulaEmEdicao = this.excelData.map((row) => [...row]);
+    }
+    adicionarLinha() {
+        let novaLinha: any = [];
+        this.excelData[0].forEach((linha) => novaLinha.push('-'));
+        this.excelData.push(novaLinha);
+        this.celulaEmEdicao = this.excelData.map((row) => [...row]);
     }
 }

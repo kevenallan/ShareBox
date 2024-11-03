@@ -42,14 +42,26 @@
         </ng-container>
     </main>
     <footer class="btn-footer-dialog">
-        <div style="display: flex; justify-content: end">
-            <p-button
-                label="Salvar"
-                [text]="true"
-                [raised]="true"
-                icon="pi pi-save"
-                (click)="salvarAlteracoes()"
-            />
-        </div>
+        <p-button
+            label="Salvar"
+            [text]="true"
+            [raised]="true"
+            icon="pi pi-save"
+            (click)="salvarAlteracoes()"
+        />
+        <p-button
+            label="Adicionar Coluna"
+            [text]="true"
+            [raised]="true"
+            icon="pi pi-plus"
+            (click)="adicionarColuna()"
+        />
+        <p-button
+            label="Adicionar Linha"
+            [text]="true"
+            [raised]="true"
+            icon="pi pi-plus"
+            (click)="adicionarLinha()"
+        />
     </footer>
 </p-dialog>
