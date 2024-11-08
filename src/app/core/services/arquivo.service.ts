@@ -5,6 +5,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { lastValueFrom, map, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ResponseModel } from '../models/response.model';
+import { AbrirDialogModel } from '../models/abrirDialog.model';
 
 @Injectable({
     providedIn: 'root'
@@ -17,7 +18,7 @@ export class ArquivoService {
     pdfExtensao = 'pdf';
     txtExtensao = 'txt';
     docxExtensao = 'docx';
-    excelXlsxExtensao = 'xlsx'
+    excelXlsxExtensao = 'xlsx';
 
     //PREFIXO BASE64
     imagemBase64Prefixos = [
@@ -55,7 +56,7 @@ export class ArquivoService {
     constructor(
         private http: HttpClient,
         private authService: AuthService
-    ) { }
+    ) {}
 
     listar() {
         return this.http
@@ -121,8 +122,6 @@ export class ArquivoService {
     }
 
     async compartilharArquivos(formData: FormData) {
-        console.log('service');
-
         await lastValueFrom(
             this.http.post(
                 `${environment.urlBackEnd}/usuario/compartilhar-arquivos`,
@@ -199,7 +198,8 @@ export class ArquivoService {
     }
 
     convertBase64ToFile(base64: string, nomeArquivo: string) {
-        const mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'; // MIME para Excel
+        const mimeType =
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'; // MIME para Excel
         const byteString = atob(base64);
         const arrayBuffer = new ArrayBuffer(byteString.length);
         const intArray = new Uint8Array(arrayBuffer);
@@ -214,29 +214,36 @@ export class ArquivoService {
     concatenarNomeExtensaoArquivo(nomeArquivo: string, extensao: string) {
         return nomeArquivo + '.' + extensao;
     }
+    abrirDialog(abrirDialogModel: AbrirDialogModel) {
+        const dialog = abrirDialogModel.dialog;
 
-    abrirDialog(arquivoOuLista: Arquivo | Arquivo[], dialog: any) {
-        const arquivoList: Arquivo[] = Array.isArray(arquivoOuLista)
-            ? arquivoOuLista
-            : [arquivoOuLista];
-        const arquivo = arquivoList[0]; // Considerando o primeiro arquivo da lista ou o único arquivo
-
-        if (this.isMidiaExtensao(arquivo.extensao)) {
+        const arquivo = abrirDialogModel.arquivo || new Arquivo();
+        if (abrirDialogModel.isMidiaDialog) {
             dialog.showDialogMidia(arquivo);
-        } else if (this.isTxtExtensao(arquivo.extensao) && !Array.isArray(arquivoOuLista)) {
-            dialog.showDialogEditorTexto(arquivo);
-        } else if (this.isExcelXlsxExtensao(arquivo.extensao)) {
-            dialog.showDialogExcelXlsx(arquivo);
-        } else if (Array.isArray(arquivoOuLista)) {
-            dialog.showDialogCriarArquivoTexto(arquivoList);
-        } else if (this.isPdfExtensao(arquivo.extensao)) {
-            const blob = this.convertBase64ToBlob(
-                arquivo.base64 || '',
-                'application/pdf'
-            );
-            const url = URL.createObjectURL(blob);
-            window.open(url, '_blank', 'noopener,noreferrer');
+        } else if (abrirDialogModel.isEditorTextoDialog) {
+            if (abrirDialogModel.arquivo?.base64) {
+                dialog.showDialogEditorTexto(arquivo);
+            } else {
+                dialog.showDialogCriarArquivoTexto(
+                    abrirDialogModel.arquivoList
+                );
+            }
+        } else if (abrirDialogModel.isExcelDialog) {
+            if (abrirDialogModel.arquivo?.base64) {
+                dialog.showDialogExcelXlsx(abrirDialogModel.arquivo);
+            } else {
+                dialog.showDialogNovoExcelXlsx(abrirDialogModel.arquivoList);
+            }
         }
+    }
+
+    abrirPdf(arquivo: Arquivo) {
+        const blob = this.convertBase64ToBlob(
+            arquivo.base64 || '',
+            'application/pdf'
+        );
+        const url = URL.createObjectURL(blob);
+        window.open(url, '_blank', 'noopener,noreferrer');
     }
 
     downloadFile(nomeArquivo: string): void {

@@ -12,6 +12,7 @@ import { Arquivo } from '../../core/models/arquivo.model';
 import { ArquivoService } from '../../core/services/arquivo.service';
 import { MidiaDialogComponent } from '../../shared/components/midia-dialog/midia-dialog.component';
 import { EditorTextoDialogComponent } from '../../shared/components/editor-texto-dialog/editor-texto-dialog.component';
+import { AbrirDialogModel } from '../../core/models/abrirDialog.model';
 
 @Component({
     selector: 'app-arquivos-compartilhados',
@@ -90,14 +91,20 @@ export class ArquivosCompartilhadosComponent implements OnInit {
 
     abrirArquivo(arquivo: Arquivo) {
         let dialog: any;
-
+        let abrirDialogModel: AbrirDialogModel = new AbrirDialogModel();
+        abrirDialogModel.arquivo = arquivo;
         if (this.arquivoService.isMidiaExtensao(arquivo.extensao)) {
-            dialog = this.midiaDialog;
-        } else {
-            dialog = this.editorTextoDialog;
+            abrirDialogModel.isMidiaDialog = true;
+            abrirDialogModel.dialog = this.midiaDialog;
+        } else if (this.arquivoService.isTxtExtensao(arquivo.extensao)) {
+            abrirDialogModel.isEditorTextoDialog = true;
+            abrirDialogModel.dialog = this.editorTextoDialog;
+        } else if (this.arquivoService.isPdfExtensao(arquivo.extensao)) {
+            this.arquivoService.abrirPdf(arquivo);
+            return;
         }
 
-        this.arquivoService.abrirDialog(arquivo, dialog);
+        this.arquivoService.abrirDialog(abrirDialogModel);
     }
 
     downloadFile(arquivo: Arquivo): void {

@@ -31,6 +31,7 @@ import { MenuComponent } from '../../shared/components/menu/menu.component';
 import { TotalizadorModel } from '../../core/models/totalizador.model';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ExcelDialogComponent } from '../../shared/components/excel-dialog/excel-dialog.component';
+import { AbrirDialogModel } from '../../core/models/abrirDialog.model';
 
 @Component({
     selector: 'app-principal',
@@ -126,7 +127,15 @@ export class PrincipalComponent implements OnInit {
                 tooltip: 'Cria arquivo de texto',
                 iconStyle: { 'font-size': '22px' },
                 command: () => {
-                    this.abrirArquivo(this.arquivoList);
+                    this.criarArquivo('txt');
+                }
+            },
+            {
+                icon: 'pi pi-file-excel',
+                tooltip: 'Cria arquivo xlsx',
+                iconStyle: { 'font-size': '22px' },
+                command: () => {
+                    this.criarArquivo('xlsx');
                 }
             }
         ];
@@ -296,24 +305,46 @@ export class PrincipalComponent implements OnInit {
         }
     }
 
-    abrirArquivo(arquivo: Arquivo | Arquivo[]) {
+    abrirArquivo(arquivo: Arquivo) {
         let dialog: any;
-        if (Array.isArray(arquivo)) {
-            dialog = this.editorTextoDialog;
+        let abrirDialogModel: AbrirDialogModel = new AbrirDialogModel();
+        abrirDialogModel.arquivo = arquivo;
+
+        if (this.arquivoService.isMidiaExtensao(arquivo.extensao)) {
+            abrirDialogModel.isMidiaDialog = true;
+            abrirDialogModel.dialog = this.midiaDialog;
+        } else if (this.arquivoService.isTxtExtensao(arquivo.extensao)) {
+            abrirDialogModel.isEditorTextoDialog = true;
+            abrirDialogModel.dialog = this.editorTextoDialog;
+        } else if (this.arquivoService.isExcelXlsxExtensao(arquivo.extensao)) {
+            abrirDialogModel.isExcelDialog = true;
+            abrirDialogModel.dialog = this.excelDialog;
+        } else if (this.arquivoService.isPdfExtensao(arquivo.extensao)) {
+            this.arquivoService.abrirPdf(arquivo);
+            return;
         } else {
-            if (this.arquivoService.isMidiaExtensao(arquivo.extensao)) {
-                dialog = this.midiaDialog;
-            } else if (
-                this.arquivoService.isExcelXlsxExtensao(arquivo.extensao)
-            ) {
-                dialog = this.excelDialog;
-            } else if (this.arquivoService.isTxtExtensao(arquivo.extensao)) {
-                dialog = this.editorTextoDialog;
-            } else {
-                return;
-            }
+            return;
         }
-        this.arquivoService.abrirDialog(arquivo, dialog);
+
+        this.arquivoService.abrirDialog(abrirDialogModel);
+    }
+
+    criarArquivo(tipoArquivo: string) {
+        let dialog: any;
+        let abrirDialogModel: AbrirDialogModel = new AbrirDialogModel();
+        abrirDialogModel.arquivoList = this.arquivoList;
+
+        if (tipoArquivo === 'txt') {
+            abrirDialogModel.isEditorTextoDialog = true;
+            abrirDialogModel.dialog = this.editorTextoDialog;
+        } else if (tipoArquivo === 'xlsx') {
+            abrirDialogModel.isExcelDialog = true;
+            abrirDialogModel.dialog = this.excelDialog;
+        } else {
+            return;
+        }
+
+        this.arquivoService.abrirDialog(abrirDialogModel);
     }
 
     isArquivoGenerico(extensao: string) {
@@ -462,7 +493,6 @@ export class PrincipalComponent implements OnInit {
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(content);
                 link.download = 'sharebox-arquivos.zip';
-                console.log(link);
                 link.click();
             });
         }
@@ -498,7 +528,6 @@ export class PrincipalComponent implements OnInit {
                 const formData = new FormData();
                 formData.append('file', zipFile);
                 this.arquivoService.uploadLink(formData).subscribe((link) => {
-                    console.log(link);
                     this.clipboard.copy(link);
                 });
             } catch (error) {

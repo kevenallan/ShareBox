@@ -8,6 +8,7 @@ import * as XLSX from 'xlsx';
 import { ArquivoService } from '../../../core/services/arquivo.service';
 import { TableModule } from 'primeng/table';
 import { FormsModule } from '@angular/forms';
+import { AlertService } from '../../../core/services/alert.service';
 
 @Component({
     selector: 'app-excel-dialog',
@@ -27,15 +28,21 @@ export class ExcelDialogComponent {
     displayExcel: boolean = false;
 
     arquivo?: Arquivo;
+    arquivoList: Arquivo[] = [];
     mimeType?: string;
 
     excelData: any[][] = [];
     celulaEmEdicao: any[][] = [];
+    isEditar: boolean = true;
 
     @Output() atualizarTabela = new EventEmitter();
 
-    constructor(private arquivoService: ArquivoService) {
+    constructor(
+        private arquivoService: ArquivoService,
+        private alertService: AlertService
+    ) {
         this.celulaEmEdicao = [];
+        this.isEditar = true;
     }
 
     async showDialogExcelXlsx(arquivo: Arquivo) {
@@ -50,29 +57,53 @@ export class ExcelDialogComponent {
         this.loadExcelData(file);
     }
 
-    hideDialogEditor() {
-        this.displayExcel = false;
-        this.celulaEmEdicao = [];
+    showDialogNovoExcelXlsx(arquivoList: Arquivo[]) {
+        this.arquivoList = arquivoList;
+        this.isEditar = false;
+        this.header = 'Novo(a) Planilha do Microsoft Excel';
+        this.displayExcel = true;
+        this.excelData.push(['-', '-'], ['-', '-']);
+        this.celulaEmEdicao = this.excelData.map((row) => [...row]);
     }
 
+    hideDialogEditor() {
+        this.displayExcel = false;
+        this.excelData = [];
+        this.celulaEmEdicao = [];
+        this.isEditar = true;
+    }
     async loadExcelData(file: File): Promise<void> {
         const reader: FileReader = new FileReader();
+
         reader.onload = (e: any) => {
             const binaryStr: string = e.target.result;
-            const workbook: XLSX.WorkBook = XLSX.read(binaryStr, {
-                type: 'binary'
-            });
-            const firstSheetName: string = workbook.SheetNames[0];
-            const worksheet: XLSX.WorkSheet = workbook.Sheets[firstSheetName];
+            try {
+                const workbook: XLSX.WorkBook = XLSX.read(binaryStr, {
+                    type: 'binary'
+                });
+                const firstSheetName: string = workbook.SheetNames[0];
+                const worksheet: XLSX.WorkSheet =
+                    workbook.Sheets[firstSheetName];
 
-            this.excelData = <any[][]>(
-                XLSX.utils.sheet_to_json(worksheet, { header: 1 })
-            );
-
-            this.celulaEmEdicao = this.excelData.map((row) => [...row]); // Faz uma cópia dos dados carregados
+                this.excelData = <any[][]>(
+                    XLSX.utils.sheet_to_json(worksheet, { header: 1 })
+                );
+                this.celulaEmEdicao = this.excelData.map((row) => [...row]);
+            } catch (error) {
+                const errorMessage = (error as Error).message;
+                if (errorMessage.includes('password')) {
+                    this.alertService.showWarningAlert(
+                        'Excel protegido por senha.'
+                    );
+                    // Aqui você pode disparar um diálogo SweetAlert2 para solicitar a senha.
+                } else {
+                    this.alertService.showErrorAlert(
+                        'Erro ao tentar ler o conteúdo do excel'
+                    );
+                }
+            }
         };
 
-        // Inicia a leitura do arquivo
         reader.readAsBinaryString(file);
     }
 
@@ -100,11 +131,13 @@ export class ExcelDialogComponent {
         });
 
         // Cria o nome do arquivo usando o serviço `arquivoService`
-        const nomeArquivo = this.arquivoService.concatenarNomeExtensaoArquivo(
+        let nomeArquivo = this.arquivoService.concatenarNomeExtensaoArquivo(
             this.arquivo?.nome || '',
             this.arquivo?.extensao || ''
         );
-
+        if (!this.isEditar) {
+            nomeArquivo = this.getNomeArquivoNovo();
+        }
         // Converte o Blob em um arquivo
         const file = new File([blob], nomeArquivo, {
             type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -112,14 +145,21 @@ export class ExcelDialogComponent {
 
         // Prepara os dados para enviar para o backend
         const formData = new FormData();
-        formData.append('file', file);
-        formData.append('nome', nomeArquivo);
-        formData.append('nomeArquivoAntigo', nomeArquivo);
 
         // Chama o serviço para enviar o arquivo atualizado
-        this.arquivoService.update(formData).subscribe(() => {
-            this.atualizarTabela.emit();
-        });
+        if (this.isEditar) {
+            formData.append('file', file);
+            formData.append('nome', nomeArquivo);
+            formData.append('nomeArquivoAntigo', nomeArquivo);
+            this.arquivoService.update(formData).subscribe(() => {
+                this.atualizarTabela.emit();
+            });
+        } else {
+            formData.append('files', file);
+            this.arquivoService.upload(formData).subscribe(() => {
+                this.atualizarTabela.emit();
+            });
+        }
     }
 
     salvarAlteracoes() {
@@ -138,5 +178,20 @@ export class ExcelDialogComponent {
         this.excelData[0].forEach((linha) => novaLinha.push('-'));
         this.excelData.push(novaLinha);
         this.celulaEmEdicao = this.excelData.map((row) => [...row]);
+    }
+
+    getNomeArquivoNovo() {
+        let nomeArquivoNovo = 'Novo(a) Planilha do Microsoft Excel';
+        const extensao = '.xlsx';
+        let contador = 2;
+
+        const nomeJaExiste = (nome: string) =>
+            this.arquivoList.some((arquivo) => arquivo.nome === nome);
+
+        while (nomeJaExiste(nomeArquivoNovo)) {
+            nomeArquivoNovo = `Novo(a) Planilha do Microsoft Excel (${contador})`;
+            contador++;
+        }
+        return nomeArquivoNovo + extensao;
     }
 }

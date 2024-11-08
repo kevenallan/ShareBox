@@ -69,7 +69,6 @@ export class LoginComponent {
                     if (usuarioLogado) {
                         const token = usuarioLogado.token;
                         this.authService.setLoginStorage(usuarioLogado);
-                        await this.usuarioService.listarArquivosCompartilhados();
                         this.router.navigate(['/inicio']);
                     } else {
                         this.alertService.showErrorAlert(
