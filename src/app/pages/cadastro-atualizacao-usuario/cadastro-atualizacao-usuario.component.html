@@ -128,6 +128,7 @@
                 style="width: fit-content"
             >
                 <p-button
+                    *ngIf="isEditarPerfil"
                     (click)="deletar()"
                     icon="pi pi-trash"
                     [text]="true"
