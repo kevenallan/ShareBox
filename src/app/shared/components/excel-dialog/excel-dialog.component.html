@@ -9,7 +9,10 @@
     <main>
         <section>
             <ng-container *ngIf="excelData.length > 0">
-                <p-tabView [(activeIndex)]="abaSelecionada">
+                <p-tabView
+                    [(activeIndex)]="abaSelecionada"
+                    (click)="mudarAba(abaSelecionada)"
+                >
                     <p-tabPanel
                         *ngFor="let sheet of excelData; let i = index"
                         [header]="sheet.sheetName"
@@ -27,7 +30,16 @@
                                 let-row
                                 let-rowIndex="rowIndex"
                             >
+                                <tr *ngIf="rowIndex === 0">
+                                    <td *ngFor="let letter of colunasExcel">
+                                        {{ letter }}
+                                    </td>
+                                </tr>
                                 <tr>
+                                    <td *ngIf="excluirLinha">
+                                        {{ rowIndex + 2 }}
+                                    </td>
+                                    <td>{{ rowIndex + 1 }}</td>
                                     <td
                                         *ngFor="
                                             let cell of row;
@@ -90,6 +102,13 @@
             [raised]="true"
             icon="pi pi-plus"
             (click)="adicionarLinha(abaSelecionada)"
+        />
+        <p-button
+            label="Remover Linhas"
+            [text]="true"
+            [raised]="true"
+            icon="pi pi-plus"
+            (click)="removerColuna(abaSelecionada)"
         />
         <p-button
             label="Adicionar Coluna"

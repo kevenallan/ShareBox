@@ -35,6 +35,7 @@ export class ExcelDialogComponent {
     excelData: { sheetName: string; data: any[][] }[] = [];
     celulaEmEdicao: { sheetName: string; data: any[][] }[] = [];
     isEditar: boolean = true;
+    colunasExcel: string[] = [];
 
     @Output() atualizarTabela = new EventEmitter();
 
@@ -75,6 +76,8 @@ export class ExcelDialogComponent {
             sheetName: sheet.sheetName,
             data: sheet.data.map((row) => [...row])
         }));
+
+        this.colunasExcel = this.generateAlphabetHeader(2);
     }
 
     hideDialogEditor() {
@@ -109,6 +112,11 @@ export class ExcelDialogComponent {
                     sheetData =
                         this.ajustarTabelaParaFormatoQuadrado(sheetData);
 
+                    // Armazena o número de colunas e cria o cabeçalho alfabético
+                    const columnCount = sheetData[0].length - 1;
+                    this.colunasExcel =
+                        this.generateAlphabetHeader(columnCount);
+
                     this.excelData.push({ sheetName, data: sheetData });
                     this.celulaEmEdicao.push({
                         sheetName,
@@ -130,6 +138,32 @@ export class ExcelDialogComponent {
         };
 
         reader.readAsBinaryString(file);
+    }
+
+    // Método para gerar cabeçalho alfabético com o número de colunas
+    generateAlphabetHeader(columnCount: number): string[] {
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const headers = [''];
+
+        for (let i = 0; i < columnCount; i++) {
+            let label = '';
+            let index = i;
+
+            // Gera rótulos como A, B, ..., Z, AA, AB, etc.
+            while (index >= 0) {
+                label = alphabet[index % 26] + label;
+                index = Math.floor(index / 26) - 1;
+            }
+
+            headers.push(label);
+        }
+
+        return headers;
+    }
+
+    mudarAba(aba: number) {
+        const columnCount = this.excelData[aba].data[0].length;
+        this.colunasExcel = this.generateAlphabetHeader(columnCount);
     }
 
     onRowEditChange(
@@ -202,6 +236,9 @@ export class ExcelDialogComponent {
             sheetName: this.excelData[sheetIndex].sheetName,
             data: this.excelData[sheetIndex].data.map((row) => [...row])
         };
+
+        const columnCount = this.excelData[sheetIndex].data[0].length;
+        this.colunasExcel = this.generateAlphabetHeader(columnCount);
     }
 
     adicionarLinha(sheetIndex: number): void {
@@ -215,6 +252,22 @@ export class ExcelDialogComponent {
             sheetName: this.excelData[sheetIndex].sheetName,
             data: this.excelData[sheetIndex].data.map((row) => [...row])
         };
+    }
+
+    excluirLinha = false;
+
+    //TODO: IMPLEMENTAR
+    removerColuna(sheetIndex: number): void {
+        this.excluirLinha = true;
+    }
+
+    getExcelColumnLetter(index: number): string {
+        let letter = '';
+        while (index >= 0) {
+            letter = String.fromCharCode((index % 26) + 65) + letter;
+            index = Math.floor(index / 26) - 1;
+        }
+        return letter;
     }
 
     getNomeArquivoNovo() {
@@ -238,7 +291,6 @@ export class ExcelDialogComponent {
             if (activeElement) {
                 activeElement.blur();
             }
-
             const dialogContent = document.querySelector('.p-dialog-content');
             if (dialogContent) {
                 dialogContent.scrollTop = 0;
