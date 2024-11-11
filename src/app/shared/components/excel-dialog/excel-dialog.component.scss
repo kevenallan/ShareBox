@@ -1,3 +1,7 @@
+:host ::ng-deep .p-tabview .p-tabview-panels {
+    padding: 0;
+}
+
 th,
 td {
     text-align: center;
@@ -5,7 +9,8 @@ td {
 }
 .btn-footer-dialog {
     display: flex;
+    flex-wrap: wrap;
     justify-content: end;
     margin: 10px;
-    gap:10px
+    gap: 10px;
 }

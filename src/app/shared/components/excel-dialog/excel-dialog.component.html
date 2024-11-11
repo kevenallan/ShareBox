@@ -4,42 +4,77 @@
     [header]="header"
     [closable]="true"
     (onHide)="hideDialogEditor()"
+    (onShow)="removeFocus()"
 >
     <main>
-        <ng-container *ngIf="excelData.length > 0">
-            <p-table
-                [value]="excelData"
-                editMode="cell"
-                styleClass="p-datatable-gridlines"
-            >
-                <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
-                    <tr>
-                        <td
-                            *ngFor="let cell of row; let colIndex = index"
-                            [pEditableColumn]="true"
+        <section>
+            <ng-container *ngIf="excelData.length > 0">
+                <p-tabView [(activeIndex)]="abaSelecionada">
+                    <p-tabPanel
+                        *ngFor="let sheet of excelData; let i = index"
+                        [header]="sheet.sheetName"
+                    >
+                        <p-table
+                            [value]="sheet.data"
+                            editMode="cell"
+                            styleClass="p-datatable-gridlines"
+                            [scrollable]="true"
+                            scrollHeight="57vh"
+                            scrollWidth="80vw"
                         >
-                            <p-cellEditor>
-                                <ng-template pTemplate="input">
-                                    <input
-                                        type="text"
-                                        [(ngModel)]="
-                                            celulaEmEdicao[rowIndex][colIndex]
+                            <ng-template
+                                pTemplate="body"
+                                let-row
+                                let-rowIndex="rowIndex"
+                            >
+                                <tr>
+                                    <td
+                                        *ngFor="
+                                            let cell of row;
+                                            let colIndex = index
                                         "
-                                        class="p-inputtext p-component"
-                                        (change)="
-                                            onRowEditInit(rowIndex, colIndex)
-                                        "
-                                    />
-                                </ng-template>
-                                <ng-template pTemplate="output">
-                                    {{ cell }}
-                                </ng-template>
-                            </p-cellEditor>
-                        </td>
-                    </tr>
-                </ng-template>
-            </p-table>
-        </ng-container>
+                                        [pEditableColumn]="true"
+                                    >
+                                        <p-cellEditor>
+                                            <ng-template pTemplate="input">
+                                                <input
+                                                    type="text"
+                                                    [(ngModel)]="
+                                                        celulaEmEdicao[
+                                                            abaSelecionada
+                                                        ].data[rowIndex][
+                                                            colIndex
+                                                        ]
+                                                    "
+                                                    class="p-inputtext p-component"
+                                                    (change)="
+                                                        onRowEditChange(
+                                                            abaSelecionada,
+                                                            rowIndex,
+                                                            colIndex
+                                                        )
+                                                    "
+                                                    (keydown.enter)="
+                                                        onRowEditChange(
+                                                            abaSelecionada,
+                                                            rowIndex,
+                                                            colIndex
+                                                        )
+                                                    "
+                                                />
+                                            </ng-template>
+                                            <ng-template pTemplate="output">
+                                                {{ cell }}
+                                            </ng-template>
+                                        </p-cellEditor>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </p-tabPanel>
+                </p-tabView>
+            </ng-container>
+        </section>
     </main>
     <footer class="btn-footer-dialog">
         <p-button
@@ -50,18 +85,18 @@
             (click)="salvarAlteracoes()"
         />
         <p-button
-            label="Adicionar Coluna"
-            [text]="true"
-            [raised]="true"
-            icon="pi pi-plus"
-            (click)="adicionarColuna()"
-        />
-        <p-button
             label="Adicionar Linha"
             [text]="true"
             [raised]="true"
             icon="pi pi-plus"
-            (click)="adicionarLinha()"
+            (click)="adicionarLinha(abaSelecionada)"
+        />
+        <p-button
+            label="Adicionar Coluna"
+            [text]="true"
+            [raised]="true"
+            icon="pi pi-plus"
+            (click)="adicionarColuna(abaSelecionada)"
         />
     </footer>
 </p-dialog>
