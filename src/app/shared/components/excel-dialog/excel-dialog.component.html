@@ -24,20 +24,36 @@
                             [scrollable]="true"
                             scrollHeight="57vh"
                             scrollWidth="80vw"
+                            [(selection)]="selecionado"
                         >
                             <ng-template
                                 pTemplate="body"
                                 let-row
                                 let-rowIndex="rowIndex"
                             >
+                                <tr *ngIf="">
+                                    <td></td>
+                                </tr>
+
+                                <tr *ngIf="rowIndex === 0 && isExibirCheckBox">
+                                    <td *ngFor="let letter of colunasExcel">
+                                        <p-tableCheckbox
+                                            *ngIf="letter != ''"
+                                            [value]="letter"
+                                        />
+                                    </td>
+                                </tr>
+
                                 <tr *ngIf="rowIndex === 0">
                                     <td *ngFor="let letter of colunasExcel">
                                         {{ letter }}
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td *ngIf="excluirLinha">
-                                        {{ rowIndex + 2 }}
+                                    <td *ngIf="isExibirCheckBox">
+                                        <p-tableCheckbox
+                                            [value]="rowIndex + 1"
+                                        />
                                     </td>
                                     <td>{{ rowIndex + 1 }}</td>
                                     <td
@@ -104,18 +120,25 @@
             (click)="adicionarLinha(abaSelecionada)"
         />
         <p-button
-            label="Remover Linhas"
-            [text]="true"
-            [raised]="true"
-            icon="pi pi-plus"
-            (click)="removerColuna(abaSelecionada)"
-        />
-        <p-button
             label="Adicionar Coluna"
             [text]="true"
             [raised]="true"
             icon="pi pi-plus"
             (click)="adicionarColuna(abaSelecionada)"
+        />
+        <p-button
+            label="Exibir CheckBox"
+            [text]="true"
+            [raised]="true"
+            icon="pi pi-plus"
+            (click)="exibirCheckBox(abaSelecionada)"
+        />
+        <p-button
+            label="Teste"
+            [text]="true"
+            [raised]="true"
+            icon="pi pi-plus"
+            (click)="teste()"
         />
     </footer>
 </p-dialog>

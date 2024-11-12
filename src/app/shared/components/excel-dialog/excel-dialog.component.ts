@@ -36,6 +36,8 @@ export class ExcelDialogComponent {
     celulaEmEdicao: { sheetName: string; data: any[][] }[] = [];
     isEditar: boolean = true;
     colunasExcel: string[] = [];
+    isExibirCheckBox = false;
+    selecionado = [];
 
     @Output() atualizarTabela = new EventEmitter();
 
@@ -44,6 +46,7 @@ export class ExcelDialogComponent {
         private alertService: AlertService
     ) {
         this.abaSelecionada = 0;
+        this.isExibirCheckBox = false;
     }
 
     async showDialogExcelXlsx(arquivo: Arquivo) {
@@ -86,6 +89,8 @@ export class ExcelDialogComponent {
         this.celulaEmEdicao = [];
         this.isEditar = true;
         this.abaSelecionada = 0;
+        this.isExibirCheckBox = false;
+        this.selecionado = [];
     }
 
     async loadExcelData(file: File): Promise<void> {
@@ -138,27 +143,6 @@ export class ExcelDialogComponent {
         };
 
         reader.readAsBinaryString(file);
-    }
-
-    // Método para gerar cabeçalho alfabético com o número de colunas
-    generateAlphabetHeader(columnCount: number): string[] {
-        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const headers = [''];
-
-        for (let i = 0; i < columnCount; i++) {
-            let label = '';
-            let index = i;
-
-            // Gera rótulos como A, B, ..., Z, AA, AB, etc.
-            while (index >= 0) {
-                label = alphabet[index % 26] + label;
-                index = Math.floor(index / 26) - 1;
-            }
-
-            headers.push(label);
-        }
-
-        return headers;
     }
 
     mudarAba(aba: number) {
@@ -254,11 +238,39 @@ export class ExcelDialogComponent {
         };
     }
 
-    excluirLinha = false;
+    exibirCheckBox(sheetIndex: number): void {
+        let columnCount = this.excelData[sheetIndex].data[0].length;
+        this.isExibirCheckBox = !this.isExibirCheckBox;
+        this.colunasExcel = this.generateAlphabetHeader(columnCount);
+    }
 
-    //TODO: IMPLEMENTAR
-    removerColuna(sheetIndex: number): void {
-        this.excluirLinha = true;
+    generateAlphabetHeader(columnCount: number): string[] {
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let headers = [''];
+
+        if (this.isExibirCheckBox) {
+            columnCount++;
+            headers = ['', ''];
+        }
+
+        for (let i = 0; i < columnCount; i++) {
+            let label = '';
+            let index = i;
+
+            // Gera rótulos como A, B, ..., Z, AA, AB, etc.
+            while (index >= 0) {
+                label = alphabet[index % 26] + label;
+                index = Math.floor(index / 26) - 1;
+            }
+
+            headers.push(label);
+        }
+
+        return headers;
+    }
+
+    teste() {
+        console.log(this.selecionado);
     }
 
     getExcelColumnLetter(index: number): string {
